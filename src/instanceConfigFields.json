@@ -1,8 +1,5 @@
 {
-  "clientId": {
-    "type": "string"
-  },
-  "clientSecret": {
+  "personalToken": {
     "type": "string",
     "mask": true
   }

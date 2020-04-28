@@ -2,7 +2,7 @@ import { IntegrationExecutionContext } from '@jupiterone/integration-sdk';
 
 export default async function validateInvocation(
   context: IntegrationExecutionContext,
-) {
+): Promise<void> {
   context.logger.info(
     {
       instance: context.instance,
@@ -17,8 +17,8 @@ export default async function validateInvocation(
   }
 }
 
-async function isConfigurationValid(config: any) {
+async function isConfigurationValid(config: any): Promise<boolean> {
   // add your own validation logic to ensure you
   // can hit the provider's apis.
-  return config.clientId && config.clientSecret;
+  return config.personalToken;
 }
