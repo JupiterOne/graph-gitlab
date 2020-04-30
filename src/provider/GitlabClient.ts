@@ -7,6 +7,14 @@ export interface GitLabUser {
   created_at: string;
 }
 
+export interface GitLabGroup {
+  id: number;
+  parent_id: number | null;
+  name: string;
+  web_url: string;
+  created_at: string;
+}
+
 export enum HttpMethod {
   GET = 'get',
   POST = 'post',
@@ -20,8 +28,12 @@ export class GitlabClient {
     this.personalToken = personalToken;
   }
 
-  async getAccount(): Promise<GitLabUser> {
+  async fetchAccount(): Promise<GitLabUser> {
     return this.makeRequest(HttpMethod.GET, 'user');
+  }
+
+  async fetchGroups(): Promise<GitLabGroup[]> {
+    return this.makeRequest(HttpMethod.GET, 'groups');
   }
 
   private async makeRequest<T>(method: HttpMethod, url: string): Promise<T> {

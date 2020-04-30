@@ -20,7 +20,7 @@ const step: IntegrationStep = {
     jobState,
   }: IntegrationStepExecutionContext) {
     const client = createGitlabClient(instance);
-    const account = await client.getAccount();
+    const account = await client.fetchAccount();
 
     await jobState.addEntities([createAccountEntity(account)]);
   },
