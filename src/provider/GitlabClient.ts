@@ -95,6 +95,10 @@ export class GitlabClient {
     );
   }
 
+  async fetchGroupMembers(groupId: number): Promise<GitLabUserRef[]> {
+    return this.makeRequest(HttpMethod.GET, `/groups/${groupId}/members/all`);
+  }
+
   private async makeRequest<T>(method: HttpMethod, url: string): Promise<T> {
     const options: RequestInit = {
       method,
