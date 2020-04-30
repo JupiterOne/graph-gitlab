@@ -16,9 +16,9 @@ import {
 } from './fetchUsers';
 
 const step: IntegrationStep = {
-  id: 'build-project-member-relationships',
-  name: 'Build project member relationships',
-  types: ['gitlab_project_has_member'],
+  id: 'build-user-project-relationships',
+  name: 'Build user project relationships',
+  types: ['gitlab_user_manages_project'],
   dependsOn: [PROJECT_STEP, USER_STEP],
   async executionHandler({
     jobState,
@@ -35,7 +35,7 @@ const step: IntegrationStep = {
       if (projectMembers.length > 0) {
         await jobState.addRelationships(
           projectMembers.map((member) =>
-            createProjectMemberRelationship(
+            createProjectUserRelationship(
               userIdMap.get(createUserEntityIdentifier(member.id)),
               project,
             ),
@@ -60,7 +60,7 @@ async function createUserIdMap(
 
 export default step;
 
-export function createProjectMemberRelationship(
+export function createProjectUserRelationship(
   member: Entity,
   project: Entity,
 ): Relationship {

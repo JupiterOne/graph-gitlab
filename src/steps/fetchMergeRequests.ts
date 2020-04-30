@@ -7,7 +7,11 @@ import {
 
 import { GitLabMergeRequest } from '../provider/GitlabClient';
 import { createGitlabClient } from '../provider';
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from './fetchProjects';
+import {
+  STEP_ID as PROJECT_STEP,
+  PROJECT_TYPE,
+  createProjectEntityIdentifier,
+} from './fetchProjects';
 
 export const STEP_ID = 'fetch-merge-requests';
 export const MERGE_REQUEST_TYPE = 'gitlab_merge_request';
@@ -54,6 +58,7 @@ export function createMergeRequestEntity(
         _class: 'PR',
 
         id,
+        projectId: createProjectEntityIdentifier(mergeRequest.project_id),
         name: mergeRequest.title,
         title: mergeRequest.title,
         state: mergeRequest.state,
