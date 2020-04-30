@@ -26,6 +26,17 @@ export interface GitLabProject {
   created_at: string;
 }
 
+export interface GitLabMergeRequest {
+  id: number;
+  project_id: number;
+  title: string;
+  state: string;
+  source_branch: string;
+  target_branch: string;
+  description: string;
+  created_at: string;
+}
+
 export enum HttpMethod {
   GET = 'get',
   POST = 'post',
@@ -48,7 +59,16 @@ export class GitlabClient {
   }
 
   async fetchProjects(): Promise<GitLabProject[]> {
-    return this.makeRequest(HttpMethod.GET, `/projects?owned=true`);
+    return this.makeRequest(HttpMethod.GET, '/projects?owned=true');
+  }
+
+  async fetchProjectMergeRequests(
+    projectId: number,
+  ): Promise<GitLabMergeRequest[]> {
+    return this.makeRequest(
+      HttpMethod.GET,
+      `/projects/${projectId}/merge_requests`,
+    );
   }
 
   private async makeRequest<T>(method: HttpMethod, url: string): Promise<T> {
