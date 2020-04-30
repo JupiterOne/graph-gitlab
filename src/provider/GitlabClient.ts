@@ -7,6 +7,14 @@ export interface GitLabUser {
   created_at: string;
 }
 
+export interface GitLabUserRef {
+  id: number;
+  name: string;
+  username: string;
+  state: string;
+  access_level: number;
+}
+
 export interface GitLabGroup {
   id: number;
   parent_id: number | null;
@@ -22,6 +30,10 @@ export interface GitLabProject {
     id: number;
     parent_id: number;
     kind: string;
+  };
+  owner?: {
+    id: number;
+    name: string;
   };
   created_at: string;
 }
@@ -43,10 +55,11 @@ export enum HttpMethod {
 }
 
 export class GitlabClient {
-  private readonly baseUrl: string = 'https://gitlab.com';
+  private readonly baseUrl: string;
   private readonly personalToken: string;
 
-  constructor(personalToken: string) {
+  constructor(baseUrl: string, personalToken: string) {
+    this.baseUrl = baseUrl;
     this.personalToken = personalToken;
   }
 
@@ -59,7 +72,11 @@ export class GitlabClient {
   }
 
   async fetchProjects(): Promise<GitLabProject[]> {
-    return this.makeRequest(HttpMethod.GET, '/projects?owned=true');
+    return this.makeRequest(HttpMethod.GET, '/projects');
+  }
+
+  async fetchUsers(): Promise<GitLabUser[]> {
+    return this.makeRequest(HttpMethod.GET, '/users');
   }
 
   async fetchProjectMergeRequests(
@@ -68,6 +85,13 @@ export class GitlabClient {
     return this.makeRequest(
       HttpMethod.GET,
       `/projects/${projectId}/merge_requests`,
+    );
+  }
+
+  async fetchProjectMembers(projectId: number): Promise<GitLabUserRef[]> {
+    return this.makeRequest(
+      HttpMethod.GET,
+      `/projects/${projectId}/members/all`,
     );
   }
 

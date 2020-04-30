@@ -20,5 +20,5 @@ export default async function validateInvocation(
 async function isConfigurationValid(config: any): Promise<boolean> {
   // add your own validation logic to ensure you
   // can hit the provider's apis.
-  return config.personalToken;
+  return config.personalToken && config.baseUrl;
 }

@@ -4,6 +4,7 @@ import { GitlabClient } from './GitlabClient';
 export function createGitlabClient(
   instance: IntegrationInstance,
 ): GitlabClient {
+  const baseUrl = instance.config?.baseUrl;
   const apiKey = instance.config?.personalToken;
 
   if (!apiKey) {
@@ -12,5 +13,5 @@ export function createGitlabClient(
     );
   }
 
-  return new GitlabClient(apiKey);
+  return new GitlabClient(baseUrl, apiKey);
 }
