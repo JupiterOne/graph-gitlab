@@ -12,5 +12,5 @@ export function createGitlabClient(
     );
   }
 
-  return new GitlabClient(instance.config?.personalToken);
+  return new GitlabClient(apiKey);
 }

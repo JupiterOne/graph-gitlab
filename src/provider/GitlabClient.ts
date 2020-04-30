@@ -15,6 +15,17 @@ export interface GitLabGroup {
   created_at: string;
 }
 
+export interface GitLabProject {
+  id: number;
+  name: string;
+  namespace: {
+    id: number;
+    parent_id: number;
+    kind: string;
+  };
+  created_at: string;
+}
+
 export enum HttpMethod {
   GET = 'get',
   POST = 'post',
@@ -29,11 +40,15 @@ export class GitlabClient {
   }
 
   async fetchAccount(): Promise<GitLabUser> {
-    return this.makeRequest(HttpMethod.GET, 'user');
+    return this.makeRequest(HttpMethod.GET, '/user');
   }
 
   async fetchGroups(): Promise<GitLabGroup[]> {
-    return this.makeRequest(HttpMethod.GET, 'groups');
+    return this.makeRequest(HttpMethod.GET, '/groups');
+  }
+
+  async fetchProjects(): Promise<GitLabProject[]> {
+    return this.makeRequest(HttpMethod.GET, `/projects?owned=true`);
   }
 
   private async makeRequest<T>(method: HttpMethod, url: string): Promise<T> {
@@ -45,12 +60,12 @@ export class GitlabClient {
     };
 
     const response: Response = await fetch(
-      `${this.baseUrl}/api/v4/${url}`,
+      `${this.baseUrl}/api/v4${url}`,
       options,
     );
 
     if (!response) {
-      throw new Error(`No response from '${this.baseUrl}/api/v4/${url}'`);
+      throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
     }
 
     const responseBody: string = await response.text();

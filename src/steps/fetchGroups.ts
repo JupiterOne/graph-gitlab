@@ -27,7 +27,7 @@ const step: IntegrationStep = {
 };
 
 export function createGroupEntity(group: GitLabGroup): Entity {
-  const id = creategroupEntityIdentifier(group.id);
+  const id = createGroupEntityIdentifier(group.id);
 
   return createIntegrationEntity({
     entityData: {
@@ -38,7 +38,7 @@ export function createGroupEntity(group: GitLabGroup): Entity {
         _class: 'Group',
 
         id,
-        parentGroupId: creategroupEntityIdentifier(group.parent_id),
+        parentGroupId: createGroupEntityIdentifier(group.parent_id),
         name: group.name,
         createdOn: new Date(group.created_at).getTime(),
       },
@@ -47,7 +47,7 @@ export function createGroupEntity(group: GitLabGroup): Entity {
 }
 
 const GROUP_ID_PREFIX = 'gitlab-group';
-export function creategroupEntityIdentifier(id?: number): string {
+export function createGroupEntityIdentifier(id?: number): string {
   return id ? `${GROUP_ID_PREFIX}:${id}` : undefined;
 }
 
