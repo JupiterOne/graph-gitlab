@@ -99,6 +99,10 @@ export class GitlabClient {
     return this.makeRequest(HttpMethod.GET, `/groups/${groupId}/members/all`);
   }
 
+  async fetchGroupProjects(groupId: number): Promise<GitLabProject[]> {
+    return this.makeRequest(HttpMethod.GET, `/groups/${groupId}/projects`);
+  }
+
   private async makeRequest<T>(method: HttpMethod, url: string): Promise<T> {
     const options: RequestInit = {
       method,
