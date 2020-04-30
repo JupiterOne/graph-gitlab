@@ -65,7 +65,7 @@ export function createGroupProjectRelationship(
   project: Entity,
 ): Relationship {
   return createIntegrationRelationship({
-    _class: 'has',
+    _class: 'HAS',
     from: group,
     to: project,
   });
