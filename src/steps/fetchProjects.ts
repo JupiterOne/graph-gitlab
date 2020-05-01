@@ -39,7 +39,7 @@ export function createProjectEntity(project: GitLabProject): Entity {
 
         id,
         name: project.name,
-        owner: 'TODO',
+        owner: project.owner?.name,
         createdOn: new Date(project.created_at).getTime(),
       },
     },
