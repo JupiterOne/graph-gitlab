@@ -5,8 +5,8 @@ import {
   createIntegrationEntity,
 } from '@jupiterone/integration-sdk';
 
-import { GitLabProject } from '../provider/GitlabClient';
 import { createGitlabClient } from '../provider';
+import { GitLabProject } from '../provider/types';
 
 export const STEP_ID = 'fetch-projects';
 export const PROJECT_TYPE = 'gitlab_project';

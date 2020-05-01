@@ -5,8 +5,8 @@ import {
   createIntegrationEntity,
 } from '@jupiterone/integration-sdk';
 
-import { GitLabGroup } from '../provider/GitlabClient';
 import { createGitlabClient } from '../provider';
+import { GitLabGroup } from '../provider/types';
 
 export const STEP_ID = 'fetch-groups';
 export const GROUP_TYPE = 'gitlab_group';
