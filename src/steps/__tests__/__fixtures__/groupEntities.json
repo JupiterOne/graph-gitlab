@@ -1,0 +1,27 @@
+[
+  {
+    "id": "gitlab-group:1",
+    "_key": "gitlab-group:1",
+    "_type": "gitlab_group",
+    "_class": ["Group"],
+    "name": "group-1",
+    "createdOn": 1586982455921
+  },
+  {
+    "id": "gitlab-group:2",
+    "_key": "gitlab-group:2",
+    "_type": "gitlab_group",
+    "_class": ["Group"],
+    "name": "group-2",
+    "parentGroupId": "gitlab-group:1",
+    "createdOn": 1586982455921
+  },
+  {
+    "id": "gitlab-group:3",
+    "_key": "gitlab-group:3",
+    "_type": "gitlab_group",
+    "_class": ["Group"],
+    "name": "group-3",
+    "createdOn": 1586982455921
+  }
+]

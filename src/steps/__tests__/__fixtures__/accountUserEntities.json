@@ -6,9 +6,9 @@
     "_key": "gitlab-account:1",
     "_type": "gitlab_account",
     "_class": ["User"],
-    "name": "charlie.duong@jupiterone.io",
+    "name": "account@gitlab.com",
     "createdOn": 1586982455921,
-    "displayName": "charlie.duong@jupiterone.io"
+    "displayName": "account@gitlab.com"
   },
   {
     "username": "user1@gitlab.com",

@@ -7,12 +7,7 @@ import {
   createIntegrationRelationship,
 } from '@jupiterone/integration-sdk';
 
-import { createGitlabClient } from '../provider';
-import {
-  STEP_ID as GROUP_STEP,
-  GROUP_TYPE,
-  createGroupEntityIdentifier,
-} from './fetchGroups';
+import { STEP_ID as GROUP_STEP, GROUP_TYPE } from './fetchGroups';
 
 const step: IntegrationStep = {
   id: 'build-group-subgroup-relationships',
@@ -23,24 +18,15 @@ const step: IntegrationStep = {
     jobState,
     instance,
   }: IntegrationStepExecutionContext) {
-    const client = createGitlabClient(instance);
     const groupIdMap = await createGroupIdMap(jobState);
 
-    for (const [id, group] of groupIdMap.entries()) {
-      const [, subgroupId] = id.split(':');
-      const subgroups = await client.fetchGroupSubgroups(
-        parseInt(subgroupId, 10),
-      );
+    for (const group of groupIdMap.values()) {
+      if (group.parentGroupId) {
+        const parentGroup = groupIdMap.get(group.parentGroupId as string);
 
-      if (subgroups.length > 0) {
-        await jobState.addRelationships(
-          subgroups.map((subgroup) =>
-            createGroupProjectRelationship(
-              group,
-              groupIdMap.get(createGroupEntityIdentifier(subgroup.id)),
-            ),
-          ),
-        );
+        await jobState.addRelationships([
+          createGroupProjectRelationship(parentGroup, group),
+        ]);
       }
     }
   },
