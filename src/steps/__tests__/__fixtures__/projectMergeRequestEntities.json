@@ -1,0 +1,27 @@
+[
+  {
+    "id": "gitlab-project:1",
+    "_key": "gitlab-project:1",
+    "_type": "gitlab_project",
+    "_class": ["Project"],
+    "name": "Project 1",
+    "createdOn": 1586982455921
+  },
+  {
+    "id": "gitlab-project:2",
+    "_key": "gitlab-project:2",
+    "_type": "gitlab_project",
+    "_class": ["Project"],
+    "name": "Project 2",
+    "createdOn": 1586982455921
+  },
+  {
+    "id": "gitlab-merge-request:1",
+    "_key": "gitlab-merge-request:1",
+    "_type": "gitlab_merge_request",
+    "_class": ["PR"],
+    "name": "Merge Request 1",
+    "projectId": "gitlab-project:1",
+    "createdOn": 1586982455921
+  }
+]

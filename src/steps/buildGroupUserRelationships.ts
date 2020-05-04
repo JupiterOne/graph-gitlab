@@ -25,7 +25,7 @@ const step: IntegrationStep = {
     instance,
   }: IntegrationStepExecutionContext) {
     const client = createGitlabClient(instance);
-    const userIdMap = await createUserId(jobState);
+    const userIdMap = await createUserIdMap(jobState);
 
     await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
       const [, id] = group.id.toString().split(':');
@@ -45,7 +45,9 @@ const step: IntegrationStep = {
   },
 };
 
-async function createUserId(jobState: JobState): Promise<Map<string, Entity>> {
+async function createUserIdMap(
+  jobState: JobState,
+): Promise<Map<string, Entity>> {
   const userIdMap = new Map<string, Entity>();
 
   await jobState.iterateEntities({ _type: USER_TYPE }, (user) => {
