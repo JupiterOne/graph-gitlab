@@ -82,8 +82,6 @@ export class GitlabClient {
       throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
     }
 
-    console.log('SDFSDFSDF', response.status.toString().startsWith('2'));
-
     if (response.status.toString().startsWith('2')) {
       throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
     }
