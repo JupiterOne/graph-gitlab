@@ -82,7 +82,20 @@ export class GitlabClient {
       throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
     }
 
+    console.log('SDFSDFSDF', response.status.toString().startsWith('2'));
+
+    if (response.status.toString().startsWith('2')) {
+      throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
+    }
+
     const responseBody: string = await response.text();
-    return responseBody.length > 0 ? JSON.parse(responseBody) : {};
+
+    return responseBody.length > 0 &&
+      response.headers
+        .get('content-type')
+        .toLowerCase()
+        .startsWith('application/json')
+      ? JSON.parse(responseBody)
+      : {};
   }
 }
