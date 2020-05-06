@@ -11,6 +11,10 @@ import { GitLabUser } from '../provider/types';
 export const STEP_ID = 'fetch-users';
 export const USER_TYPE = 'gitlab_user';
 
+const userExists = (users, id: number): boolean => {
+  return users.find((user) => user.id === id);
+};
+
 const step: IntegrationStep = {
   id: STEP_ID,
   name: 'Fetch users',
@@ -21,8 +25,18 @@ const step: IntegrationStep = {
   }: IntegrationStepExecutionContext) {
     const client = createGitlabClient(instance);
 
-    const users = await client.fetchUsers();
+    const users = [];
+    const groups = await client.fetchGroups();
+    for (const group of groups) {
+      const members = await client.fetchGroupMembers(group.id);
+      members.forEach((member) => {
+        if (!userExists(users, member.id)) {
+          users.push(member);
+        }
+      });
+    }
 
+    console.log('users', users);
     await jobState.addEntities(users.map(createUserEntity));
   },
 };

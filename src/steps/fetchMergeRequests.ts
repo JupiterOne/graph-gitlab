@@ -34,6 +34,7 @@ const step: IntegrationStep = {
         parseInt(id, 10),
       );
 
+      console.log('mergeRequests', mergeRequests);
       await jobState.addEntities(
         mergeRequests.map((mergeRequest) =>
           createMergeRequestEntity(mergeRequest, project.displayName),

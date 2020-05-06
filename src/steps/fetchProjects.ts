@@ -11,6 +11,10 @@ import { GitLabProject } from '../provider/types';
 export const STEP_ID = 'fetch-projects';
 export const PROJECT_TYPE = 'gitlab_project';
 
+const projectExists = (projects, id: number): boolean => {
+  return projects.find((project) => project.id === id);
+};
+
 const step: IntegrationStep = {
   id: STEP_ID,
   name: 'Fetch projects',
@@ -20,9 +24,26 @@ const step: IntegrationStep = {
     jobState,
   }: IntegrationStepExecutionContext) {
     const client = createGitlabClient(instance);
-    const projects = await client.fetchProjects();
+    // const projects = await client.fetchProjects();
 
-    await jobState.addEntities(projects.map(createProjectEntity));
+    console.log('fetching all projects');
+
+    const allProjects = [];
+    // Get all groups and subgroups
+    const groups = await client.fetchGroups();
+
+    for (const group of groups) {
+      const projects = await client.fetchGroupProjects(group.id);
+      for (const project of projects) {
+        if (!projectExists(allProjects, project.id)) {
+          allProjects.push(project);
+        }
+      }
+    }
+
+    // Use all those groups to get all the projects
+    console.log('projects', allProjects);
+    await jobState.addEntities(allProjects.map(createProjectEntity));
   },
 };
 

@@ -1,9 +1,9 @@
 {
-  "baseUrl": {
+  "personalToken": {
     "type": "string",
     "mask": true
   },
-  "personalToken": {
+  "baseUrl": {
     "type": "string",
     "mask": true
   }

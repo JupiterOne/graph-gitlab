@@ -21,7 +21,7 @@ const step: IntegrationStep = {
   }: IntegrationStepExecutionContext) {
     const client = createGitlabClient(instance);
     const groups = await client.fetchGroups();
-
+    console.log('groups', groups);
     await jobState.addEntities(groups.map(createGroupEntity));
   },
 };

@@ -12,29 +12,43 @@ export enum HttpMethod {
   POST = 'post',
 }
 
+export enum ClientMode {
+  SELF_HOSTED = 'self_hosted',
+  SAAS = 'saas',
+}
+
 export class GitlabClient {
+  // Might be not needed at all, but lets see
+  private readonly clientMode: ClientMode;
   private readonly baseUrl: string;
   private readonly personalToken: string;
 
   constructor(baseUrl: string, personalToken: string) {
+    this.clientMode = baseUrl.match(/gitlab.com/)
+      ? ClientMode.SAAS
+      : ClientMode.SELF_HOSTED;
     this.baseUrl = baseUrl;
     this.personalToken = personalToken;
   }
 
+  // Works in both environments (returns auth-ed user)
   async fetchAccount(): Promise<GitLabUser> {
     return this.makeRequest(HttpMethod.GET, '/user');
   }
 
+  // Works in both environments (returns all groups based on auth-ed user)
   async fetchGroups(): Promise<GitLabGroup[]> {
     return this.makeRequest(HttpMethod.GET, '/groups');
   }
 
+  // Needs testing, might work in both environment (not used currently, we're getting projects different way)
   async fetchProjects(): Promise<GitLabProject[]> {
     return this.makeRequest(HttpMethod.GET, '/projects');
   }
 
+  // Shouldn't be used for either environment (we want to grab users different way)
   async fetchUsers(): Promise<GitLabUser[]> {
-    return this.makeRequest(HttpMethod.GET, '/users');
+    return await this.makeRequest(HttpMethod.GET, '/user');
   }
 
   async fetchProjectMergeRequests(

@@ -5,13 +5,13 @@ export function createGitlabClient(
   instance: IntegrationInstance,
 ): GitlabClient {
   const baseUrl = instance.config?.baseUrl;
-  const apiKey = instance.config?.personalToken;
+  const personalToken = instance.config?.personalToken;
 
-  if (!apiKey) {
+  if (!personalToken || !baseUrl) {
     throw new Error(
-      'Configuration option "apiKey" is missing on the integration instance config',
+      'Configuration options [personalToken, baseUrl] are required for the integration instance config',
     );
   }
 
-  return new GitlabClient(baseUrl, apiKey);
+  return new GitlabClient(baseUrl, personalToken);
 }

@@ -1,4 +1,9 @@
-import { IntegrationExecutionContext } from '@jupiterone/integration-sdk';
+import {
+  IntegrationExecutionContext,
+  IntegrationInstance,
+} from '@jupiterone/integration-sdk';
+
+import { createGitlabClient } from './provider/index';
 
 export default async function validateInvocation(
   context: IntegrationExecutionContext,
@@ -10,15 +15,21 @@ export default async function validateInvocation(
     'Validating integration config...',
   );
 
-  if (await isConfigurationValid(context.instance.config)) {
+  if (await isConfigurationValid(context.instance)) {
     context.logger.info('Integration instance is valid!');
   } else {
     throw new Error('Failed to authenticate with provided credentials');
   }
 }
 
-async function isConfigurationValid(config: any): Promise<boolean> {
-  // add your own validation logic to ensure you
-  // can hit the provider's apis.
-  return config.personalToken && config.baseUrl;
+async function isConfigurationValid(
+  instance: IntegrationInstance,
+): Promise<boolean> {
+  try {
+    const client = createGitlabClient(instance);
+    await client.fetchAccount();
+    return true;
+  } catch (err) {
+    return false;
+  }
 }
