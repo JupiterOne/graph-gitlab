@@ -30,6 +30,7 @@ async function isConfigurationValid(
     await client.fetchAccount();
     return true;
   } catch (err) {
+    console.error(err);
     return false;
   }
 }

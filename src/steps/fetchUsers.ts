@@ -6,37 +6,46 @@ import {
 } from '@jupiterone/integration-sdk';
 
 import { createGitlabClient } from '../provider';
-import { GitLabUser } from '../provider/types';
+import { GitLabUser, GitLabUserRef } from '../provider/types';
+import { STEP_ID as GROUP_STEP, GROUP_TYPE } from './fetchGroups';
+import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from './fetchProjects';
 
 export const STEP_ID = 'fetch-users';
 export const USER_TYPE = 'gitlab_user';
-
-const userExists = (users, id: number): boolean => {
-  return users.find((user) => user.id === id);
-};
 
 const step: IntegrationStep = {
   id: STEP_ID,
   name: 'Fetch users',
   types: [USER_TYPE],
+  dependsOn: [GROUP_STEP, PROJECT_STEP],
   async executionHandler({
     instance,
     jobState,
   }: IntegrationStepExecutionContext) {
     const client = createGitlabClient(instance);
 
-    const users = [];
-    const groups = await client.fetchGroups();
-    for (const group of groups) {
-      const members = await client.fetchGroupMembers(group.id);
-      members.forEach((member) => {
-        if (!userExists(users, member.id)) {
-          users.push(member);
-        }
-      });
-    }
+    const usersMap: {
+      [number: string]: GitLabUserRef;
+    } = {};
 
-    console.log('users', users);
+    await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
+      const [, id] = group.id.toString().split(':');
+      const members = await client.fetchGroupMembers(parseInt(id, 10));
+
+      members.forEach((member) => (usersMap[member.id] = member));
+    });
+
+    await jobState.iterateEntities({ _type: PROJECT_TYPE }, async (project) => {
+      const [, id] = project.id.toString().split(':');
+      const members = await client.fetchProjectMembers(parseInt(id, 10));
+
+      members.forEach((member) => (usersMap[member.id] = member));
+    });
+
+    const users: GitLabUser[] = await Promise.all(
+      Object.values(usersMap).map((userRef) => client.fetchUser(userRef.id)),
+    );
+
     await jobState.addEntities(users.map(createUserEntity));
   },
 };

@@ -14,10 +14,7 @@ const step: IntegrationStep = {
   name: 'Build group subgroup relationships',
   types: ['gitlab_group_has_subgroup'],
   dependsOn: [GROUP_STEP],
-  async executionHandler({
-    jobState,
-    instance,
-  }: IntegrationStepExecutionContext) {
+  async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const groupIdMap = await createGroupIdMap(jobState);
 
     for (const group of groupIdMap.values()) {
