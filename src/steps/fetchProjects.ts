@@ -34,7 +34,7 @@ export function createProjectEntity(project: GitLabProject): Entity {
       assign: {
         _key: id,
         _type: PROJECT_TYPE,
-        _class: 'Project',
+        _class: ['Project', 'CodeRepo'],
 
         id,
         name: project.name,
