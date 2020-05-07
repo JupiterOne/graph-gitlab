@@ -55,7 +55,7 @@ export function createMergeRequestEntity(
       assign: {
         _key: id,
         _type: MERGE_REQUEST_TYPE,
-        _class: 'PR',
+        _class: ['Review', 'PR'],
 
         id,
         projectId: createProjectEntityIdentifier(mergeRequest.project_id),
