@@ -18,6 +18,7 @@
       {
         "functions": false
       }
-    ]
+    ],
+    "@typescript-eslint/camelcase": "off"
   }
 }
