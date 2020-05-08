@@ -15,8 +15,8 @@ generated.
 | ------------- | ---------------------- | --------------------- |
 | Account       | `gitlab_account`       | `User`                |
 | Group         | `gitlab_group`         | `Group`               |
-| Merge Request | `gitlab_merge_request` | `PR`                  |
-| Project       | `gitlab_project`       | `Project`             |
+| Merge Request | `gitlab_merge_request` | `[Review, PR]`        |
+| Project       | `gitlab_project`       | `[Project, CodeRepo]` |
 | User          | `gitlab_user`          | `User`                |
 | SubGroup      | `gitlab_group`         | `Group`               |
 
@@ -24,11 +24,13 @@ generated.
 
 The following relationships are created/mapped:
 
-| From             | Edge        | To                     |
-| ---------------- | ----------- | ---------------------- |
-| `gitlab_account` | **MANAGES** | `gitlab_user`          |
-| `gitlab_group`   | **HAS**     | `gitlab_project`       |
-| `gitlab_group`   | **HAS**     | `gitlab_group`         |
-| `gitlab_group`   | **HAS**     | `gitlab_user`          |
-| `gitlab_project` | **HAS**     | `gitlab_merge_request` |
-| `gitlab_user`    | **MANAGES** | `gitlab_project`       |
+| From             | Edge         | To                     |
+| ---------------- | ------------ | ---------------------- |
+| `gitlab_account` | **MANAGES**  | `gitlab_user`          |
+| `gitlab_group`   | **HAS**      | `gitlab_project`       |
+| `gitlab_group`   | **HAS**      | `gitlab_group`         |
+| `gitlab_group`   | **HAS**      | `gitlab_user`          |
+| `gitlab_project` | **HAS**      | `gitlab_merge_request` |
+| `gitlab_user`    | **MANAGES**  | `gitlab_project`       |
+| `gitlab_user`    | **OPENED**   | `gitlab_merge_request` |
+| `gitlab_user`    | **APPROVED** | `gitlab_merge_request` |
