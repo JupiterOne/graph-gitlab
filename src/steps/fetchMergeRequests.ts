@@ -12,6 +12,7 @@ import {
   createProjectEntityIdentifier,
 } from './fetchProjects';
 import { GitLabMergeRequest } from '../provider/types';
+import { createUserEntityIdentifier } from './fetchUsers';
 
 export const STEP_ID = 'fetch-merge-requests';
 export const MERGE_REQUEST_TYPE = 'gitlab_merge_request';
@@ -58,6 +59,7 @@ export function createMergeRequestEntity(
         _class: ['Review', 'PR'],
 
         id,
+        iid: mergeRequest.iid,
         projectId: createProjectEntityIdentifier(mergeRequest.project_id),
         name: mergeRequest.title,
         title: mergeRequest.title,
@@ -66,7 +68,7 @@ export function createMergeRequestEntity(
         target: mergeRequest.target_branch,
         repository: projectName,
         createdOn: new Date(mergeRequest.created_at).getTime(),
-        authorId: mergeRequest.author.id,
+        authorId: createUserEntityIdentifier(mergeRequest.author.id),
         webLink: mergeRequest.web_url,
         mergeWhenPipelineSucceeds: mergeRequest.merge_when_pipeline_succeeds,
         shouldRemoveSourceBranch: mergeRequest.should_remove_source_branch,

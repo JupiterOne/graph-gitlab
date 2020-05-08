@@ -5,6 +5,7 @@ import {
   GitLabProject,
   GitLabMergeRequest,
   GitLabUserRef,
+  GitLabMergeRequestApproval,
 } from './types';
 
 export enum HttpMethod {
@@ -44,6 +45,17 @@ export class GitlabClient {
       HttpMethod.GET,
       `/projects/${projectId}/merge_requests`,
     );
+  }
+
+  async fetchMergeRequestApprovals(
+    projectId: number,
+    mergeRequestId: number,
+  ): Promise<GitLabMergeRequestApproval> {
+    const x: any = await this.makeRequest(
+      HttpMethod.GET,
+      `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
+    );
+    return x;
   }
 
   async fetchProjectMembers(projectId: number): Promise<GitLabUserRef[]> {

@@ -85,6 +85,7 @@ export interface GitLabProject {
 
 export interface GitLabMergeRequest {
   id: number;
+  iid: number;
   project_id: number;
   title: string;
   state: string;
@@ -102,4 +103,23 @@ export interface GitLabMergeRequest {
   allow_collaboration: boolean;
   allow_maintainer_to_push: boolean;
   squash: boolean;
+}
+
+export interface GitLabMergeRequestApprovedUser {
+  user: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface GitLabMergeRequestApproval {
+  id: number;
+  iid: number;
+  project_id: number;
+  title: string;
+  state: string;
+  description: string;
+  created_at: string;
+  approved: boolean;
+  approved_by: GitLabMergeRequestApprovedUser[];
 }
