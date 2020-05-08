@@ -145,7 +145,7 @@ export class GitlabClient {
     params?: {},
   ): Promise<T[]> {
     const results: T[] = [];
-    let page = 1;
+    let page = 0;
     let totalPages = 1;
     let pageLimit = maxPages || Number.POSITIVE_INFINITY;
 
@@ -155,7 +155,7 @@ export class GitlabClient {
         .join('&');
       const response = await this.makeRequest(
         method,
-        `${url}?page=${page++}&per_page=100${
+        `${url}?page=${++page}&per_page=1${
           queryParams ? '&' + queryParams : ''
         }`,
       );
