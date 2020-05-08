@@ -1,9 +1,8 @@
 # Development
 
-This integration focuses on the [GitLab](https://about.gitlab.com/) and is using
+This integration focuses on [GitLab](https://about.gitlab.com/) and is using
 [GitLab API](https://docs.gitlab.com/ee/api/) for interacting with the GitLab
-platform. It can work with both SaaS (GitLab.com) and a self-hosted GitLab
-version.
+platform. It works with both SaaS (GitLab.com) and a self-hosted GitLab version.
 
 ## Prerequisites
 
@@ -47,20 +46,18 @@ the GitLab API.
    "Your New Personal Access Token" field. It's shown only once, so make sure to
    save it somewhere or you'll need to re-create it again later.
 5. Copy the API Key, create a `.env` file at the root of this project, and set
-   an `API_KEY` variable with the copied value.
+   an `PERSONAL_TOKEN` variable with the copied value.
 
 ```bash
-PERSONAL_TOKEN="paste the api key here"
+PERSONAL_TOKEN="paste the personal token value here"
 ```
 
 6. The final step is to also include the hostname in the `.evn` file. If you're
    using SaaS, the value you want to put inside is https://gitlab.com. However,
    if you're using a self-hosted approach, put the URL that points to it.
 
-For example, if it's localhost, simply add it to the .env in this way.
-
 ```bash
-PERSONAL_TOKEN="paste the api key here"
+PERSONAL_TOKEN="paste the personal token value here"
 BASE_URL="e.g. https://gitlab.com (or your custom hostname http://localhost")
 ```
 
