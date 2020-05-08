@@ -29,7 +29,8 @@ test('Account fetching', async () => {
 
   expect(results).toEqual(
     expect.objectContaining({
-      id: 1,
+      id: expect.any(Number),
+      name: expect.any(String),
     }),
   );
 });
@@ -72,7 +73,15 @@ test('step data collection', async () => {
 
   expect(context.jobState.collectedEntities).toEqual([
     expect.objectContaining({
-      _key: 'gitlab-account:1',
+      _key: expect.stringMatching(/gitlab-account:[0-9]+/),
+      _class: ['User'],
+      _type: 'gitlab_account',
+      createdOn: expect.any(Number),
+      displayName: expect.any(String),
+      email: expect.any(String),
+      id: expect.stringMatching(/gitlab-account:[0-9]+/),
+      name: expect.any(String),
+      username: expect.any(String),
     }),
   ]);
 });

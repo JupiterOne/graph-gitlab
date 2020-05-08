@@ -1,0 +1,24 @@
+[
+  {
+    "id": "gitlab-user:1",
+    "username": "user1@gitlab.com",
+    "description": "",
+    "active": true,
+    "_key": "gitlab-user:1",
+    "_type": "gitlab_user",
+    "_class": ["User"],
+    "name": "user1@gitlab.com",
+    "createdOn": 1586982455921,
+    "displayName": "user1@gitlab.com"
+  },
+  {
+    "id": "gitlab-merge-request:1",
+    "_key": "gitlab-merge-request:1",
+    "_type": "gitlab_merge_request",
+    "_class": ["PR"],
+    "name": "Merge Request 1",
+    "authorId": "gitlab-user:1",
+    "projectId": "gitlab-project:1",
+    "createdOn": 1586982455921
+  }
+]

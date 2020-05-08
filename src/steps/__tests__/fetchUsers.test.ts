@@ -7,6 +7,8 @@ import {
 import { GitLabUser } from '../../provider/types';
 import { createGitlabClient } from '../../provider';
 import step, { createUserEntity } from '../fetchUsers';
+import { createProjectEntity } from '../fetchProjects';
+import { createGroupEntity } from '../fetchGroups';
 
 let recording: Recording;
 
@@ -21,39 +23,23 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('User fetching', async () => {
-  const context = createMockStepExecutionContext();
-  const provider = createGitlabClient(context.instance);
-
-  const results = await provider.fetchUsers();
-
-  expect(results).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        id: expect.any(Number),
-        name: 'Administrator',
-        username: 'root',
-      }),
-      expect.objectContaining({
-        id: expect.any(Number),
-        name: 'Admin User',
-        username: 'admin_user',
-      }),
-      expect.objectContaining({
-        id: expect.any(Number),
-        name: 'Regular User',
-        username: 'regular_user',
-      }),
-    ]),
-  );
-});
-
 test('User entity conversion', async () => {
   const user = {
     id: 1,
     name: 'Administrator',
     username: 'root',
     created_at: '2020-01-01T00:00:00.000Z',
+    web_url: 'https://url',
+    state: 'state-value',
+    email: 'some@email.com',
+    public_email: 'public@email.com',
+    is_admin: true,
+    can_create_group: true,
+    can_create_project: true,
+    two_factor_enabled: false,
+    external: false,
+    private_profile: false,
+    trial: false,
   } as GitLabUser;
 
   const entity = createUserEntity(user);
@@ -63,36 +49,58 @@ test('User entity conversion', async () => {
       _key: 'gitlab-user:1',
       _type: 'gitlab_user',
       _class: ['User'],
+      _rawData: expect.any(Array),
       id: 'gitlab-user:1',
-      name: 'Administrator',
       createdOn: expect.any(Number),
-      _rawData: [
-        {
-          name: 'default',
-          rawData: user,
-        },
-      ],
+      displayName: 'Administrator',
+      email: 'some@email.com',
+      canCreateGroup: true,
+      canCreateProject: true,
+      external: false,
+      isAdmin: true,
+      name: expect.any(String),
+      privateProfile: false,
+      publicEmail: 'public@email.com',
+      state: 'state-value',
+      trial: false,
+      twoFactorEnabled: false,
+      username: 'root',
+      webLink: 'https://url',
     }),
   );
 });
 
 test('step data collection', async () => {
-  const context = createMockStepExecutionContext();
+  const myContext = createMockStepExecutionContext();
+  const provider = createGitlabClient(myContext.instance);
+  const groups = await provider.fetchGroups();
+  const projects = await provider.fetchProjects();
+
+  const context = createMockStepExecutionContext({
+    entities: [
+      ...groups.map(createGroupEntity),
+      ...projects.map(createProjectEntity),
+    ],
+  });
   await step.executionHandler(context);
 
-  expect(context.jobState.collectedEntities).toHaveLength(3);
+  expect(context.jobState.collectedEntities.length).toBeGreaterThanOrEqual(1);
   expect(context.jobState.collectedRelationships).toHaveLength(0);
 
   expect(context.jobState.collectedEntities).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
-        _key: 'gitlab-user:1',
-      }),
-      expect.objectContaining({
-        _key: 'gitlab-user:2',
-      }),
-      expect.objectContaining({
-        _key: 'gitlab-user:3',
+        _key: expect.stringMatching(/gitlab-user:[0-9]+/),
+        _type: 'gitlab_user',
+        _class: ['User'],
+        _rawData: expect.any(Array),
+        id: expect.any(String),
+        name: expect.any(String),
+        webLink: expect.any(String),
+        createdOn: expect.any(Number),
+        username: expect.any(String),
+        state: expect.any(String),
+        publicEmail: expect.any(String),
       }),
     ]),
   );
