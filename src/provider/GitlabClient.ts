@@ -23,27 +23,34 @@ export class GitlabClient {
   }
 
   async fetchAccount(): Promise<GitLabUser> {
-    return this.makeRequest(HttpMethod.GET, '/user');
+    return this.makeSingularRequest(HttpMethod.GET, '/user');
   }
 
   async fetchUser(id: number): Promise<GitLabUser> {
-    return this.makeRequest(HttpMethod.GET, `/users/${id}`);
+    return this.makeSingularRequest(HttpMethod.GET, `/users/${id}`);
   }
 
   async fetchGroups(): Promise<GitLabGroup[]> {
-    return this.makeRequest(HttpMethod.GET, '/groups');
+    return this.makePaginatedRequest(HttpMethod.GET, '/groups');
   }
 
   async fetchProjects(): Promise<GitLabProject[]> {
-    return this.makeRequest(HttpMethod.GET, `/projects?owned=true`);
+    return this.makePaginatedRequest(HttpMethod.GET, '/projects', null, {
+      owned: true,
+    });
+  }
+
+  async fetchUsers(): Promise<GitLabUser[]> {
+    return this.makePaginatedRequest(HttpMethod.GET, '/users');
   }
 
   async fetchProjectMergeRequests(
     projectId: number,
   ): Promise<GitLabMergeRequest[]> {
-    return this.makeRequest(
+    return this.makePaginatedRequest(
       HttpMethod.GET,
       `/projects/${projectId}/merge_requests`,
+      1,
     );
   }
 
@@ -59,25 +66,37 @@ export class GitlabClient {
   }
 
   async fetchProjectMembers(projectId: number): Promise<GitLabUserRef[]> {
-    return this.makeRequest(
+    return this.makePaginatedRequest(
       HttpMethod.GET,
       `/projects/${projectId}/members/all`,
     );
   }
 
   async fetchGroupMembers(groupId: number): Promise<GitLabUserRef[]> {
-    return this.makeRequest(HttpMethod.GET, `/groups/${groupId}/members/all`);
+    return this.makePaginatedRequest(
+      HttpMethod.GET,
+      `/groups/${groupId}/members/all`,
+    );
   }
 
   async fetchGroupProjects(groupId: number): Promise<GitLabProject[]> {
-    return this.makeRequest(HttpMethod.GET, `/groups/${groupId}/projects`);
+    return this.makePaginatedRequest(
+      HttpMethod.GET,
+      `/groups/${groupId}/projects`,
+    );
   }
 
   async fetchGroupSubgroups(groupId: number): Promise<GitLabGroup[]> {
-    return this.makeRequest(HttpMethod.GET, `/groups/${groupId}/subgroups`);
+    return this.makePaginatedRequest(
+      HttpMethod.GET,
+      `/groups/${groupId}/subgroups`,
+    );
   }
 
-  private async makeRequest<T>(method: HttpMethod, url: string): Promise<T> {
+  private async makeRequest(
+    method: HttpMethod,
+    url: string,
+  ): Promise<Response> {
     const options: RequestInit = {
       method,
       headers: {
@@ -98,11 +117,58 @@ export class GitlabClient {
       throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
     }
 
+    return response;
+  }
+
+  private async parseResponse<T>(response: Response): Promise<T> {
     const responseBody: string = await response.text();
 
     return responseBody.length > 0 &&
       response.headers.get('content-type').match(/json/i)
       ? JSON.parse(responseBody)
-      : {};
+      : null;
+  }
+
+  private async makeSingularRequest<T>(
+    method: HttpMethod,
+    url: string,
+  ): Promise<T> {
+    const response = await this.makeRequest(method, `${url}`);
+
+    return this.parseResponse<T>(response);
+  }
+
+  private async makePaginatedRequest<T>(
+    method: HttpMethod,
+    url: string,
+    maxPages?: number,
+    params?: {},
+  ): Promise<T[]> {
+    const results: T[] = [];
+    let page = 1;
+    let totalPages = 1;
+    let pageLimit = maxPages || Number.POSITIVE_INFINITY;
+
+    do {
+      const queryParams = Object.entries(params || {})
+        .map(([k, v]) => `${k}=${v}`)
+        .join('&');
+      const response = await this.makeRequest(
+        method,
+        `${url}?page=${page++}&per_page=100${
+          queryParams ? '&' + queryParams : ''
+        }`,
+      );
+
+      totalPages = parseInt(response.headers.get('X-Total-Pages'), 10);
+
+      const result = await this.parseResponse<T>(response);
+
+      if (result) {
+        results.push(result);
+      }
+    } while (page < totalPages && page < pageLimit);
+
+    return [].concat(...results);
   }
 }
