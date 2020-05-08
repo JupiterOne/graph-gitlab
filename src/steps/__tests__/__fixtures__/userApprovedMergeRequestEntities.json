@@ -13,7 +13,6 @@
   },
   {
     "id": "gitlab-merge-request:1",
-    "iid": 1,
     "_key": "gitlab-merge-request:1",
     "_type": "gitlab_merge_request",
     "_class": ["PR"],
@@ -23,18 +22,20 @@
     "createdOn": 1586982455921
   },
   {
-    "id": "1",
-    "iid": "1",
-    "project_id": "project-id-1",
+    "id": 1,
+    "iid": 1,
+    "project_id": 1,
     "title": "title",
     "state": "opened",
     "description": "description",
     "approved": true,
-    "approved_by": {
-      "user": {
-        "id": "gitlab-user:1",
-        "name": "user1@gitlab.com"
+    "approved_by": [
+      {
+        "user": {
+          "id": 1,
+          "name": "user1@gitlab.com"
+        }
       }
-    }
+    ]
   }
 ]

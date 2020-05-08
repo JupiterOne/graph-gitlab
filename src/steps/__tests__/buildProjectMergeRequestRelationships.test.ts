@@ -1,7 +1,6 @@
 import { createMockStepExecutionContext } from '../../../test';
 
 import step from '../buildProjectMergeRequestRelationships';
-
 import entities from './__fixtures__/projectMergeRequestEntities.json';
 
 test('step data collection', async () => {

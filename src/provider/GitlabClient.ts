@@ -58,11 +58,16 @@ export class GitlabClient {
     projectId: number,
     mergeRequestId: number,
   ): Promise<GitLabMergeRequestApproval> {
-    const x: any = await this.makeRequest(
-      HttpMethod.GET,
-      `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
-    );
-    return x;
+    try {
+      const result: GitLabMergeRequestApproval = await this.makeSingularRequest(
+        HttpMethod.GET,
+        `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
+      );
+
+      return result;
+    } catch (err) {
+      return {} as GitLabMergeRequestApproval;
+    }
   }
 
   async fetchProjectMembers(projectId: number): Promise<GitLabUserRef[]> {

@@ -34,13 +34,14 @@ const step: IntegrationStep = {
       { _type: MERGE_REQUEST_TYPE },
       async (mergeRequest) => {
         const [, projectId] = mergeRequest.projectId.toString().split(':');
+        const [, mergeRequestId] = mergeRequest.id.toString().split(':');
 
         const approvals = await client.fetchMergeRequestApprovals(
           parseInt(projectId, 10),
-          mergeRequest.iid as number,
+          parseInt(mergeRequestId, 10),
         );
 
-        if (!approvals.approved) {
+        if (!approvals || !approvals.approved) {
           return;
         }
 
