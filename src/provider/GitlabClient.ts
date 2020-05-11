@@ -7,6 +7,7 @@ import {
   GitLabUserRef,
   GitLabMergeRequestApproval,
 } from './types';
+import { IntegrationError } from '@jupiterone/integration-sdk/src/errors';
 
 export enum HttpMethod {
   GET = 'get',
@@ -118,8 +119,11 @@ export class GitlabClient {
       throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
     }
 
-    if (!response.status.toString().startsWith('2')) {
-      throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
+    if (!response.ok) {
+      throw new IntegrationError({
+        code: response.status.toString(),
+        message: `Request '${this.baseUrl}/api/v4${url}' failed: ${response.statusText}`,
+      });
     }
 
     return response;
