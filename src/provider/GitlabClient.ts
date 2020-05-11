@@ -132,7 +132,7 @@ export class GitlabClient {
   private async makeSingularRequest<T>(
     method: HttpMethod,
     url: string,
-  ): Promise<T> {
+  ): Promise<T | null> {
     const response = await this.makeRequest(method, `${url}`);
 
     return response.json();
