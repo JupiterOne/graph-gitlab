@@ -15,3 +15,5 @@ export function createGitlabClient(
 
   return new GitlabClient(baseUrl, personalToken);
 }
+
+export type ClientCreator = (client: IntegrationInstance) => GitlabClient;

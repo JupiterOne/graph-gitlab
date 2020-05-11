@@ -1,23 +1,30 @@
 import { createMockStepExecutionContext } from '../../../test';
 
-import * as provider from '../../provider';
-import step from '../buildUserApprovedMergeRequestRelationships';
-import entities from './__fixtures__/userApprovedMergeRequestEntities.json';
-
-provider.createGitlabClient = jest.fn().mockReturnValue({
-  fetchMergeRequestApprovals: async (
-    projectId: number,
-    mergeRequestId: number,
-  ) => {
-    if (mergeRequestId === 1 && projectId === 1) {
-      return Promise.resolve(entities.filter((e) => e.iid)[0]);
-    }
-
-    return Promise.resolve({});
-  },
-});
+import { createStep } from '../buildUserApprovedMergeRequestRelationships';
+import {
+  entities,
+  responses,
+} from './__fixtures__/userApprovedMergeRequestEntities.json';
+import { GitlabClient } from '../../provider/GitlabClient';
+import { GitLabMergeRequestApproval } from '../../provider/types';
 
 test('step data collection', async () => {
+  const mockClient: Partial<GitlabClient> = {
+    fetchMergeRequestApprovals: async (
+      projectId: number,
+      mergeRequestId: number,
+    ) => {
+      if (mergeRequestId === 1 && projectId === 1) {
+        const [first] = responses.filter((e) => e.iid);
+
+        return Promise.resolve(first as GitLabMergeRequestApproval);
+      }
+
+      return Promise.resolve({} as GitLabMergeRequestApproval);
+    },
+  };
+
+  const step = createStep(() => mockClient as GitlabClient);
   const context = createMockStepExecutionContext({ entities });
   await step.executionHandler(context);
 

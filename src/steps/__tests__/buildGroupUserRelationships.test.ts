@@ -1,25 +1,27 @@
 import { createMockStepExecutionContext } from '../../../test';
 
-import * as provider from '../../provider';
-import step from '../buildGroupUserRelationships';
+import { createStep } from '../buildGroupUserRelationships';
 import entities from './__fixtures__/groupUserEntities.json';
-
-provider.createGitlabClient = jest.fn().mockReturnValue({
-  fetchGroupMembers: (groupId: number) => {
-    if (groupId === 1) {
-      return entities
-        .filter((e) => e._type === 'gitlab_user')
-        .map((e) => ({
-          ...e,
-          id: parseInt(e.id.split(':')[1], 10),
-        }));
-    }
-
-    return [];
-  },
-});
+import { GitlabClient } from '../../provider/GitlabClient';
+import { GitLabUserRef } from '../../provider/types';
 
 test('step data collection', async () => {
+  const mockClient: Partial<GitlabClient> = {
+    fetchGroupMembers: async (groupId: number) => {
+      if (groupId === 1) {
+        return (entities
+          .filter((e) => e._type === 'gitlab_user')
+          .map((e) => ({
+            ...e,
+            id: parseInt(e.id.split(':')[1], 10),
+          })) as unknown) as GitLabUserRef[];
+      }
+
+      return [] as GitLabUserRef[];
+    },
+  };
+
+  const step = createStep(() => mockClient as GitlabClient);
   const context = createMockStepExecutionContext({ entities });
   await step.executionHandler(context);
 

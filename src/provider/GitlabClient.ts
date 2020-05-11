@@ -152,7 +152,7 @@ export class GitlabClient {
     const results: T[] = [];
     let page = 0;
     let totalPages = 1;
-    let pageLimit = maxPages || Number.POSITIVE_INFINITY;
+    const pageLimit = maxPages || Number.POSITIVE_INFINITY;
 
     do {
       const queryParams = Object.entries(params || {})

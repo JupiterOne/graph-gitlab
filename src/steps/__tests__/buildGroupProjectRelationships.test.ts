@@ -1,25 +1,27 @@
 import { createMockStepExecutionContext } from '../../../test';
 
-import * as provider from '../../provider';
-import step from '../buildGroupProjectsRelationships';
+import { createStep } from '../buildGroupProjectsRelationships';
 import entities from './__fixtures__/groupProjectEntities.json';
-
-provider.createGitlabClient = jest.fn().mockReturnValue({
-  fetchGroupProjects: (groupId: number) => {
-    if (groupId === 1) {
-      return entities
-        .filter((e) => e._type === 'gitlab_project')
-        .map((e) => ({
-          ...e,
-          id: parseInt(e.id.split(':')[1], 10),
-        }));
-    }
-
-    return [];
-  },
-});
+import { GitlabClient } from '../../provider/GitlabClient';
+import { GitLabProject } from '../../provider/types';
 
 test('step data collection', async () => {
+  const mockClient: Partial<GitlabClient> = {
+    fetchGroupProjects: async (groupId: number) => {
+      if (groupId === 1) {
+        return (entities
+          .filter((e) => e._type === 'gitlab_project')
+          .map((e) => ({
+            ...e,
+            id: parseInt(e.id.split(':')[1], 10),
+          })) as unknown) as GitLabProject[];
+      }
+
+      return [] as GitLabProject[];
+    },
+  };
+
+  const step = createStep(() => mockClient as GitlabClient);
   const context = createMockStepExecutionContext({ entities });
   await step.executionHandler(context);
 

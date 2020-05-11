@@ -17,52 +17,55 @@ import {
   USER_TYPE,
   createUserEntityIdentifier,
 } from './fetchUsers';
+import { ClientCreator } from '../provider';
 
-const step: IntegrationStep = {
-  id: 'build-user-approved-merge-request-relationships',
-  name: 'Build user approved merge_request relationships',
-  types: ['gitlab_user_approved_merge_request'],
-  dependsOn: [MERGE_REQUEST_STEP, USER_STEP],
-  async executionHandler({
-    jobState,
-    instance,
-  }: IntegrationStepExecutionContext) {
-    const client = createGitlabClient(instance);
-    const userIdMap = await createUserIdMap(jobState);
+export function createStep(clientCreator: ClientCreator): IntegrationStep {
+  return {
+    id: 'build-user-approved-merge-request-relationships',
+    name: 'Build user approved merge_request relationships',
+    types: ['gitlab_user_approved_merge_request'],
+    dependsOn: [MERGE_REQUEST_STEP, USER_STEP],
+    async executionHandler({
+      jobState,
+      instance,
+    }: IntegrationStepExecutionContext): Promise<void> {
+      const client = clientCreator(instance);
+      const userIdMap = await createUserIdMap(jobState);
 
-    await jobState.iterateEntities(
-      { _type: MERGE_REQUEST_TYPE },
-      async (mergeRequest) => {
-        const [, projectId] = mergeRequest.projectId.toString().split(':');
-        const [, mergeRequestId] = mergeRequest.id.toString().split(':');
+      await jobState.iterateEntities(
+        { _type: MERGE_REQUEST_TYPE },
+        async (mergeRequest) => {
+          const [, projectId] = mergeRequest.projectId.toString().split(':');
+          const [, mergeRequestId] = mergeRequest.id.toString().split(':');
 
-        const approvals = await client.fetchMergeRequestApprovals(
-          parseInt(projectId, 10),
-          parseInt(mergeRequestId, 10),
-        );
-
-        if (!approvals || !approvals.approved) {
-          return;
-        }
-
-        const approvedByUsers = approvals.approved_by.map(
-          (element) => element.user.id,
-        );
-
-        if (approvedByUsers.length > 0) {
-          await jobState.addRelationships(
-            approvedByUsers.map((user) =>
-              createUserApprovedPrRelationship(
-                userIdMap.get(createUserEntityIdentifier(user)),
-                mergeRequest,
-              ),
-            ),
+          const approvals = await client.fetchMergeRequestApprovals(
+            parseInt(projectId, 10),
+            parseInt(mergeRequestId, 10),
           );
-        }
-      },
-    );
-  },
-};
+
+          if (!approvals || !approvals.approved) {
+            return;
+          }
+
+          const approvedByUsers = approvals.approved_by.map(
+            (element) => element.user.id,
+          );
+
+          if (approvedByUsers.length > 0) {
+            await jobState.addRelationships(
+              approvedByUsers.map((user) =>
+                createUserApprovedPrRelationship(
+                  userIdMap.get(createUserEntityIdentifier(user)),
+                  mergeRequest,
+                ),
+              ),
+            );
+          }
+        },
+      );
+    },
+  };
+}
 
 async function createUserIdMap(
   jobState: JobState,
@@ -76,7 +79,7 @@ async function createUserIdMap(
   return userIdMap;
 }
 
-export default step;
+export default createStep((instance) => createGitlabClient(instance));
 
 export function createUserApprovedPrRelationship(
   user: Entity,
