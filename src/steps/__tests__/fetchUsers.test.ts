@@ -71,12 +71,13 @@ test('User entity conversion', async () => {
 });
 
 test('step data collection', async () => {
-  const myContext = createMockStepExecutionContext();
+  const myContext = createMockStepExecutionContext({
+    instanceConfig: {
+      baseUrl: process.env.BASE_URL || 'https://gitlab.com',
+      personalToken: process.env.PERSONAL_TOKEN || 'string-value',
+    },
+  });
 
-  // Special case when .env is not provided
-  if (myContext.instance.config.baseUrl === 'STRING_VALUE') {
-    myContext.instance.config.baseUrl = 'https://gitlab.com';
-  }
   const provider = createGitlabClient(myContext.instance);
   const groups = await provider.fetchGroups();
   const projects = await provider.fetchProjects();
@@ -86,12 +87,12 @@ test('step data collection', async () => {
       ...groups.map(createGroupEntity),
       ...projects.map(createProjectEntity),
     ],
+    instanceConfig: {
+      baseUrl: process.env.BASE_URL || 'https://gitlab.com',
+      personalToken: process.env.PERSONAL_TOKEN || 'string-value',
+    },
   });
 
-  // Special case when .env is not provided
-  if (context.instance.config.baseUrl === 'STRING_VALUE') {
-    context.instance.config.baseUrl = 'https://gitlab.com';
-  }
   await step.executionHandler(context);
 
   expect(context.jobState.collectedEntities.length).toBeGreaterThanOrEqual(1);
