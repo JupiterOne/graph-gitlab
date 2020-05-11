@@ -129,22 +129,13 @@ export class GitlabClient {
     return response;
   }
 
-  private async parseResponse<T>(response: Response): Promise<T> {
-    const responseBody: string = await response.text();
-
-    return responseBody.length > 0 &&
-      response.headers.get('content-type').match(/json/i)
-      ? JSON.parse(responseBody)
-      : null;
-  }
-
   private async makeSingularRequest<T>(
     method: HttpMethod,
     url: string,
   ): Promise<T> {
     const response = await this.makeRequest(method, `${url}`);
 
-    return this.parseResponse<T>(response);
+    return response.json();
   }
 
   private async makePaginatedRequest<T>(
@@ -171,7 +162,7 @@ export class GitlabClient {
 
       totalPages = parseInt(response.headers.get('X-Total-Pages'), 10);
 
-      const result = await this.parseResponse<T>(response);
+      const result = await response.json();
 
       if (result) {
         results.push(result);
