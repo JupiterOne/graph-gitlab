@@ -23,6 +23,11 @@ afterEach(async () => {
 
 test('Account fetching', async () => {
   const context = createMockStepExecutionContext();
+
+  // Special case when .env is not provided
+  if (context.instance.config.baseUrl === 'STRING_VALUE') {
+    context.instance.config.baseUrl = 'https://gitlab.com';
+  }
   const provider = createGitlabClient(context.instance);
 
   const results = await provider.fetchAccount();
@@ -66,6 +71,11 @@ test('Account entity conversion', async () => {
 
 test('step data collection', async () => {
   const context = createMockStepExecutionContext();
+
+  // Special case when .env is not provided
+  if (context.instance.config.baseUrl === 'STRING_VALUE') {
+    context.instance.config.baseUrl = 'https://gitlab.com';
+  }
   await step.executionHandler(context);
 
   expect(context.jobState.collectedEntities).toHaveLength(1);
