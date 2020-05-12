@@ -1,0 +1,34 @@
+[
+  {
+    "id": "gitlab-user:5887285",
+    "username": "eXtremeX",
+    "description": "",
+    "active": true,
+    "_key": "gitlab-user:5887285",
+    "_type": "gitlab_user",
+    "_class": ["User"],
+    "name": "eXtremeX",
+    "createdOn": 1586982455921,
+    "displayName": "eXtremeX"
+  },
+  {
+    "id": "gitlab-user:5887402",
+    "username": "teemhir",
+    "description": "",
+    "active": true,
+    "_key": "gitlab-user:5887402",
+    "_type": "gitlab_user",
+    "_class": ["User"],
+    "name": "teemhir",
+    "createdOn": 1586982455921,
+    "displayName": "teemhir"
+  },
+  {
+    "id": "gitlab-project:18463260",
+    "_key": "gitlab-project:18463260",
+    "_type": "gitlab_project",
+    "_class": ["Project"],
+    "name": "Project 1",
+    "createdOn": 1586982455921
+  }
+]

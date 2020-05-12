@@ -155,7 +155,7 @@ export class GitlabClient {
         .join('&');
       const response = await this.makeRequest(
         method,
-        `${url}?page=${++page}&per_page=1${
+        `${url}?page=${++page}&per_page=100${
           queryParams ? '&' + queryParams : ''
         }`,
       );
