@@ -35,7 +35,7 @@ export function createAccountEntity(user: GitLabUser): Entity {
       assign: {
         _key: key,
         _type: ACCOUNT_TYPE,
-        _class: 'User',
+        _class: 'Account',
 
         id: user.id.toString(),
         name: user.name,

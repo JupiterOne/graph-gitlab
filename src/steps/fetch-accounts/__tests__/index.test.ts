@@ -54,7 +54,7 @@ test('Account entity conversion', async () => {
     expect.objectContaining({
       _key: 'gitlab-account:1',
       _type: 'gitlab_account',
-      _class: ['User'],
+      _class: ['Account'],
       id: '1',
       name: 'account',
       createdOn: expect.any(Number),
@@ -80,18 +80,15 @@ test('step data collection', async () => {
 
   expect(context.jobState.collectedEntities).toHaveLength(1);
   expect(context.jobState.collectedRelationships).toHaveLength(0);
-
   expect(context.jobState.collectedEntities).toEqual([
     expect.objectContaining({
       _key: expect.stringMatching(/gitlab-account:[0-9]+/),
-      _class: ['User'],
+      _class: ['Account'],
       _type: 'gitlab_account',
       createdOn: expect.any(Number),
       displayName: expect.any(String),
-      email: expect.any(String),
       id: expect.stringMatching(/[0-9]+/),
       name: expect.any(String),
-      username: expect.any(String),
     }),
   ]);
 });
