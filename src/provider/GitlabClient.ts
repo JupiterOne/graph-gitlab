@@ -48,10 +48,16 @@ export class GitlabClient {
   async fetchProjectMergeRequests(
     projectId: number,
   ): Promise<GitLabMergeRequest[]> {
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+
     return this.makePaginatedRequest(
       HttpMethod.GET,
       `/projects/${projectId}/merge_requests`,
       1,
+      {
+        updated_after: weekAgo.toISOString(),
+      },
     );
   }
 
