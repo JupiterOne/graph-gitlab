@@ -3,7 +3,7 @@
     "id": "5887285",
     "_key": "gitlab-account:5887285",
     "_type": "gitlab_account",
-    "_class": ["User"],
+    "_class": ["Account"],
     "name": "eXtremeX",
     "createdOn": 1586982455921
   },
