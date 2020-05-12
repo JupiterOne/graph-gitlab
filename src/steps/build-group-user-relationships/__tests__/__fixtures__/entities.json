@@ -1,6 +1,6 @@
 [
   {
-    "id": "gitlab-group:7799803",
+    "id": "7799803",
     "_key": "gitlab-group:7799803",
     "_type": "gitlab_group",
     "_class": ["Group"],
@@ -8,7 +8,7 @@
     "createdOn": 1586982455921
   },
   {
-    "id": "gitlab-user:5887285",
+    "id": "5887285",
     "username": "eXtremeX",
     "description": "",
     "active": true,
@@ -20,7 +20,7 @@
     "displayName": "eXtremeX"
   },
   {
-    "id": "gitlab-user:5887402",
+    "id": "5887402",
     "username": "teemhir",
     "description": "",
     "active": true,

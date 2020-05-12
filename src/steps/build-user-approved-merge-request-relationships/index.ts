@@ -11,11 +11,7 @@ import {
   STEP_ID as MERGE_REQUEST_STEP,
   MERGE_REQUEST_TYPE,
 } from '../fetch-merge-requests';
-import {
-  STEP_ID as USER_STEP,
-  USER_TYPE,
-  createUserEntityIdentifier,
-} from '../fetch-users';
+import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient } from '../../provider';
 import { ClientCreator } from '../../provider';
 
@@ -35,10 +31,8 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
       await jobState.iterateEntities(
         { _type: MERGE_REQUEST_TYPE },
         async (mergeRequest) => {
-          const [, projectId] = mergeRequest.projectId.toString().split(':');
-
           const approvals = await client.fetchMergeRequestApprovals(
-            parseInt(projectId, 10),
+            parseInt(mergeRequest.projectId as string, 10),
             mergeRequest.iid as number,
           );
 
@@ -52,9 +46,9 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
 
           if (approvedByUsers.length > 0) {
             await jobState.addRelationships(
-              approvedByUsers.map((user) =>
+              approvedByUsers.map((userId) =>
                 createUserApprovedPrRelationship(
-                  userIdMap.get(createUserEntityIdentifier(user)),
+                  userIdMap.get(userId.toString()),
                   mergeRequest,
                 ),
               ),

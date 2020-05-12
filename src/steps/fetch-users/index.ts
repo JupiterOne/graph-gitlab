@@ -29,15 +29,17 @@ const step: IntegrationStep = {
     } = {};
 
     await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
-      const [, id] = group.id.toString().split(':');
-      const members = await client.fetchGroupMembers(parseInt(id, 10));
+      const members = await client.fetchGroupMembers(
+        parseInt(group.id as string, 10),
+      );
 
       members.forEach((member) => (usersMap[member.id] = member));
     });
 
     await jobState.iterateEntities({ _type: PROJECT_TYPE }, async (project) => {
-      const [, id] = project.id.toString().split(':');
-      const members = await client.fetchProjectMembers(parseInt(id, 10));
+      const members = await client.fetchProjectMembers(
+        parseInt(project.id as string, 10),
+      );
 
       members.forEach((member) => (usersMap[member.id] = member));
     });
@@ -51,17 +53,17 @@ const step: IntegrationStep = {
 };
 
 export function createUserEntity(user: GitLabUser): Entity {
-  const id = createUserEntityIdentifier(user.id);
+  const key = createUserEntityIdentifier(user.id);
 
   return createIntegrationEntity({
     entityData: {
       source: user,
       assign: {
-        _key: id,
+        _key: key,
         _type: USER_TYPE,
         _class: 'User',
 
-        id,
+        id: user.id.toString(),
         name: user.name,
         createdOn: new Date(user.created_at).getTime(),
         webLink: user.web_url,

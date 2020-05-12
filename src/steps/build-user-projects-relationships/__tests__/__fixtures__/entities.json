@@ -1,6 +1,6 @@
 [
   {
-    "id": "gitlab-user:5887285",
+    "id": "5887285",
     "username": "eXtremeX",
     "description": "",
     "active": true,
@@ -12,7 +12,7 @@
     "displayName": "eXtremeX"
   },
   {
-    "id": "gitlab-user:5887402",
+    "id": "5887402",
     "username": "teemhir",
     "description": "",
     "active": true,
@@ -24,7 +24,7 @@
     "displayName": "teemhir"
   },
   {
-    "id": "gitlab-project:18463260",
+    "id": "18463260",
     "_key": "gitlab-project:18463260",
     "_type": "gitlab_project",
     "_class": ["Project"],

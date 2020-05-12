@@ -8,11 +8,7 @@ import {
 } from '@jupiterone/integration-sdk';
 
 import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
-import {
-  STEP_ID as USER_STEP,
-  USER_TYPE,
-  createUserEntityIdentifier,
-} from '../fetch-users';
+import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient, ClientCreator } from '../../provider';
 
 export function createStep(clientCreator: ClientCreator): IntegrationStep {
@@ -31,17 +27,15 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
       await jobState.iterateEntities(
         { _type: PROJECT_TYPE },
         async (project) => {
-          const [, id] = project.id.toString().split(':');
-
           const projectMembers = await client.fetchProjectMembers(
-            parseInt(id, 10),
+            parseInt(project.id as string, 10),
           );
 
           if (projectMembers.length > 0) {
             await jobState.addRelationships(
               projectMembers.map((member) =>
                 createProjectUserRelationship(
-                  userIdMap.get(createUserEntityIdentifier(member.id)),
+                  userIdMap.get(member.id.toString()),
                   project,
                 ),
               ),

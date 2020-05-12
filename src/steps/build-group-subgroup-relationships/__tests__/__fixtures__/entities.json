@@ -1,6 +1,6 @@
 [
   {
-    "id": "gitlab-group:7799803",
+    "id": "7799803",
     "_key": "gitlab-group:7799803",
     "_type": "gitlab_group",
     "_class": ["Group"],
@@ -8,12 +8,12 @@
     "createdOn": 1586982455921
   },
   {
-    "id": "gitlab-group:7799819",
+    "id": "7799819",
     "_key": "gitlab-group:7799819",
     "_type": "gitlab_group",
     "_class": ["Group"],
     "name": "CreativiceSubGroup",
-    "parentGroupId": "gitlab-group:7799803",
+    "parentGroupId": "7799803",
     "createdOn": 1586982455921
   }
 ]

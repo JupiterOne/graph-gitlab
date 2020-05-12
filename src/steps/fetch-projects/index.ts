@@ -26,17 +26,17 @@ const step: IntegrationStep = {
 };
 
 export function createProjectEntity(project: GitLabProject): Entity {
-  const id = createProjectEntityIdentifier(project.id);
+  const key = createProjectEntityIdentifier(project.id);
 
   return createIntegrationEntity({
     entityData: {
       source: project,
       assign: {
-        _key: id,
+        _key: key,
         _type: PROJECT_TYPE,
         _class: ['Project', 'CodeRepo'],
 
-        id,
+        id: project.id.toString(),
         name: project.name,
         owner: project.owner?.name,
         createdOn: new Date(project.created_at).getTime(),

@@ -26,18 +26,18 @@ const step: IntegrationStep = {
 };
 
 export function createGroupEntity(group: GitLabGroup): Entity {
-  const id = createGroupEntityIdentifier(group.id);
+  const key = createGroupEntityIdentifier(group.id);
 
   return createIntegrationEntity({
     entityData: {
       source: group,
       assign: {
-        _key: id,
+        _key: key,
         _type: GROUP_TYPE,
         _class: 'Group',
 
-        id,
-        parentGroupId: createGroupEntityIdentifier(group.parent_id),
+        id: group.id.toString(),
+        parentGroupId: group.parent_id && group.parent_id.toString(),
         name: group.name,
         createdOn: new Date(group.created_at).getTime(),
         path: group.path,

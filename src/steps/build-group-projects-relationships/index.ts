@@ -9,11 +9,7 @@ import {
 
 import { createGitlabClient, ClientCreator } from '../../provider';
 import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
-import {
-  STEP_ID as PROJECT_STEP,
-  PROJECT_TYPE,
-  createProjectEntityIdentifier,
-} from '../fetch-projects';
+import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 
 export function createStep(clientCreator: ClientCreator): IntegrationStep {
   return {
@@ -29,16 +25,16 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
       const projectIdMap = await createProjectIdMap(jobState);
 
       await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
-        const [, id] = group.id.toString().split(':');
-
-        const groupProjects = await client.fetchGroupProjects(parseInt(id, 10));
+        const groupProjects = await client.fetchGroupProjects(
+          parseInt(group.id as string, 10),
+        );
 
         if (groupProjects.length > 0) {
           await jobState.addRelationships(
             groupProjects.map((project) =>
               createGroupProjectRelationship(
                 group,
-                projectIdMap.get(createProjectEntityIdentifier(project.id)),
+                projectIdMap.get(project.id.toString()),
               ),
             ),
           );

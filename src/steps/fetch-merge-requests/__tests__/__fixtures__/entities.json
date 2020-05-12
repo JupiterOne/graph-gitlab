@@ -1,6 +1,6 @@
 [
   {
-    "id": "gitlab-project:18463260",
+    "id": "18463260",
     "_key": "gitlab-project:18463260",
     "_type": "gitlab_project",
     "_class": ["Project"],
@@ -9,7 +9,7 @@
     "createdOn": 1586982455921
   },
   {
-    "id": "gitlab-merge-request:18463260",
+    "id": "18463260",
     "_key": "gitlab-merge-request:18463260",
     "_type": "gitlab_merge_request",
     "_class": ["PR"],

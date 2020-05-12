@@ -1,6 +1,6 @@
 [
   {
-    "id": "gitlab-user:5887285",
+    "id": "5887285",
     "username": "eXtremeX",
     "description": "",
     "active": true,
@@ -12,7 +12,7 @@
     "displayName": "eXtremeX"
   },
   {
-    "id": "gitlab-project:18463260",
+    "id": "18463260",
     "_key": "gitlab-project:18463260",
     "_type": "gitlab_project",
     "_class": ["Project"],
@@ -20,13 +20,13 @@
     "createdOn": 1586982455921
   },
   {
-    "id": "gitlab-merge-request:57366118",
+    "id": "57366118",
     "iid": 1,
     "_key": "gitlab-merge-request:57366118",
     "_type": "gitlab_merge_request",
     "_class": ["PR"],
     "name": "Merge Request 1",
-    "projectId": "gitlab-project:18463260",
+    "projectId": "18463260",
     "createdOn": 1586982455921
   }
 ]

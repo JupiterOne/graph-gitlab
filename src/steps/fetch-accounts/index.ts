@@ -27,17 +27,17 @@ const step: IntegrationStep = {
 };
 
 export function createAccountEntity(user: GitLabUser): Entity {
-  const id = createAccountEntityIdentifier(user.id);
+  const key = createAccountEntityIdentifier(user.id);
 
   return createIntegrationEntity({
     entityData: {
       source: user,
       assign: {
-        _key: id,
+        _key: key,
         _type: ACCOUNT_TYPE,
         _class: 'User',
 
-        id,
+        id: user.id.toString(),
         name: user.name,
         createdOn: new Date(user.created_at).getTime(),
       },

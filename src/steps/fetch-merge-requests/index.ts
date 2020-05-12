@@ -6,13 +6,8 @@ import {
 } from '@jupiterone/integration-sdk';
 
 import { createGitlabClient } from '../../provider';
-import {
-  STEP_ID as PROJECT_STEP,
-  PROJECT_TYPE,
-  createProjectEntityIdentifier,
-} from '../fetch-projects';
+import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 import { GitLabMergeRequest } from '../../provider/types';
-import { createUserEntityIdentifier } from '../fetch-users';
 
 export const STEP_ID = 'fetch-merge-requests';
 export const MERGE_REQUEST_TYPE = 'gitlab_merge_request';
@@ -29,10 +24,8 @@ const step: IntegrationStep = {
     const client = createGitlabClient(instance);
 
     await jobState.iterateEntities({ _type: PROJECT_TYPE }, async (project) => {
-      const [, id] = project.id.toString().split(':');
-
       const mergeRequests = await client.fetchProjectMergeRequests(
-        parseInt(id, 10),
+        parseInt(project.id as string, 10),
       );
 
       await jobState.addEntities(
@@ -48,19 +41,19 @@ export function createMergeRequestEntity(
   mergeRequest: GitLabMergeRequest,
   projectName: string,
 ): Entity {
-  const id = createMergeRequestEntityIdentifier(mergeRequest.id);
+  const key = createMergeRequestEntityIdentifier(mergeRequest.id);
 
   return createIntegrationEntity({
     entityData: {
       source: mergeRequest,
       assign: {
-        _key: id,
+        _key: key,
         _type: MERGE_REQUEST_TYPE,
         _class: ['Review', 'PR'],
 
-        id,
+        id: mergeRequest.id.toString(),
         iid: mergeRequest.iid,
-        projectId: createProjectEntityIdentifier(mergeRequest.project_id),
+        projectId: mergeRequest.project_id.toString(),
         name: mergeRequest.title,
         title: mergeRequest.title,
         state: mergeRequest.state,
@@ -68,7 +61,7 @@ export function createMergeRequestEntity(
         target: mergeRequest.target_branch,
         repository: projectName,
         createdOn: new Date(mergeRequest.created_at).getTime(),
-        authorId: createUserEntityIdentifier(mergeRequest.author.id),
+        authorId: mergeRequest.author.id.toString(),
         webLink: mergeRequest.web_url,
         mergeWhenPipelineSucceeds: mergeRequest.merge_when_pipeline_succeeds,
         shouldRemoveSourceBranch: mergeRequest.should_remove_source_branch,
