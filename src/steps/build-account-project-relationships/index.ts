@@ -7,20 +7,20 @@ import {
   createIntegrationRelationship,
 } from '@jupiterone/integration-sdk';
 
-import { STEP_ID as ACCOUNT_STEP, ACCOUNT_TYPE } from './fetch-accounts';
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from './fetch-groups';
+import { STEP_ID as ACCOUNT_STEP, ACCOUNT_TYPE } from '../fetch-accounts';
+import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 
 const step: IntegrationStep = {
-  id: 'build-account-group-relationships',
-  name: 'Build account group relationships',
-  types: ['gitlab_account_has_group'],
-  dependsOn: [ACCOUNT_STEP, GROUP_STEP],
+  id: 'build-account-project-relationships',
+  name: 'Build account project relationships',
+  types: ['gitlab_account_has_project'],
+  dependsOn: [ACCOUNT_STEP, PROJECT_STEP],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const account = await getAccountEntity(jobState);
 
-    await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
+    await jobState.iterateEntities({ _type: PROJECT_TYPE }, async (project) => {
       await jobState.addRelationships([
-        createAccountGroupRelationship(account, group),
+        createAccountProjectRelationship(account, project),
       ]);
     });
   },
@@ -36,13 +36,13 @@ async function getAccountEntity(jobState: JobState): Promise<Entity> {
 
 export default step;
 
-export function createAccountGroupRelationship(
+export function createAccountProjectRelationship(
   account: Entity,
-  group: Entity,
+  project: Entity,
 ): Relationship {
   return createIntegrationRelationship({
     _class: 'HAS',
     from: account,
-    to: group,
+    to: project,
   });
 }
