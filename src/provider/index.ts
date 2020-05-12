@@ -6,6 +6,7 @@ export function createGitlabClient(
 ): GitlabClient {
   const baseUrl = instance.config?.baseUrl;
   const personalToken = instance.config?.personalToken;
+  const lastRun = instance.config?.lastRun;
 
   if (!personalToken || !baseUrl) {
     throw new Error(
@@ -13,7 +14,10 @@ export function createGitlabClient(
     );
   }
 
-  return new GitlabClient(baseUrl, personalToken);
+  const d = new Date();
+  d.setDate(d.getDate() - 7);
+
+  return new GitlabClient(baseUrl, personalToken, lastRun || d);
 }
 
 export type ClientCreator = (client: IntegrationInstance) => GitlabClient;

@@ -22,16 +22,16 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('Group fetching', async () => {
+test('Merge request fetching', async () => {
   const context = createMockStepExecutionContext({
     instanceConfig: {
       baseUrl: process.env.BASE_URL || 'https://gitlab.com',
       personalToken: process.env.PERSONAL_TOKEN || 'string-value',
+      lastRun: new Date('2020-01-01T00:00:00Z'),
     },
     entities,
   });
   const provider = createGitlabClient(context.instance);
-
   const results = await provider.fetchProjectMergeRequests(18463260);
 
   expect(results).toEqual(
@@ -101,6 +101,7 @@ test('step data collection', async () => {
     instanceConfig: {
       baseUrl: process.env.BASE_URL || 'https://gitlab.com',
       personalToken: process.env.PERSONAL_TOKEN || 'string-value',
+      lastRun: new Date('2020-01-01T00:00:00Z'),
     },
     entities,
   });

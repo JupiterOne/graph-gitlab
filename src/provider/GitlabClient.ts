@@ -17,10 +17,12 @@ export enum HttpMethod {
 export class GitlabClient {
   private readonly baseUrl: string;
   private readonly personalToken: string;
+  private readonly lastRun: Date;
 
-  constructor(baseUrl: string, personalToken: string) {
+  constructor(baseUrl: string, personalToken: string, lastRun: Date) {
     this.baseUrl = baseUrl;
     this.personalToken = personalToken;
+    this.lastRun = lastRun;
   }
 
   async fetchAccount(): Promise<GitLabUser> {
@@ -48,15 +50,12 @@ export class GitlabClient {
   async fetchProjectMergeRequests(
     projectId: number,
   ): Promise<GitLabMergeRequest[]> {
-    const weekAgo = new Date();
-    weekAgo.setDate(weekAgo.getDate() - 7);
-
     return this.makePaginatedRequest(
       HttpMethod.GET,
       `/projects/${projectId}/merge_requests`,
       1,
       {
-        updated_after: weekAgo.toISOString(),
+        updated_after: this.lastRun.toISOString(),
       },
     );
   }
