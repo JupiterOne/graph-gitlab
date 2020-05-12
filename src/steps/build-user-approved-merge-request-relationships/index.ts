@@ -10,12 +10,12 @@ import {
 import {
   STEP_ID as MERGE_REQUEST_STEP,
   MERGE_REQUEST_TYPE,
-} from '../fetchMergeRequests';
+} from '../fetch-merge-requests';
 import {
   STEP_ID as USER_STEP,
   USER_TYPE,
   createUserEntityIdentifier,
-} from '../fetchUsers';
+} from '../fetch-users';
 import { createGitlabClient } from '../../provider';
 import { ClientCreator } from '../../provider';
 

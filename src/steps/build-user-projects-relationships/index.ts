@@ -7,12 +7,12 @@ import {
   createIntegrationRelationship,
 } from '@jupiterone/integration-sdk';
 
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetchProjects';
+import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 import {
   STEP_ID as USER_STEP,
   USER_TYPE,
   createUserEntityIdentifier,
-} from '../fetchUsers';
+} from '../fetch-users';
 import { createGitlabClient, ClientCreator } from '../../provider';
 
 export function createStep(clientCreator: ClientCreator): IntegrationStep {

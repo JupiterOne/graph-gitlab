@@ -7,7 +7,7 @@ import {
   createIntegrationRelationship,
 } from '@jupiterone/integration-sdk';
 
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetchGroups';
+import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
 
 const step: IntegrationStep = {
   id: 'build-group-subgroup-relationships',

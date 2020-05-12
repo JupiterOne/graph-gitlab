@@ -2,13 +2,13 @@ import {
   Recording,
   setupRecording,
   createMockStepExecutionContext,
-} from '../../../test';
+} from '../../../../test';
 
-import { GitLabUser } from '../../provider/types';
-import { createGitlabClient } from '../../provider';
-import step, { createUserEntity } from '../fetchUsers';
-import { createProjectEntity } from '../fetchProjects';
-import { createGroupEntity } from '../fetchGroups';
+import { GitLabUser } from '../../../provider/types';
+import { createGitlabClient } from '../../../provider';
+import step, { createUserEntity } from '..';
+import { createProjectEntity } from '../../fetch-projects';
+import { createGroupEntity } from '../../fetch-groups';
 
 let recording: Recording;
 

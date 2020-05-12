@@ -8,12 +8,12 @@ import {
 } from '@jupiterone/integration-sdk';
 
 import { createGitlabClient, ClientCreator } from '../../provider';
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetchGroups';
+import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
 import {
   STEP_ID as PROJECT_STEP,
   PROJECT_TYPE,
   createProjectEntityIdentifier,
-} from '../fetchProjects';
+} from '../fetch-projects';
 
 export function createStep(clientCreator: ClientCreator): IntegrationStep {
   return {

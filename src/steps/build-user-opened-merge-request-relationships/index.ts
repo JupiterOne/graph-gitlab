@@ -10,8 +10,8 @@ import {
 import {
   STEP_ID as MERGE_REQUEST_STEP,
   MERGE_REQUEST_TYPE,
-} from '../fetchMergeRequests';
-import { STEP_ID as USER_STEP, USER_TYPE } from '../fetchUsers';
+} from '../fetch-merge-requests';
+import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 
 const step: IntegrationStep = {
   id: 'build-user-opened-merge-request-relationships',

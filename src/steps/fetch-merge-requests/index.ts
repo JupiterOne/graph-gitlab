@@ -5,14 +5,14 @@ import {
   createIntegrationEntity,
 } from '@jupiterone/integration-sdk';
 
-import { createGitlabClient } from '../provider';
+import { createGitlabClient } from '../../provider';
 import {
   STEP_ID as PROJECT_STEP,
   PROJECT_TYPE,
   createProjectEntityIdentifier,
-} from './fetchProjects';
-import { GitLabMergeRequest } from '../provider/types';
-import { createUserEntityIdentifier } from './fetchUsers';
+} from '../fetch-projects';
+import { GitLabMergeRequest } from '../../provider/types';
+import { createUserEntityIdentifier } from '../fetch-users';
 
 export const STEP_ID = 'fetch-merge-requests';
 export const MERGE_REQUEST_TYPE = 'gitlab_merge_request';

@@ -5,8 +5,8 @@ import {
   createIntegrationEntity,
 } from '@jupiterone/integration-sdk';
 
-import { createGitlabClient } from '../provider';
-import { GitLabUser } from '../provider/types';
+import { createGitlabClient } from '../../provider';
+import { GitLabUser } from '../../provider/types';
 
 export const STEP_ID = 'fetch-accounts';
 export const ACCOUNT_TYPE = 'gitlab_account';

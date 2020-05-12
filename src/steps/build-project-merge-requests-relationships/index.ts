@@ -7,11 +7,11 @@ import {
   createIntegrationRelationship,
 } from '@jupiterone/integration-sdk';
 
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetchProjects';
+import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 import {
   STEP_ID as MERGE_REQUEST_STEP,
   MERGE_REQUEST_TYPE,
-} from '../fetchMergeRequests';
+} from '../fetch-merge-requests';
 
 const step: IntegrationStep = {
   id: 'build-project-merge-request-relationships',

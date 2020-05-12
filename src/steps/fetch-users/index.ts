@@ -5,10 +5,10 @@ import {
   createIntegrationEntity,
 } from '@jupiterone/integration-sdk';
 
-import { createGitlabClient } from '../provider';
-import { GitLabUser, GitLabUserRef } from '../provider/types';
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from './fetchGroups';
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from './fetchProjects';
+import { createGitlabClient } from '../../provider';
+import { GitLabUser, GitLabUserRef } from '../../provider/types';
+import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
+import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 
 export const STEP_ID = 'fetch-users';
 export const USER_TYPE = 'gitlab_user';
