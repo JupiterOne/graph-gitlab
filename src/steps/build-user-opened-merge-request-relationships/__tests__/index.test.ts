@@ -21,7 +21,13 @@ afterEach(async () => {
 });
 
 test('step data collection', async () => {
-  const context = createMockStepExecutionContext({ entities });
+  const context = createMockStepExecutionContext({
+    instanceConfig: {
+      baseUrl: process.env.BASE_URL || 'https://gitlab.com',
+      personalToken: process.env.PERSONAL_TOKEN || 'string-value',
+    },
+    entities,
+  });
   await step.executionHandler(context);
 
   expect(context.jobState.collectedEntities).toHaveLength(0);

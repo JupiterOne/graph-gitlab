@@ -67,6 +67,8 @@ export class GitlabClient {
 
       return result;
     } catch (err) {
+      console.error(err);
+
       return {} as GitLabMergeRequestApproval;
     }
   }
