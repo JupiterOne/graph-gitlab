@@ -451,16 +451,20 @@
   dependencies:
     ajv "^6.12.0"
 
-"@jupiterone/integration-sdk@^0.17.0":
-  version "0.17.0"
-  resolved "https://registry.yarnpkg.com/@jupiterone/integration-sdk/-/integration-sdk-0.17.0.tgz#fc88a00367df2ef84c7c95bf881f8fa81cc2fc4b"
-  integrity sha512-R326bc5AFgHrDCUM3+qLKPqEtywmSAHlEEJwxqEjUM1X6IqlEGkJenXURSLXZpJUoA2ErblkNGJSHfK1r6Ei4g==
+"@jupiterone/integration-sdk@^1.0.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@jupiterone/integration-sdk/-/integration-sdk-1.1.0.tgz#2adce1b2a571ba8b86ebaec740adde4cc54b47a6"
+  integrity sha512-fhhZVX1QXMfy2Qy5+05e+O7NZtgDleZDO0retNnNOoM+RjCDHQr+3KVSbrirBnI1SfwMfX8o+cwtuTImv7MZFw==
   dependencies:
     "@jupiterone/data-model" "^0.3.1"
     "@lifeomic/alpha" "^1.1.3"
     "@pollyjs/adapter-node-http" "^4.0.4"
     "@pollyjs/core" "^4.0.4"
     "@pollyjs/persister-fs" "^4.0.4"
+    "@types/bunyan" "^1.8.6"
+    "@types/pollyjs__adapter-node-http" "^2.0.0"
+    "@types/pollyjs__core" "^4.0.0"
+    "@types/pollyjs__persister" "^2.0.1"
     async-sema "^3.1.0"
     bunyan "^1.8.12"
     bunyan-format "^0.2.1"
@@ -637,6 +641,13 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/bunyan@^1.8.6":
+  version "1.8.6"
+  resolved "https://registry.yarnpkg.com/@types/bunyan/-/bunyan-1.8.6.tgz#6527641cca30bedec5feb9ab527b7803b8000582"
+  integrity sha512-YiozPOOsS6bIuz31ilYqR5SlLif4TBWsousN2aCWLi5233nZSX19tFbcQUPdR7xJ8ypPyxkCGNxg0CIV5n9qxQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -702,6 +713,33 @@
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
+
+"@types/pollyjs__adapter-node-http@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@types/pollyjs__adapter-node-http/-/pollyjs__adapter-node-http-2.0.0.tgz#357514c35a61b3ebb7769d915dc4352720bcc132"
+  integrity sha512-v8g65xEnADlb1UZe4fNPO9KpU04uY6HAPns307RWqePlVtftctD73FA++74PbO17PNgMbi/7IzrZatiEEn9CPQ==
+  dependencies:
+    "@types/pollyjs__adapter" "*"
+
+"@types/pollyjs__adapter@*":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/pollyjs__adapter/-/pollyjs__adapter-3.0.0.tgz#de8817111dcfd128ce5a43a5e4f7088e1fbd5d52"
+  integrity sha512-t54ENQCNxJcICyEQCTwAZf0EnZ7myzfMv/hCqB+CgGYgUw5vTkbRv9Tv/y7vOPhsGAM7S/b6qtiqp0x1vR7wtw==
+  dependencies:
+    "@types/pollyjs__core" "*"
+
+"@types/pollyjs__core@*", "@types/pollyjs__core@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/pollyjs__core/-/pollyjs__core-4.0.0.tgz#064c6fc575dcbb7dc06b322593d025576f309d3f"
+  integrity sha512-tmdhyQs8bqMCDRZn3r2HXlwfbDCIcBweqkNcFAbr97rjGWgQsu4mI37GiaehFuiRkCPkpHuuk+oA4oW3g5sMsQ==
+  dependencies:
+    "@types/pollyjs__adapter" "*"
+    "@types/pollyjs__persister" "*"
+
+"@types/pollyjs__persister@*", "@types/pollyjs__persister@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@types/pollyjs__persister/-/pollyjs__persister-2.0.1.tgz#4ecc700f68d3c3a6c18c6d2dc7e16dcf618ff07a"
+  integrity sha512-Et19GEUffnxsJXJYzgdSDN6oUZgDt0JlCIImy4rEh1fn1Y2mX6nZSZ7FnMEBxZGGph5eviaqQxuHwHDF3TmdBQ==
 
 "@types/prettier@^1.19.0":
   version "1.19.1"
