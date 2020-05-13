@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "A JupiterOne Integration",
   "license": "MPL-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "start": "j1-integration collect",
     "graph": "j1-integration visualize",
@@ -12,10 +14,11 @@
     "test": "jest --passWithNoTests",
     "test:ci": "yarn lint && yarn type-check && yarn test",
     "prebuild": "yarn test:ci",
-    "build": "tsc -p tsconfig.dist.json --declaration"
+    "build": "tsc -p tsconfig.dist.json --declaration",
+    "prepack": "yarn build"
   },
   "dependencies": {
-    "@jupiterone/integration-sdk": "^0.17.0",
+    "@jupiterone/integration-sdk": "^1.0.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
