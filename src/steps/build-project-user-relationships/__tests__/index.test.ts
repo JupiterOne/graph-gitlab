@@ -12,7 +12,7 @@ let recording: Recording;
 beforeEach(() => {
   recording = setupRecording({
     directory: __dirname,
-    name: 'user_projects',
+    name: 'project_users',
   });
 });
 
@@ -35,20 +35,20 @@ test('step data collection', async () => {
 
   expect(context.jobState.collectedRelationships).toEqual([
     expect.objectContaining({
-      _key: 'gitlab-user:5887402|manages|gitlab-project:18463260',
-      _type: 'gitlab_user_manages_project',
-      _class: 'MANAGES',
-      _fromEntityKey: 'gitlab-user:5887402',
-      _toEntityKey: 'gitlab-project:18463260',
-      displayName: 'MANAGES',
+      _key: 'gitlab-project:18463260|has|gitlab-user:5887402',
+      _type: 'gitlab_project_has_user',
+      _class: 'HAS',
+      _fromEntityKey: 'gitlab-project:18463260',
+      _toEntityKey: 'gitlab-user:5887402',
+      displayName: 'HAS',
     }),
     expect.objectContaining({
-      _key: 'gitlab-user:5887285|manages|gitlab-project:18463260',
-      _type: 'gitlab_user_manages_project',
-      _class: 'MANAGES',
-      _fromEntityKey: 'gitlab-user:5887285',
-      _toEntityKey: 'gitlab-project:18463260',
-      displayName: 'MANAGES',
+      _key: 'gitlab-project:18463260|has|gitlab-user:5887285',
+      _type: 'gitlab_project_has_user',
+      _class: 'HAS',
+      _fromEntityKey: 'gitlab-project:18463260',
+      _toEntityKey: 'gitlab-user:5887285',
+      displayName: 'HAS',
     }),
   ]);
 });

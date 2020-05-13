@@ -13,7 +13,7 @@ generated.
 
 | Resources     | \_type of the Entity   | \_class of the Entity |
 | ------------- | ---------------------- | --------------------- |
-| Account       | `gitlab_account`       | `User`                |
+| Account       | `gitlab_account`       | `Account`             |
 | Group         | `gitlab_group`         | `Group`               |
 | Merge Request | `gitlab_merge_request` | `[Review, PR]`        |
 | Project       | `gitlab_project`       | `[Project, CodeRepo]` |
@@ -26,11 +26,12 @@ The following relationships are created/mapped:
 
 | From             | Edge         | To                     |
 | ---------------- | ------------ | ---------------------- |
-| `gitlab_account` | **MANAGES**  | `gitlab_user`          |
+| `gitlab_account` | **HAS**      | `gitlab_group`         |
+| `gitlab_account` | **HAS**      | `gitlab_project`       |
 | `gitlab_group`   | **HAS**      | `gitlab_project`       |
 | `gitlab_group`   | **HAS**      | `gitlab_group`         |
 | `gitlab_group`   | **HAS**      | `gitlab_user`          |
 | `gitlab_project` | **HAS**      | `gitlab_merge_request` |
-| `gitlab_user`    | **MANAGES**  | `gitlab_project`       |
+| `gitlab_project` | **HAS**      | `gitlab_user`          |
 | `gitlab_user`    | **OPENED**   | `gitlab_merge_request` |
 | `gitlab_user`    | **APPROVED** | `gitlab_merge_request` |

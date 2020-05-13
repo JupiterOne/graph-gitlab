@@ -13,9 +13,9 @@ import { createGitlabClient, ClientCreator } from '../../provider';
 
 export function createStep(clientCreator: ClientCreator): IntegrationStep {
   return {
-    id: 'build-user-project-relationships',
-    name: 'Build user project relationships',
-    types: ['gitlab_user_manages_project'],
+    id: 'build-project-user-relationships',
+    name: 'Build project user relationships',
+    types: ['gitlab_project_has_user'],
     dependsOn: [PROJECT_STEP, USER_STEP],
     async executionHandler({
       jobState,
@@ -35,8 +35,8 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
             await jobState.addRelationships(
               projectMembers.map((member) =>
                 createProjectUserRelationship(
-                  userIdMap.get(member.id.toString()),
                   project,
+                  userIdMap.get(member.id.toString()),
                 ),
               ),
             );
@@ -62,12 +62,12 @@ async function createUserIdMap(
 export default createStep((instance) => createGitlabClient(instance));
 
 export function createProjectUserRelationship(
-  member: Entity,
   project: Entity,
+  user: Entity,
 ): Relationship {
   return createIntegrationRelationship({
-    _class: 'MANAGES',
-    from: member,
-    to: project,
+    _class: 'HAS',
+    from: project,
+    to: user,
   });
 }

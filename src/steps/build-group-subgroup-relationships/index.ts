@@ -22,7 +22,7 @@ const step: IntegrationStep = {
         const parentGroup = groupIdMap.get(group.parentGroupId as string);
 
         await jobState.addRelationships([
-          createGroupProjectRelationship(parentGroup, group),
+          createGroupSubgroupRelationship(parentGroup, group),
         ]);
       }
     }
@@ -43,7 +43,7 @@ async function createGroupIdMap(
 
 export default step;
 
-export function createGroupProjectRelationship(
+export function createGroupSubgroupRelationship(
   group: Entity,
   subgroup: Entity,
 ): Relationship {
