@@ -1,0 +1,27 @@
+[
+  {
+    "id": "5887285",
+    "_key": "gitlab-account:5887285",
+    "_type": "gitlab_account",
+    "_class": ["Account"],
+    "name": "eXtremeX",
+    "createdOn": 1586982455921
+  },
+  {
+    "id": "7799803",
+    "_key": "gitlab-group:7799803",
+    "_type": "gitlab_group",
+    "_class": ["Group"],
+    "name": "CreativiceTest",
+    "createdOn": 1586982455921
+  },
+  {
+    "id": "7799819",
+    "_key": "gitlab-group:7799819",
+    "_type": "gitlab_group",
+    "_class": ["Group"],
+    "name": "CreativiceSubGroup",
+    "parentGroupId": "gitlab-group:7799803",
+    "createdOn": 1586982455921
+  }
+]
