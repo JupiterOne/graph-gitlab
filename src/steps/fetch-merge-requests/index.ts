@@ -49,7 +49,7 @@ export function createMergeRequestEntity(
       assign: {
         _key: key,
         _type: MERGE_REQUEST_TYPE,
-        _class: ['Review', 'PR'],
+        _class: ['CodeReview', 'PR'],
 
         id: mergeRequest.id.toString(),
         iid: mergeRequest.iid,

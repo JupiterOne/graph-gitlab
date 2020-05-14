@@ -15,8 +15,8 @@ generated.
 | ------------- | ---------------------- | --------------------- |
 | Account       | `gitlab_account`       | `Account`             |
 | Group         | `gitlab_group`         | `Group`               |
-| Merge Request | `gitlab_merge_request` | `[Review, PR]`        |
-| Project       | `gitlab_project`       | `[Project, CodeRepo]` |
+| Merge Request | `gitlab_merge_request` | `CodeReview`, `PR`    |
+| Project       | `gitlab_project`       | `CodeRepo`, `Project` |
 | User          | `gitlab_user`          | `User`                |
 | SubGroup      | `gitlab_group`         | `Group`               |
 
