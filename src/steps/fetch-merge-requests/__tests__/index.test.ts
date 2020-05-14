@@ -72,7 +72,7 @@ test('MergeRequest entity conversion', async () => {
     expect.objectContaining({
       _key: 'gitlab-merge-request:1',
       _type: 'gitlab_merge_request',
-      _class: ['Review', 'PR'],
+      _class: ['CodeReview', 'PR'],
       _rawData: expect.any(Array),
       id: '1',
       iid: 2,
@@ -115,7 +115,7 @@ test('step data collection', async () => {
       expect.objectContaining({
         _key: expect.stringMatching(/gitlab-merge-request:[0-9]+/),
         _type: 'gitlab_merge_request',
-        _class: ['Review', 'PR'],
+        _class: ['CodeReview', 'PR'],
         _rawData: expect.any(Array),
         id: expect.stringMatching(/[0-9]+/),
         iid: expect.any(Number),
