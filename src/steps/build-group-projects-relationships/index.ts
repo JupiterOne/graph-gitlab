@@ -12,7 +12,7 @@ import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
 import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 import { GitlabIntegrationConfig } from '../../types';
 
-export function createStep(clientCreator: ClientCreator): IntegrationStep {
+export function createStep(clientCreator: ClientCreator): IntegrationStep<GitlabIntegrationConfig> {
   return {
     id: 'build-group-project-relationships',
     name: 'Build group project relationships',
@@ -37,7 +37,7 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
             groupProjects.map((project) =>
               createGroupProjectRelationship(
                 group,
-                projectIdMap.get(project.id.toString()),
+                projectIdMap.get(project.id.toString()) as Entity,
               ),
             ),
           );

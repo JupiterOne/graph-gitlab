@@ -26,11 +26,11 @@ export class GitlabClient {
   }
 
   async fetchAccount(): Promise<GitLabUser> {
-    return this.makeSingularRequest(HttpMethod.GET, '/user');
+    return this.makeSingularRequest(HttpMethod.GET, '/user') as Promise<GitLabUser>;
   }
 
   async fetchUser(id: number): Promise<GitLabUser> {
-    return this.makeSingularRequest(HttpMethod.GET, `/users/${id}`);
+    return this.makeSingularRequest(HttpMethod.GET, `/users/${id}`) as Promise<GitLabUser>;
   }
 
   async fetchGroups(): Promise<GitLabGroup[]> {
@@ -38,7 +38,7 @@ export class GitlabClient {
   }
 
   async fetchProjects(): Promise<GitLabProject[]> {
-    return this.makePaginatedRequest(HttpMethod.GET, '/projects', null, {
+    return this.makePaginatedRequest(HttpMethod.GET, '/projects', undefined, {
       owned: true,
     });
   }
@@ -65,10 +65,10 @@ export class GitlabClient {
     mergeRequestId: number,
   ): Promise<GitLabMergeRequestApproval> {
     try {
-      const result: GitLabMergeRequestApproval = await this.makeSingularRequest(
+      const result = await this.makeSingularRequest(
         HttpMethod.GET,
         `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
-      );
+      ) as GitLabMergeRequestApproval;
 
       return result;
     } catch (err) {
@@ -167,7 +167,7 @@ export class GitlabClient {
         }`,
       );
 
-      totalPages = parseInt(response.headers.get('X-Total-Pages'), 10);
+      totalPages = parseInt(response.headers.get('X-Total-Pages') as string, 10);
 
       const result = await response.json();
 
@@ -176,6 +176,8 @@ export class GitlabClient {
       }
     } while (page < totalPages && page < pageLimit);
 
-    return [].concat(...results);
+    const pageResults: T[] = []
+
+    return pageResults.concat(...results);
   }
 }

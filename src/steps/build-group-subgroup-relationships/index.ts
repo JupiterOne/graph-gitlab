@@ -19,7 +19,7 @@ const step: IntegrationStep = {
 
     for (const group of groupIdMap.values()) {
       if (group.parentGroupId) {
-        const parentGroup = groupIdMap.get(group.parentGroupId as string);
+        const parentGroup = groupIdMap.get(group.parentGroupId as string) as Entity;
 
         await jobState.addRelationships([
           createGroupSubgroupRelationship(parentGroup, group),

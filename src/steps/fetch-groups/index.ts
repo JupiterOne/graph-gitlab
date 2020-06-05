@@ -12,7 +12,7 @@ import { GitlabIntegrationConfig } from '../../types';
 export const STEP_ID = 'fetch-groups';
 export const GROUP_TYPE = 'gitlab_group';
 
-const step: IntegrationStep = {
+const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: STEP_ID,
   name: 'Fetch groups',
   types: [GROUP_TYPE],
@@ -65,7 +65,7 @@ export function createGroupEntity(group: GitLabGroup): Entity {
 }
 
 const GROUP_ID_PREFIX = 'gitlab-group';
-export function createGroupEntityIdentifier(id?: number): string {
+export function createGroupEntityIdentifier(id?: number): string | undefined{
   return id ? `${GROUP_ID_PREFIX}:${id}` : undefined;
 }
 

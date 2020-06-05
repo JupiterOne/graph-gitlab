@@ -13,7 +13,7 @@ import { GitlabIntegrationConfig } from '../../types';
 export const STEP_ID = 'fetch-merge-requests';
 export const MERGE_REQUEST_TYPE = 'gitlab_merge_request';
 
-const step: IntegrationStep = {
+const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: STEP_ID,
   name: 'Fetch merge requests',
   types: [MERGE_REQUEST_TYPE],
@@ -31,7 +31,7 @@ const step: IntegrationStep = {
 
       await jobState.addEntities(
         mergeRequests.map((mergeRequest) =>
-          createMergeRequestEntity(mergeRequest, project.displayName),
+          createMergeRequestEntity(mergeRequest, project.displayName as string),
         ),
       );
     });

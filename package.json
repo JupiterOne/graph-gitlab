@@ -16,10 +16,11 @@
     "graph": "j1-integration visualize",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
     "format": "prettier --write '**/*.{ts,js,json,css,md,yml}'",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc",
     "test": "jest --passWithNoTests",
     "test:ci": "yarn lint && yarn type-check && yarn test",
     "prebuild": "yarn test:ci",
+    "prepush": "yarn test:ci",
     "build": "tsc -p tsconfig.dist.json --declaration",
     "prepack": "yarn build"
   },
@@ -27,8 +28,8 @@
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-cli": "^1.1.0",
     "@jupiterone/integration-sdk-core": "^1.1.0",
+    "@jupiterone/integration-sdk-dev-tools": "^1.1.0",
     "@jupiterone/integration-sdk-testing": "^1.1.0",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.1",

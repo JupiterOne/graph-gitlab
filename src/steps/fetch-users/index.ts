@@ -1,7 +1,6 @@
 import {
   Entity,
   IntegrationStep,
-  IntegrationStepExecutionContext,
   createIntegrationEntity,
 } from '@jupiterone/integration-sdk-core';
 
@@ -14,7 +13,7 @@ import { GitlabIntegrationConfig } from '../../types';
 export const STEP_ID = 'fetch-users';
 export const USER_TYPE = 'gitlab_user';
 
-const step: IntegrationStep = {
+const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: STEP_ID,
   name: 'Fetch users',
   types: [USER_TYPE],
@@ -22,7 +21,7 @@ const step: IntegrationStep = {
   async executionHandler({
     instance,
     jobState,
-  }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
+  }) {
     const client = createGitlabClient(instance);
 
     const usersMap: {

@@ -53,7 +53,7 @@ export function createStep(
             await jobState.addRelationships(
               approvedByUsers.map((userId) =>
                 createUserApprovedPrRelationship(
-                  userIdMap.get(userId.toString()),
+                  userIdMap.get(userId.toString()) as Entity,
                   mergeRequest,
                 ),
               ),

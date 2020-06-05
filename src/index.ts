@@ -18,8 +18,9 @@ import buildProjectUserRelationships from './steps/build-project-user-relationsh
 import buildProjectMergeRequestRelationships from './steps/build-project-merge-requests-relationships';
 import buildUserOpenedMergeRequestRelationships from './steps/build-user-opened-merge-request-relationships';
 import buildUserApprovedMergeRequestRelationships from './steps/build-user-approved-merge-request-relationships';
+import { GitlabIntegrationConfig } from './types';
 
-export const invocationConfig: IntegrationInvocationConfig = {
+export const invocationConfig: IntegrationInvocationConfig<GitlabIntegrationConfig> = {
   instanceConfigFields,
   validateInvocation,
   integrationSteps: [

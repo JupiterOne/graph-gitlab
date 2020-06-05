@@ -12,7 +12,7 @@ import { GitlabIntegrationConfig } from '../../types';
 export const STEP_ID = 'fetch-accounts';
 export const ACCOUNT_TYPE = 'gitlab_account';
 
-const step: IntegrationStep = {
+const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: STEP_ID,
   name: 'Fetch accounts',
   types: [ACCOUNT_TYPE],
