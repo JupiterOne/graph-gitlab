@@ -7,7 +7,7 @@ import {
   GitLabUserRef,
   GitLabMergeRequestApproval,
 } from './types';
-import { IntegrationError } from '@jupiterone/integration-sdk/src/errors';
+import { IntegrationError } from '@jupiterone/integration-sdk-core';
 
 export enum HttpMethod {
   GET = 'get',

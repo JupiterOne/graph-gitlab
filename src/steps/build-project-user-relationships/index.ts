@@ -5,11 +5,12 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient, ClientCreator } from '../../provider';
+import { GitlabIntegrationConfig } from '../../types';
 
 export function createStep(clientCreator: ClientCreator): IntegrationStep {
   return {
@@ -20,7 +21,9 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
     async executionHandler({
       jobState,
       instance,
-    }: IntegrationStepExecutionContext): Promise<void> {
+    }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<
+      void
+    > {
       const client = clientCreator(instance);
       const userIdMap = await createUserIdMap(jobState);
 

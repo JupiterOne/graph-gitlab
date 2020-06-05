@@ -5,7 +5,7 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { STEP_ID as ACCOUNT_STEP, ACCOUNT_TYPE } from '../fetch-accounts';
 import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';

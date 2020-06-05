@@ -3,10 +3,11 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationEntity,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { createGitlabClient } from '../../provider';
 import { GitLabUser } from '../../provider/types';
+import { GitlabIntegrationConfig } from '../../types';
 
 export const STEP_ID = 'fetch-accounts';
 export const ACCOUNT_TYPE = 'gitlab_account';
@@ -18,7 +19,7 @@ const step: IntegrationStep = {
   async executionHandler({
     instance,
     jobState,
-  }: IntegrationStepExecutionContext) {
+  }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
     const client = createGitlabClient(instance);
     const account = await client.fetchAccount();
 

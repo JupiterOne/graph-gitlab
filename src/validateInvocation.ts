@@ -1,12 +1,13 @@
 import {
   IntegrationExecutionContext,
   IntegrationInstance,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { createGitlabClient } from './provider/index';
+import { GitlabIntegrationConfig } from './types';
 
 export default async function validateInvocation(
-  context: IntegrationExecutionContext,
+  context: IntegrationExecutionContext<GitlabIntegrationConfig>,
 ): Promise<void> {
   context.logger.info(
     {
@@ -23,7 +24,7 @@ export default async function validateInvocation(
 }
 
 async function isConfigurationValid(
-  instance: IntegrationInstance,
+  instance: IntegrationInstance<GitlabIntegrationConfig>,
 ): Promise<boolean> {
   try {
     const client = createGitlabClient(instance);

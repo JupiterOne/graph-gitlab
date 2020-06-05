@@ -5,7 +5,7 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import {
   STEP_ID as MERGE_REQUEST_STEP,
@@ -14,8 +14,11 @@ import {
 import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient } from '../../provider';
 import { ClientCreator } from '../../provider';
+import { GitlabIntegrationConfig } from '../../types';
 
-export function createStep(clientCreator: ClientCreator): IntegrationStep {
+export function createStep(
+  clientCreator: ClientCreator,
+): IntegrationStep<GitlabIntegrationConfig> {
   return {
     id: 'build-user-approved-merge-request-relationships',
     name: 'Build user approved merge_request relationships',
@@ -24,7 +27,9 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
     async executionHandler({
       jobState,
       instance,
-    }: IntegrationStepExecutionContext): Promise<void> {
+    }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<
+      void
+    > {
       const client = clientCreator(instance);
       const userIdMap = await createUserIdMap(jobState);
 

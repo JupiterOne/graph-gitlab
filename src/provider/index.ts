@@ -1,8 +1,9 @@
-import { IntegrationInstance } from '@jupiterone/integration-sdk';
+import { IntegrationInstance } from '@jupiterone/integration-sdk-core';
 import { GitlabClient } from './GitlabClient';
+import { GitlabIntegrationConfig } from '../types';
 
 export function createGitlabClient(
-  instance: IntegrationInstance,
+  instance: IntegrationInstance<GitlabIntegrationConfig>,
 ): GitlabClient {
   const baseUrl = instance.config?.baseUrl;
   const personalToken = instance.config?.personalToken;
@@ -20,4 +21,6 @@ export function createGitlabClient(
   return new GitlabClient(baseUrl, personalToken, lastRun || d);
 }
 
-export type ClientCreator = (client: IntegrationInstance) => GitlabClient;
+export type ClientCreator = (
+  client: IntegrationInstance<GitlabIntegrationConfig>,
+) => GitlabClient;
