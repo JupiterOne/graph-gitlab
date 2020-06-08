@@ -1,24 +1,24 @@
 import {
   Entity,
   IntegrationStep,
-  IntegrationStepExecutionContext,
   createIntegrationEntity,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { createGitlabClient } from '../../provider';
 import { GitLabProject } from '../../provider/types';
+import { GitlabIntegrationConfig } from '../../types';
 
 export const STEP_ID = 'fetch-projects';
 export const PROJECT_TYPE = 'gitlab_project';
 
-const step: IntegrationStep = {
+const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: STEP_ID,
   name: 'Fetch projects',
   types: [PROJECT_TYPE],
   async executionHandler({
     instance,
     jobState,
-  }: IntegrationStepExecutionContext) {
+  }) {
     const client = createGitlabClient(instance);
     const projects = await client.fetchProjects();
     await jobState.addEntities(projects.map(createProjectEntity));

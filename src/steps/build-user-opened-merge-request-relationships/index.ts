@@ -5,7 +5,7 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import {
   STEP_ID as MERGE_REQUEST_STEP,

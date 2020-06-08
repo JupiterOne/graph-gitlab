@@ -5,7 +5,7 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
 
@@ -19,7 +19,7 @@ const step: IntegrationStep = {
 
     for (const group of groupIdMap.values()) {
       if (group.parentGroupId) {
-        const parentGroup = groupIdMap.get(group.parentGroupId as string);
+        const parentGroup = groupIdMap.get(group.parentGroupId as string) as Entity;
 
         await jobState.addRelationships([
           createGroupSubgroupRelationship(parentGroup, group),

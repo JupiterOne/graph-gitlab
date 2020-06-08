@@ -5,13 +5,14 @@ import {
   IntegrationStep,
   IntegrationStepExecutionContext,
   createIntegrationRelationship,
-} from '@jupiterone/integration-sdk';
+} from '@jupiterone/integration-sdk-core';
 
 import { createGitlabClient, ClientCreator } from '../../provider';
 import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
 import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
+import { GitlabIntegrationConfig } from '../../types';
 
-export function createStep(clientCreator: ClientCreator): IntegrationStep {
+export function createStep(clientCreator: ClientCreator): IntegrationStep<GitlabIntegrationConfig> {
   return {
     id: 'build-group-project-relationships',
     name: 'Build group project relationships',
@@ -20,7 +21,9 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
     async executionHandler({
       jobState,
       instance,
-    }: IntegrationStepExecutionContext): Promise<void> {
+    }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<
+      void
+    > {
       const client = clientCreator(instance);
       const projectIdMap = await createProjectIdMap(jobState);
 
@@ -34,7 +37,7 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep {
             groupProjects.map((project) =>
               createGroupProjectRelationship(
                 group,
-                projectIdMap.get(project.id.toString()),
+                projectIdMap.get(project.id.toString()) as Entity,
               ),
             ),
           );
