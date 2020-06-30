@@ -36,10 +36,12 @@ export function createStep(
         );
 
         if (groupProjects.length > 0) {
-          groupProjects.forEach((project) => {
+          for (const project of groupProjects) {
             const projectEntity = projectIdMap.get(project.id.toString());
             if (projectEntity) {
-              createGroupProjectRelationship(group, projectEntity);
+              await jobState.addRelationship(
+                createGroupProjectRelationship(group, projectEntity),
+              );
             } else {
               logger.info(
                 {
@@ -52,7 +54,7 @@ export function createStep(
                 'Group project not found by fetch-projects, relationship will not be made',
               );
             }
-          });
+          }
         }
       });
     },
@@ -67,7 +69,6 @@ async function createProjectIdMap(
   await jobState.iterateEntities({ _type: PROJECT_TYPE }, (project) => {
     projectIdMap.set(project.id as string, project);
   });
-
   return projectIdMap;
 }
 
