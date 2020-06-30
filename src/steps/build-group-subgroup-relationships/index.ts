@@ -12,14 +12,16 @@ import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
 const step: IntegrationStep = {
   id: 'build-group-subgroup-relationships',
   name: 'Build group subgroup relationships',
-  types: ['gitlab_group_has_subgroup'],
+  types: ['gitlab_group_has_group'],
   dependsOn: [GROUP_STEP],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const groupIdMap = await createGroupIdMap(jobState);
 
     for (const group of groupIdMap.values()) {
       if (group.parentGroupId) {
-        const parentGroup = groupIdMap.get(group.parentGroupId as string) as Entity;
+        const parentGroup = groupIdMap.get(
+          group.parentGroupId as string,
+        ) as Entity;
 
         await jobState.addRelationships([
           createGroupSubgroupRelationship(parentGroup, group),
