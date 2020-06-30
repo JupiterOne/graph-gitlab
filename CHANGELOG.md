@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.1.1 - 2020-06-30
+
+### Fixed
+
+- A group project not found in complete listing would cause `_type on undefined`
+  error. That situation is now logged, no relationship is created to the
+  project.
+- Undeclared type warning for `gitlab_group_has_group`.
+
 ## 1.0.3 - 2020-05-14
 
 ### Changed
