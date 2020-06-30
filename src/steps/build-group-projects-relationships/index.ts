@@ -1,18 +1,20 @@
 import {
+  createIntegrationRelationship,
   Entity,
-  JobState,
-  Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  JobState,
+  Relationship,
 } from '@jupiterone/integration-sdk-core';
 
-import { createGitlabClient, ClientCreator } from '../../provider';
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
+import { ClientCreator, createGitlabClient } from '../../provider';
 import { GitlabIntegrationConfig } from '../../types';
+import { GROUP_TYPE, STEP_ID as GROUP_STEP } from '../fetch-groups';
+import { PROJECT_TYPE, STEP_ID as PROJECT_STEP } from '../fetch-projects';
 
-export function createStep(clientCreator: ClientCreator): IntegrationStep<GitlabIntegrationConfig> {
+export function createStep(
+  clientCreator: ClientCreator,
+): IntegrationStep<GitlabIntegrationConfig> {
   return {
     id: 'build-group-project-relationships',
     name: 'Build group project relationships',
@@ -21,6 +23,7 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep<Gitlab
     async executionHandler({
       jobState,
       instance,
+      logger,
     }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<
       void
     > {
@@ -33,14 +36,23 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep<Gitlab
         );
 
         if (groupProjects.length > 0) {
-          await jobState.addRelationships(
-            groupProjects.map((project) =>
-              createGroupProjectRelationship(
-                group,
-                projectIdMap.get(project.id.toString()) as Entity,
-              ),
-            ),
-          );
+          groupProjects.forEach((project) => {
+            const projectEntity = projectIdMap.get(project.id.toString());
+            if (projectEntity) {
+              createGroupProjectRelationship(group, projectEntity);
+            } else {
+              logger.info(
+                {
+                  project: {
+                    id: project.id,
+                    name: project.name,
+                    visibility: project.visibility,
+                  },
+                },
+                'Group project not found by fetch-projects, relationship will not be made',
+              );
+            }
+          });
         }
       });
     },
