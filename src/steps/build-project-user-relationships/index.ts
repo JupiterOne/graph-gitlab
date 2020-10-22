@@ -12,7 +12,9 @@ import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient, ClientCreator } from '../../provider';
 import { GitlabIntegrationConfig } from '../../types';
 
-export function createStep(clientCreator: ClientCreator): IntegrationStep<GitlabIntegrationConfig> {
+export function createStep(
+  clientCreator: ClientCreator,
+): IntegrationStep<GitlabIntegrationConfig> {
   return {
     id: 'build-project-user-relationships',
     name: 'Build project user relationships',
@@ -35,11 +37,14 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep<Gitlab
           );
 
           if (projectMembers.length > 0) {
+            const projectMemberIds = [
+              ...new Set(projectMembers.map((m) => m.id)),
+            ];
             await jobState.addRelationships(
-              projectMembers.map((member) =>
+              projectMemberIds.map((memberId) =>
                 createProjectUserRelationship(
                   project,
-                  userIdMap.get(member.id.toString()) as Entity,
+                  userIdMap.get(memberId.toString()) as Entity,
                 ),
               ),
             );

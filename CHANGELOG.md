@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- [#15](https://github.com/JupiterOne/graph-gitlab/issues/15) - Deduplicate
+  `gitlab_project_has_user` relationships
+
 ## 2.1.1 - 2020-06-30
 
 ### Fixed
