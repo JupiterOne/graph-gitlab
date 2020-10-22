@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.1.2 - 2020-10-22
+
 ### Fixed
 
 - [#15](https://github.com/JupiterOne/graph-gitlab/issues/15) - Deduplicate
