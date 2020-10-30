@@ -4,22 +4,23 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
-import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient, ClientCreator } from '../../provider';
 import { GitlabIntegrationConfig } from '../../types';
+import { Entities, Steps, Relationships } from '../../constants';
 
 export function createStep(
   clientCreator: ClientCreator,
 ): IntegrationStep<GitlabIntegrationConfig> {
   return {
-    id: 'build-project-user-relationships',
+    id: Steps.BUILD_PROJECT_HAS_USER,
     name: 'Build project user relationships',
-    types: ['gitlab_project_has_user'],
-    dependsOn: [PROJECT_STEP, USER_STEP],
+    entities: [],
+    relationships: [Relationships.PROJECT_HAS_USER],
+    dependsOn: [Steps.PROJECTS, Steps.USERS],
     async executionHandler({
       jobState,
       instance,
@@ -30,7 +31,7 @@ export function createStep(
       const userIdMap = await createUserIdMap(jobState);
 
       await jobState.iterateEntities(
-        { _type: PROJECT_TYPE },
+        { _type: Entities.PROJECT._type },
         async (project) => {
           const projectMembers = await client.fetchProjectMembers(
             parseInt(project.id as string, 10),
@@ -60,7 +61,7 @@ async function createUserIdMap(
 ): Promise<Map<string, Entity>> {
   const userIdMap = new Map<string, Entity>();
 
-  await jobState.iterateEntities({ _type: USER_TYPE }, (user) => {
+  await jobState.iterateEntities({ _type: Entities.USER._type }, (user) => {
     userIdMap.set(user.id as string, user);
   });
 
@@ -73,8 +74,8 @@ export function createProjectUserRelationship(
   project: Entity,
   user: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'HAS',
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
     from: project,
     to: user,
   });

@@ -6,43 +6,43 @@ import {
 
 import { createGitlabClient } from '../../provider';
 import { GitLabUser, GitLabUserRef } from '../../provider/types';
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 import { GitlabIntegrationConfig } from '../../types';
-
-export const STEP_ID = 'fetch-users';
-export const USER_TYPE = 'gitlab_user';
+import { Entities, Steps } from '../../constants';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
-  id: STEP_ID,
+  id: Steps.USERS,
   name: 'Fetch users',
-  types: [USER_TYPE],
-  dependsOn: [GROUP_STEP, PROJECT_STEP],
-  async executionHandler({
-    instance,
-    jobState,
-  }) {
+  entities: [Entities.USER],
+  relationships: [],
+  dependsOn: [Steps.GROUPS, Steps.PROJECTS],
+  async executionHandler({ instance, jobState }) {
     const client = createGitlabClient(instance);
 
     const usersMap: {
       [number: string]: GitLabUserRef;
     } = {};
 
-    await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
-      const members = await client.fetchGroupMembers(
-        parseInt(group.id as string, 10),
-      );
+    await jobState.iterateEntities(
+      { _type: Entities.GROUP._type },
+      async (group) => {
+        const members = await client.fetchGroupMembers(
+          parseInt(group.id as string, 10),
+        );
 
-      members.forEach((member) => (usersMap[member.id] = member));
-    });
+        members.forEach((member) => (usersMap[member.id] = member));
+      },
+    );
 
-    await jobState.iterateEntities({ _type: PROJECT_TYPE }, async (project) => {
-      const members = await client.fetchProjectMembers(
-        parseInt(project.id as string, 10),
-      );
+    await jobState.iterateEntities(
+      { _type: Entities.PROJECT._type },
+      async (project) => {
+        const members = await client.fetchProjectMembers(
+          parseInt(project.id as string, 10),
+        );
 
-      members.forEach((member) => (usersMap[member.id] = member));
-    });
+        members.forEach((member) => (usersMap[member.id] = member));
+      },
+    );
 
     const users: GitLabUser[] = await Promise.all(
       Object.values(usersMap).map((userRef) => client.fetchUser(userRef.id)),
@@ -60,8 +60,8 @@ export function createUserEntity(user: GitLabUser): Entity {
       source: user,
       assign: {
         _key: key,
-        _type: USER_TYPE,
-        _class: 'User',
+        _type: Entities.USER._type,
+        _class: Entities.USER._class,
 
         id: user.id.toString(),
         name: user.name,

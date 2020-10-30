@@ -4,32 +4,38 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import { STEP_ID as ACCOUNT_STEP, ACCOUNT_TYPE } from '../fetch-accounts';
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
+import { Steps, Entities, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
-  id: 'build-account-project-relationships',
+  id: Steps.BUILD_ACCOUNT_HAS_PROJECT,
   name: 'Build account project relationships',
-  types: ['gitlab_account_has_project'],
-  dependsOn: [ACCOUNT_STEP, PROJECT_STEP],
+  entities: [],
+  relationships: [Relationships.ACCOUNT_HAS_PROJECT],
+  dependsOn: [Steps.ACCOUNTS, Steps.PROJECTS],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const account = await getAccountEntity(jobState);
 
-    await jobState.iterateEntities({ _type: PROJECT_TYPE }, async (project) => {
-      await jobState.addRelationships([
-        createAccountProjectRelationship(account, project),
-      ]);
-    });
+    await jobState.iterateEntities(
+      { _type: Entities.PROJECT._type },
+      async (project) => {
+        await jobState.addRelationships([
+          createAccountProjectRelationship(account, project),
+        ]);
+      },
+    );
   },
 };
 
 async function getAccountEntity(jobState: JobState): Promise<Entity> {
   return new Promise((resolve, reject) => {
     jobState
-      .iterateEntities({ _type: ACCOUNT_TYPE }, (account) => resolve(account))
+      .iterateEntities({ _type: Entities.ACCOUNT._type }, (account) =>
+        resolve(account),
+      )
       .catch((error) => reject(error));
   });
 }
@@ -40,8 +46,8 @@ export function createAccountProjectRelationship(
   account: Entity,
   project: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'HAS',
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
     from: account,
     to: project,
   });

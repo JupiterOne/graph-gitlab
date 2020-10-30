@@ -6,35 +6,39 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { createGitlabClient } from '../../provider';
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
 import { GitLabMergeRequest } from '../../provider/types';
 import { GitlabIntegrationConfig } from '../../types';
-
-export const STEP_ID = 'fetch-merge-requests';
-export const MERGE_REQUEST_TYPE = 'gitlab_merge_request';
+import { Steps, Entities } from '../../constants';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
-  id: STEP_ID,
+  id: Steps.MERGE_REQUESTS,
   name: 'Fetch merge requests',
-  types: [MERGE_REQUEST_TYPE],
-  dependsOn: [PROJECT_STEP],
+  entities: [Entities.MERGE_REQUEST],
+  relationships: [],
+  dependsOn: [Steps.PROJECTS],
   async executionHandler({
     instance,
     jobState,
   }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
     const client = createGitlabClient(instance);
 
-    await jobState.iterateEntities({ _type: PROJECT_TYPE }, async (project) => {
-      const mergeRequests = await client.fetchProjectMergeRequests(
-        parseInt(project.id as string, 10),
-      );
+    await jobState.iterateEntities(
+      { _type: Entities.PROJECT._type },
+      async (project) => {
+        const mergeRequests = await client.fetchProjectMergeRequests(
+          parseInt(project.id as string, 10),
+        );
 
-      await jobState.addEntities(
-        mergeRequests.map((mergeRequest) =>
-          createMergeRequestEntity(mergeRequest, project.displayName as string),
-        ),
-      );
-    });
+        await jobState.addEntities(
+          mergeRequests.map((mergeRequest) =>
+            createMergeRequestEntity(
+              mergeRequest,
+              project.displayName as string,
+            ),
+          ),
+        );
+      },
+    );
   },
 };
 
@@ -49,8 +53,8 @@ export function createMergeRequestEntity(
       source: mergeRequest,
       assign: {
         _key: key,
-        _type: MERGE_REQUEST_TYPE,
-        _class: ['CodeReview', 'PR'],
+        _type: Entities.MERGE_REQUEST._type,
+        _class: Entities.MERGE_REQUEST._class,
 
         id: mergeRequest.id.toString(),
         iid: mergeRequest.iid,
