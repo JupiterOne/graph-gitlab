@@ -4,25 +4,22 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
-
-import {
-  STEP_ID as MERGE_REQUEST_STEP,
-  MERGE_REQUEST_TYPE,
-} from '../fetch-merge-requests';
-import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
+import { Steps, Entities, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
-  id: 'build-user-opened-merge-request-relationships',
+  id: Steps.BUILD_USER_OPENED_PR,
   name: 'Build user opened merge_request relationships',
-  types: ['gitlab_user_opened_merge_request'],
-  dependsOn: [MERGE_REQUEST_STEP, USER_STEP],
+  entities: [],
+  relationships: [Relationships.USER_OPENED_PR],
+  dependsOn: [Steps.MERGE_REQUESTS, Steps.USERS],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const userIdMap = await createUserIdMap(jobState);
 
     await jobState.iterateEntities(
-      { _type: MERGE_REQUEST_TYPE },
+      { _type: Entities.MERGE_REQUEST._type },
       async (mergeRequest) => {
         const openedUser = userIdMap.get(mergeRequest.authorId as string);
 
@@ -41,7 +38,7 @@ async function createUserIdMap(
 ): Promise<Map<string, Entity>> {
   const userIdMap = new Map<string, Entity>();
 
-  await jobState.iterateEntities({ _type: USER_TYPE }, (user) => {
+  await jobState.iterateEntities({ _type: Entities.USER._type }, (user) => {
     userIdMap.set(user.id as string, user);
   });
 
@@ -54,8 +51,8 @@ export function createUserOpenedPrRelationship(
   user: Entity,
   mergeRequest: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'OPENED',
+  return createDirectRelationship({
+    _class: RelationshipClass.OPENED,
     from: user,
     to: mergeRequest,
   });

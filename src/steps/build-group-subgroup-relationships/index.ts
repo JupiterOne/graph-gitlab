@@ -4,16 +4,18 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
+import { Steps, Entities, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
-  id: 'build-group-subgroup-relationships',
+  id: Steps.BUILD_GROUP_HAS_SUBGROUP,
   name: 'Build group subgroup relationships',
-  types: ['gitlab_group_has_group'],
-  dependsOn: [GROUP_STEP],
+  entities: [],
+  relationships: [Relationships.GROUP_HAS_SUBGROUP],
+  dependsOn: [Steps.GROUPS],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const groupIdMap = await createGroupIdMap(jobState);
 
@@ -36,7 +38,7 @@ async function createGroupIdMap(
 ): Promise<Map<string, Entity>> {
   const groupIdMap = new Map<string, Entity>();
 
-  await jobState.iterateEntities({ _type: GROUP_TYPE }, (group) => {
+  await jobState.iterateEntities({ _type: Entities.GROUP._type }, (group) => {
     groupIdMap.set(group.id as string, group);
   });
 
@@ -49,8 +51,8 @@ export function createGroupSubgroupRelationship(
   group: Entity,
   subgroup: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'HAS',
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
     from: group,
     to: subgroup,
   });

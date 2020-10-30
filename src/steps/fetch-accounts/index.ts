@@ -8,14 +8,13 @@ import {
 import { createGitlabClient } from '../../provider';
 import { GitLabUser } from '../../provider/types';
 import { GitlabIntegrationConfig } from '../../types';
-
-export const STEP_ID = 'fetch-accounts';
-export const ACCOUNT_TYPE = 'gitlab_account';
+import { Entities, Steps } from '../../constants';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
-  id: STEP_ID,
+  id: Steps.ACCOUNTS,
   name: 'Fetch accounts',
-  types: [ACCOUNT_TYPE],
+  entities: [Entities.ACCOUNT],
+  relationships: [],
   async executionHandler({
     instance,
     jobState,
@@ -35,8 +34,8 @@ export function createAccountEntity(user: GitLabUser): Entity {
       source: user,
       assign: {
         _key: key,
-        _type: ACCOUNT_TYPE,
-        _class: 'Account',
+        _type: Entities.ACCOUNT._type,
+        _class: Entities.ACCOUNT._class,
 
         id: user.id.toString(),
         name: user.name,

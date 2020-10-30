@@ -8,14 +8,13 @@ import {
 import { createGitlabClient } from '../../provider';
 import { GitLabGroup } from '../../provider/types';
 import { GitlabIntegrationConfig } from '../../types';
-
-export const STEP_ID = 'fetch-groups';
-export const GROUP_TYPE = 'gitlab_group';
+import { Entities, Steps } from '../../constants';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
-  id: STEP_ID,
+  id: Steps.GROUPS,
   name: 'Fetch groups',
-  types: [GROUP_TYPE],
+  entities: [Entities.GROUP],
+  relationships: [],
   async executionHandler({
     instance,
     jobState,
@@ -34,8 +33,8 @@ export function createGroupEntity(group: GitLabGroup): Entity {
       source: group,
       assign: {
         _key: key,
-        _type: GROUP_TYPE,
-        _class: 'Group',
+        _type: Entities.GROUP._type,
+        _class: Entities.GROUP._class,
 
         id: group.id.toString(),
         parentGroupId: group.parent_id && group.parent_id.toString(),
@@ -65,7 +64,7 @@ export function createGroupEntity(group: GitLabGroup): Entity {
 }
 
 const GROUP_ID_PREFIX = 'gitlab-group';
-export function createGroupEntityIdentifier(id?: number): string | undefined{
+export function createGroupEntityIdentifier(id?: number): string | undefined {
   return id ? `${GROUP_ID_PREFIX}:${id}` : undefined;
 }
 

@@ -4,20 +4,23 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import { STEP_ID as PROJECT_STEP, GROUP_TYPE } from '../fetch-groups';
-import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient, ClientCreator } from '../../provider';
 import { GitlabIntegrationConfig } from '../../types';
+import { Entities, Steps, Relationships } from '../../constants';
 
-export function createStep(clientCreator: ClientCreator): IntegrationStep<GitlabIntegrationConfig> {
+export function createStep(
+  clientCreator: ClientCreator,
+): IntegrationStep<GitlabIntegrationConfig> {
   return {
-    id: 'build-group-user-relationships',
+    id: Steps.BUILD_GROUP_HAS_USER,
     name: 'Build group user relationships',
-    types: ['gitlab_group_has_user'],
-    dependsOn: [PROJECT_STEP, USER_STEP],
+    entities: [],
+    relationships: [Relationships.GROUP_HAS_USER],
+    dependsOn: [Steps.GROUPS, Steps.USERS],
     async executionHandler({
       jobState,
       instance,
@@ -27,22 +30,25 @@ export function createStep(clientCreator: ClientCreator): IntegrationStep<Gitlab
       const client = clientCreator(instance);
       const userIdMap = await createUserIdMap(jobState);
 
-      await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
-        const groupMembers = await client.fetchGroupMembers(
-          parseInt(group.id as string, 10),
-        );
-
-        if (groupMembers.length > 0) {
-          await jobState.addRelationships(
-            groupMembers.map((member) =>
-              createGroupUserRelationship(
-                group,
-                userIdMap.get(member.id.toString()) as Entity,
-              ),
-            ),
+      await jobState.iterateEntities(
+        { _type: Entities.GROUP._type },
+        async (group) => {
+          const groupMembers = await client.fetchGroupMembers(
+            parseInt(group.id as string, 10),
           );
-        }
-      });
+
+          if (groupMembers.length > 0) {
+            await jobState.addRelationships(
+              groupMembers.map((member) =>
+                createGroupUserRelationship(
+                  group,
+                  userIdMap.get(member.id.toString()) as Entity,
+                ),
+              ),
+            );
+          }
+        },
+      );
     },
   };
 }
@@ -52,7 +58,7 @@ async function createUserIdMap(
 ): Promise<Map<string, Entity>> {
   const userIdMap = new Map<string, Entity>();
 
-  await jobState.iterateEntities({ _type: USER_TYPE }, (user) => {
+  await jobState.iterateEntities({ _type: Entities.USER._type }, (user) => {
     userIdMap.set(user.id as string, user);
   });
 
@@ -65,8 +71,8 @@ export function createGroupUserRelationship(
   group: Entity,
   user: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'HAS',
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
     from: group,
     to: user,
   });

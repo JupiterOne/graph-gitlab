@@ -4,26 +4,24 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import {
-  STEP_ID as MERGE_REQUEST_STEP,
-  MERGE_REQUEST_TYPE,
-} from '../fetch-merge-requests';
-import { STEP_ID as USER_STEP, USER_TYPE } from '../fetch-users';
 import { createGitlabClient } from '../../provider';
 import { ClientCreator } from '../../provider';
 import { GitlabIntegrationConfig } from '../../types';
+import { Steps, Entities, Relationships } from '../../constants';
 
 export function createStep(
   clientCreator: ClientCreator,
 ): IntegrationStep<GitlabIntegrationConfig> {
   return {
-    id: 'build-user-approved-merge-request-relationships',
+    id: Steps.BUILD_USER_APPROVED_PR,
     name: 'Build user approved merge_request relationships',
-    types: ['gitlab_user_approved_merge_request'],
-    dependsOn: [MERGE_REQUEST_STEP, USER_STEP],
+    entities: [],
+    relationships: [Relationships.USER_APPROVED_PR],
+    dependsOn: [Steps.MERGE_REQUESTS, Steps.USERS],
     async executionHandler({
       jobState,
       instance,
@@ -34,7 +32,7 @@ export function createStep(
       const userIdMap = await createUserIdMap(jobState);
 
       await jobState.iterateEntities(
-        { _type: MERGE_REQUEST_TYPE },
+        { _type: Entities.MERGE_REQUEST._type },
         async (mergeRequest) => {
           const approvals = await client.fetchMergeRequestApprovals(
             parseInt(mergeRequest.projectId as string, 10),
@@ -70,7 +68,7 @@ async function createUserIdMap(
 ): Promise<Map<string, Entity>> {
   const userIdMap = new Map<string, Entity>();
 
-  await jobState.iterateEntities({ _type: USER_TYPE }, (user) => {
+  await jobState.iterateEntities({ _type: Entities.USER._type }, (user) => {
     userIdMap.set(user.id as string, user);
   });
 
@@ -83,8 +81,8 @@ export function createUserApprovedPrRelationship(
   user: Entity,
   mergeRequest: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'APPROVED',
+  return createDirectRelationship({
+    _class: RelationshipClass.APPROVED,
     from: user,
     to: mergeRequest,
   });

@@ -7,18 +7,14 @@ import {
 import { createGitlabClient } from '../../provider';
 import { GitLabProject } from '../../provider/types';
 import { GitlabIntegrationConfig } from '../../types';
-
-export const STEP_ID = 'fetch-projects';
-export const PROJECT_TYPE = 'gitlab_project';
+import { Entities, Steps } from '../../constants';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
-  id: STEP_ID,
+  id: Steps.PROJECTS,
   name: 'Fetch projects',
-  types: [PROJECT_TYPE],
-  async executionHandler({
-    instance,
-    jobState,
-  }) {
+  entities: [Entities.PROJECT],
+  relationships: [],
+  async executionHandler({ instance, jobState }) {
     const client = createGitlabClient(instance);
     const projects = await client.fetchProjects();
     await jobState.addEntities(projects.map(createProjectEntity));
@@ -33,8 +29,8 @@ export function createProjectEntity(project: GitLabProject): Entity {
       source: project,
       assign: {
         _key: key,
-        _type: PROJECT_TYPE,
-        _class: ['Project', 'CodeRepo'],
+        _type: Entities.PROJECT._type,
+        _class: Entities.PROJECT._class,
 
         id: project.id.toString(),
         name: project.name,

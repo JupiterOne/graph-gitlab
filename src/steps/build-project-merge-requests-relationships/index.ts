@@ -4,25 +4,23 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import { STEP_ID as PROJECT_STEP, PROJECT_TYPE } from '../fetch-projects';
-import {
-  STEP_ID as MERGE_REQUEST_STEP,
-  MERGE_REQUEST_TYPE,
-} from '../fetch-merge-requests';
+import { Entities, Steps, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
-  id: 'build-project-merge-request-relationships',
+  id: Steps.BUILD_PROJECT_HAS_PR,
   name: 'Build project merge request relationships',
-  types: ['gitlab_project_has_merge_request'],
-  dependsOn: [PROJECT_STEP, MERGE_REQUEST_STEP],
+  entities: [],
+  relationships: [Relationships.PROJECT_HAS_PR],
+  dependsOn: [Steps.PROJECTS, Steps.MERGE_REQUESTS],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const projectIdMap = await createProjectIdMap(jobState);
 
     await jobState.iterateEntities(
-      { _type: MERGE_REQUEST_TYPE },
+      { _type: Entities.MERGE_REQUEST._type },
       async (mergeRequest) => {
         const project = projectIdMap.get(mergeRequest.projectId as string);
 
@@ -41,9 +39,12 @@ async function createProjectIdMap(
 ): Promise<Map<string, Entity>> {
   const projectIdMap = new Map<string, Entity>();
 
-  await jobState.iterateEntities({ _type: PROJECT_TYPE }, (project) => {
-    projectIdMap.set(project.id as string, project);
-  });
+  await jobState.iterateEntities(
+    { _type: Entities.PROJECT._type },
+    (project) => {
+      projectIdMap.set(project.id as string, project);
+    },
+  );
 
   return projectIdMap;
 }
@@ -54,8 +55,8 @@ export function createProjectMergeRequestRelationship(
   project: Entity,
   mergeRequest: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'HAS',
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
     from: project,
     to: mergeRequest,
   });

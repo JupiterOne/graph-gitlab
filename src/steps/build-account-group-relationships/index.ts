@@ -4,32 +4,38 @@ import {
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationRelationship,
+  createDirectRelationship,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import { STEP_ID as ACCOUNT_STEP, ACCOUNT_TYPE } from '../fetch-accounts';
-import { STEP_ID as GROUP_STEP, GROUP_TYPE } from '../fetch-groups';
+import { Steps, Entities, Relationships } from '../../constants';
 
 const step: IntegrationStep = {
-  id: 'build-account-group-relationships',
+  id: Steps.BUILD_ACCOUNT_HAS_GROUP,
   name: 'Build account group relationships',
-  types: ['gitlab_account_has_group'],
-  dependsOn: [ACCOUNT_STEP, GROUP_STEP],
+  entities: [],
+  relationships: [Relationships.ACCOUNT_HAS_GROUP],
+  dependsOn: [Steps.ACCOUNTS, Steps.GROUPS],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
     const account = await getAccountEntity(jobState);
 
-    await jobState.iterateEntities({ _type: GROUP_TYPE }, async (group) => {
-      await jobState.addRelationships([
-        createAccountGroupRelationship(account, group),
-      ]);
-    });
+    await jobState.iterateEntities(
+      { _type: Entities.GROUP._type },
+      async (group) => {
+        await jobState.addRelationships([
+          createAccountGroupRelationship(account, group),
+        ]);
+      },
+    );
   },
 };
 
 async function getAccountEntity(jobState: JobState): Promise<Entity> {
   return new Promise((resolve, reject) => {
     jobState
-      .iterateEntities({ _type: ACCOUNT_TYPE }, (account) => resolve(account))
+      .iterateEntities({ _type: Entities.ACCOUNT._type }, (account) =>
+        resolve(account),
+      )
       .catch((error) => reject(error));
   });
 }
@@ -40,8 +46,8 @@ export function createAccountGroupRelationship(
   account: Entity,
   group: Entity,
 ): Relationship {
-  return createIntegrationRelationship({
-    _class: 'HAS',
+  return createDirectRelationship({
+    _class: RelationshipClass.HAS,
     from: account,
     to: group,
   });
