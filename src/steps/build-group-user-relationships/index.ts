@@ -1,16 +1,16 @@
 import {
+  createDirectRelationship,
   Entity,
-  JobState,
-  Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createDirectRelationship,
+  JobState,
+  Relationship,
   RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
-import { createGitlabClient, ClientCreator } from '../../provider';
+import { Entities, Relationships, Steps } from '../../constants';
+import { ClientCreator, createGitlabClient } from '../../provider';
 import { GitlabIntegrationConfig } from '../../types';
-import { Entities, Steps, Relationships } from '../../constants';
 
 export function createStep(
   clientCreator: ClientCreator,
@@ -24,6 +24,7 @@ export function createStep(
     async executionHandler({
       jobState,
       instance,
+      logger,
     }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<
       void
     > {
@@ -37,15 +38,24 @@ export function createStep(
             parseInt(group.id as string, 10),
           );
 
-          if (groupMembers.length > 0) {
-            await jobState.addRelationships(
-              groupMembers.map((member) =>
-                createGroupUserRelationship(
-                  group,
-                  userIdMap.get(member.id.toString()) as Entity,
-                ),
-              ),
+          const groupMemberRelationshipKeys = new Set<string>();
+
+          for (const member of groupMembers) {
+            const groupMemberRelationship = createGroupUserRelationship(
+              group,
+              userIdMap.get(member.id.toString()) as Entity,
             );
+
+            if (groupMemberRelationshipKeys.has(groupMemberRelationship._key)) {
+              logger.info(
+                { _key: groupMemberRelationship._key },
+                '[SKIP] Duplicate group member relationship',
+              );
+              continue;
+            }
+
+            groupMemberRelationshipKeys.add(groupMemberRelationship._key);
+            await jobState.addRelationship(groupMemberRelationship);
           }
         },
       );

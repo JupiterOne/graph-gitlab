@@ -24,6 +24,7 @@ export function createStep(
     async executionHandler({
       jobState,
       instance,
+      logger,
     }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<
       void
     > {
@@ -37,18 +38,26 @@ export function createStep(
             parseInt(project.id as string, 10),
           );
 
-          if (projectMembers.length > 0) {
-            const projectMemberIds = [
-              ...new Set(projectMembers.map((m) => m.id)),
-            ];
-            await jobState.addRelationships(
-              projectMemberIds.map((memberId) =>
-                createProjectUserRelationship(
-                  project,
-                  userIdMap.get(memberId.toString()) as Entity,
-                ),
-              ),
+          const projectMemberRelationshipKeys = new Set<string>();
+
+          for (const member of projectMembers) {
+            const projectMemberRelationship = createProjectUserRelationship(
+              project,
+              userIdMap.get(member.id.toString()) as Entity,
             );
+
+            if (
+              projectMemberRelationshipKeys.has(projectMemberRelationship._key)
+            ) {
+              logger.info(
+                { _key: projectMemberRelationship._key },
+                '[SKIP] Duplicate project member relationship',
+              );
+              continue;
+            }
+
+            projectMemberRelationshipKeys.add(projectMemberRelationship._key);
+            await jobState.addRelationship(projectMemberRelationship);
           }
         },
       );
