@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- [#19](https://github.com/JupiterOne/graph-gitlab/issues/19) - Deduplicate
+  `gitlab_group_has_user` relationships
+- Unhandled authentication/authorization error was not reported to user
+
 ## 2.2.0 - 2020-10-29
 
 ### Changed
