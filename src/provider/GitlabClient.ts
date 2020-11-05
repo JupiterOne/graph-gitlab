@@ -1,13 +1,18 @@
-import fetch, { RequestInit, Response } from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
+
 import {
-  GitLabUser,
+  IntegrationProviderAPIError,
+  IntegrationProviderAuthorizationError,
+} from '@jupiterone/integration-sdk-core';
+
+import {
   GitLabGroup,
-  GitLabProject,
   GitLabMergeRequest,
-  GitLabUserRef,
   GitLabMergeRequestApproval,
+  GitLabProject,
+  GitLabUser,
+  GitLabUserRef,
 } from './types';
-import { IntegrationError } from '@jupiterone/integration-sdk-core';
 
 export enum HttpMethod {
   GET = 'get',
@@ -26,11 +31,15 @@ export class GitlabClient {
   }
 
   async fetchAccount(): Promise<GitLabUser> {
-    return this.makeSingularRequest(HttpMethod.GET, '/user') as Promise<GitLabUser>;
+    return this.makeSingularRequest(HttpMethod.GET, '/user') as Promise<
+      GitLabUser
+    >;
   }
 
   async fetchUser(id: number): Promise<GitLabUser> {
-    return this.makeSingularRequest(HttpMethod.GET, `/users/${id}`) as Promise<GitLabUser>;
+    return this.makeSingularRequest(HttpMethod.GET, `/users/${id}`) as Promise<
+      GitLabUser
+    >;
   }
 
   async fetchGroups(): Promise<GitLabGroup[]> {
@@ -65,10 +74,10 @@ export class GitlabClient {
     mergeRequestId: number,
   ): Promise<GitLabMergeRequestApproval> {
     try {
-      const result = await this.makeSingularRequest(
+      const result = (await this.makeSingularRequest(
         HttpMethod.GET,
         `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
-      ) as GitLabMergeRequestApproval;
+      )) as GitLabMergeRequestApproval;
 
       return result;
     } catch (err) {
@@ -110,26 +119,26 @@ export class GitlabClient {
     method: HttpMethod,
     url: string,
   ): Promise<Response> {
-    const options: RequestInit = {
+    const endpoint = `${this.baseUrl}/api/v4${url}`;
+
+    const response: Response = await fetch(endpoint, {
       method,
       headers: {
         'Private-Token': this.personalToken,
       },
-    };
+    });
 
-    const response: Response = await fetch(
-      `${this.baseUrl}/api/v4${url}`,
-      options,
-    );
-
-    if (!response) {
-      throw new Error(`No response from '${this.baseUrl}/api/v4${url}'`);
-    }
-
-    if (!response.ok) {
-      throw new IntegrationError({
-        code: response.status.toString(),
-        message: `Request '${this.baseUrl}/api/v4${url}' failed: ${response.statusText}`,
+    if ([401, 403].includes(response.status)) {
+      throw new IntegrationProviderAuthorizationError({
+        endpoint,
+        status: response.status,
+        statusText: response.statusText,
+      });
+    } else if (!response.ok) {
+      throw new IntegrationProviderAPIError({
+        endpoint,
+        status: response.status,
+        statusText: response.statusText,
       });
     }
 
@@ -167,7 +176,10 @@ export class GitlabClient {
         }`,
       );
 
-      totalPages = parseInt(response.headers.get('X-Total-Pages') as string, 10);
+      totalPages = parseInt(
+        response.headers.get('X-Total-Pages') as string,
+        10,
+      );
 
       const result = await response.json();
 
@@ -176,7 +188,7 @@ export class GitlabClient {
       }
     } while (page < totalPages && page < pageLimit);
 
-    const pageResults: T[] = []
+    const pageResults: T[] = [];
 
     return pageResults.concat(...results);
   }
