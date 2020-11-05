@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- Unhandled authentication/authorization error was not reported to user
+
 ## 2.2.0 - 2020-10-29
 
 ### Changed
