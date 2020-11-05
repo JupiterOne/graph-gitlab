@@ -10,9 +10,9 @@ and this project adheres to
 
 ### Fixed
 
-- [#19](https://github.com/JupiterOne/graph-gitlab/issues/19) - Deduplicate
-  `gitlab_group_has_user` relationships
-- Unhandled authentication/authorization error was not reported to user
+- Fix #3 - Unhandled authentication/authorization error in `validateInvocation`
+- Fix #19 - Duplicate `gitlab_group_has_user` relationships
+- Unhandled authentication/authorization error in resource API calls
 
 ## 2.2.0 - 2020-10-29
 
