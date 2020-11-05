@@ -2,6 +2,7 @@ import fetch, { Response } from 'node-fetch';
 
 import {
   IntegrationProviderAPIError,
+  IntegrationProviderAuthenticationError,
   IntegrationProviderAuthorizationError,
 } from '@jupiterone/integration-sdk-core';
 
@@ -128,7 +129,13 @@ export class GitlabClient {
       },
     });
 
-    if ([401, 403].includes(response.status)) {
+    if (response.status === 401) {
+      throw new IntegrationProviderAuthenticationError({
+        endpoint,
+        status: response.status,
+        statusText: response.statusText,
+      });
+    } else if (response.status === 403) {
       throw new IntegrationProviderAuthorizationError({
         endpoint,
         status: response.status,
