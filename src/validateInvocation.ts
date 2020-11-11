@@ -17,6 +17,10 @@ export default async function validateInvocation({
     );
   }
 
+  if (config.baseUrl.endsWith('/')) {
+    config.baseUrl = config.baseUrl.slice(0, -1);
+  }
+
   const client = createGitlabClient(instance);
   await client.fetchAccount();
 }
