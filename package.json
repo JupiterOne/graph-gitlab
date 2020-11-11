@@ -1,6 +1,6 @@
 {
   "name": "@jupiterone/graph-gitlab",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "A JupiterOne Integration",
   "license": "MPL-2.0",
   "main": "dist/index.js",
