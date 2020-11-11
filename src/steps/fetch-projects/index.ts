@@ -22,7 +22,9 @@ const step: IntegrationStep<GitlabIntegrationConfig> = {
     const client = createGitlabClient(instance);
 
     const projectKeys = new Set<string>();
-    const addProjectEntity = async (project: GitLabProject) => {
+    const addProjectEntity = async (
+      project: GitLabProject,
+    ): Promise<Entity> => {
       const projectEntity = createProjectEntity(project);
       if (!projectKeys.has(projectEntity._key)) {
         await jobState.addEntity(projectEntity);

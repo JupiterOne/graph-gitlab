@@ -21,7 +21,7 @@ afterEach(async () => {
   await recording.stop();
 });
 
-test('User entity conversion', async () => {
+test('User entity conversion', () => {
   const user = {
     id: 1,
     name: 'Administrator',

@@ -45,7 +45,7 @@ test('Group fetching', async () => {
   );
 });
 
-test('Group entity conversion', async () => {
+test('Group entity conversion', () => {
   const group = {
     id: 1,
     parent_id: 2,

@@ -50,7 +50,7 @@ export interface GitLabGroup {
 }
 
 export interface GitLabProject {
-  _links: any;
+  _links: unknown;
   id: number;
   name: string;
   namespace: {

@@ -50,7 +50,7 @@ test('Project fetching', async () => {
   );
 });
 
-test('Project entity conversion', async () => {
+test('Project entity conversion', () => {
   const projectNoOwner = {
     id: 1,
     name: 'project',
