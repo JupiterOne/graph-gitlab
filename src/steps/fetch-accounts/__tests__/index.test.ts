@@ -40,7 +40,7 @@ test('Account fetching', async () => {
   );
 });
 
-test('Account entity conversion', async () => {
+test('Account entity conversion', () => {
   const account = {
     id: 1,
     username: 'account',

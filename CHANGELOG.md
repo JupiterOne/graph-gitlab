@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- Ingest projects of accessible groups in addition to projects owned by the
+  configured user credentials.
+
 ## 2.2.1 2020-11-05
 
 ### Fixed

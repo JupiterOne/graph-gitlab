@@ -1,12 +1,12 @@
+import step, { createProjectEntity } from '../';
 import {
+  createMockStepExecutionContext,
   Recording,
   setupRecording,
-  createMockStepExecutionContext,
 } from '../../../../test';
-
-import { GitLabProject } from '../../../provider/types';
 import { createGitlabClient } from '../../../provider';
-import step, { createProjectEntity } from '..';
+import { GitLabProject } from '../../../provider/types';
+import fetchGroups from '../../fetch-groups';
 
 let recording: Recording;
 
@@ -30,7 +30,12 @@ test('Project fetching', async () => {
   });
   const provider = createGitlabClient(context.instance);
 
-  const results = await provider.fetchProjects();
+  const groups = await provider.fetchGroups();
+  const results: GitLabProject[] = [];
+
+  await provider.iterateGroupProjects(groups[0].id, (project) => {
+    results.push(project);
+  });
 
   expect(results).toEqual(
     expect.arrayContaining([
@@ -45,7 +50,7 @@ test('Project fetching', async () => {
   );
 });
 
-test('Project entity conversion', async () => {
+test('Project entity conversion', () => {
   const projectNoOwner = {
     id: 1,
     name: 'project',
@@ -177,42 +182,48 @@ test('step data collection', async () => {
       personalToken: process.env.PERSONAL_TOKEN || 'string-value',
     },
   });
+
+  await fetchGroups.executionHandler(context);
   await step.executionHandler(context);
 
-  expect(context.jobState.collectedEntities).toHaveLength(2);
-  expect(context.jobState.collectedRelationships).toHaveLength(0);
+  expect(context.jobState.collectedEntities.length).toBeGreaterThan(0);
+  expect(context.jobState.collectedRelationships.length).toBeGreaterThan(0);
 
-  expect(context.jobState.collectedEntities).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        _key: expect.stringMatching(/gitlab-project:[0-9]+/),
-        _type: 'gitlab_project',
-        _class: ['Project', 'CodeRepo'],
-        _rawData: expect.any(Array),
-        id: expect.stringMatching(/[0-9]+/),
-        name: expect.any(String),
-        createdOn: expect.any(Number),
-        description: expect.any(String),
-        webLink: expect.any(String),
-        visibility: expect.any(String),
-        public: expect.any(Boolean),
-        issuesEnabled: expect.any(Boolean),
-        mergeRequestsEnabled: expect.any(Boolean),
-        jobsEnabled: expect.any(Boolean),
-        wikiEnabled: expect.any(Boolean),
-        snippetsEnabled: expect.any(Boolean),
-        canCreateMergeRequestIn: expect.any(Boolean),
-        resolveOutdatedDiffDiscussions: expect.any(Boolean),
-        containerRegistryEnabled: expect.any(Boolean),
-        archived: expect.any(Boolean),
-        sharedRunnersEnabled: expect.any(Boolean),
-        publicJobs: expect.any(Boolean),
-        onlyAllowMergeIfPipelineSucceeds: expect.any(Boolean),
-        onlyAllowMergeIfAllDiscussionsAreResolved: expect.any(Boolean),
-        removeSourceBranchAfterMerge: expect.any(Boolean),
-        requestAccessEnabled: expect.any(Boolean),
-        autocloseReferencedIssues: expect.any(Boolean),
-      }),
-    ]),
-  );
+  expect(
+    context.jobState.collectedEntities.filter((e) =>
+      e._class.includes('CodeRepo'),
+    ),
+  ).toMatchGraphObjectSchema({
+    _class: ['Project', 'CodeRepo'],
+    schema: {
+      additionalProperties: false,
+      properties: {
+        _class: { const: ['Project', 'CodeRepo'] },
+        _type: { const: 'gitlab_project' },
+        _rawData: { type: 'array', items: { type: 'object' } },
+        name: { type: 'string' },
+        createdOn: { type: 'number' },
+        description: { type: 'string' },
+        webLink: { type: 'string' },
+        visibility: { type: 'string' },
+        public: { type: 'boolean' },
+        issuesEnabled: { type: 'boolean' },
+        mergeRequestsEnabled: { type: 'boolean' },
+        jobsEnabled: { type: 'boolean' },
+        wikiEnabled: { type: 'boolean' },
+        snippetsEnabled: { type: 'boolean' },
+        canCreateMergeRequestIn: { type: 'boolean' },
+        resolveOutdatedDiffDiscussions: { type: ['boolean', 'null'] },
+        containerRegistryEnabled: { type: 'boolean' },
+        archived: { type: 'boolean' },
+        sharedRunnersEnabled: { type: 'boolean' },
+        publicJobs: { type: 'boolean' },
+        onlyAllowMergeIfPipelineSucceeds: { type: 'boolean' },
+        onlyAllowMergeIfAllDiscussionsAreResolved: { type: 'boolean' },
+        removeSourceBranchAfterMerge: { type: 'boolean' },
+        requestAccessEnabled: { type: 'boolean' },
+        autocloseReferencedIssues: { type: 'boolean' },
+      },
+    },
+  });
 });

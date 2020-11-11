@@ -13,7 +13,6 @@ import buildAccountGroupRelationships from './steps/build-account-group-relation
 import buildAccountProjectRelationships from './steps/build-account-project-relationships';
 import buildGroupSubgroupRelationships from './steps/build-group-subgroup-relationships';
 import buildGroupUserRelationships from './steps/build-group-user-relationships';
-import buildGroupProjectRelationships from './steps/build-group-projects-relationships';
 import buildProjectUserRelationships from './steps/build-project-user-relationships';
 import buildProjectMergeRequestRelationships from './steps/build-project-merge-requests-relationships';
 import buildUserOpenedMergeRequestRelationships from './steps/build-user-opened-merge-request-relationships';
@@ -33,7 +32,6 @@ export const invocationConfig: IntegrationInvocationConfig<GitlabIntegrationConf
     buildAccountProjectRelationships,
     buildGroupSubgroupRelationships,
     buildGroupUserRelationships,
-    buildGroupProjectRelationships,
     buildProjectUserRelationships,
     buildProjectMergeRequestRelationships,
     buildUserOpenedMergeRequestRelationships,

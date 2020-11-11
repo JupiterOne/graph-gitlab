@@ -43,7 +43,7 @@ test('Merge request fetching', async () => {
   );
 });
 
-test('MergeRequest entity conversion', async () => {
+test('MergeRequest entity conversion', () => {
   const mergeRequest = {
     id: 1,
     iid: 2,
