@@ -1,14 +1,12 @@
+import step, { createUserEntity } from '../';
 import {
+  createMockStepExecutionContext,
   Recording,
   setupRecording,
-  createMockStepExecutionContext,
 } from '../../../../test';
-
 import { GitLabUser } from '../../../provider/types';
-import { createGitlabClient } from '../../../provider';
-import step, { createUserEntity } from '..';
-import { createProjectEntity } from '../../fetch-projects';
-import { createGroupEntity } from '../../fetch-groups';
+import fetchGroups from '../../fetch-groups';
+import fetchProjects from '../../fetch-projects';
 
 let recording: Recording;
 
@@ -71,48 +69,47 @@ test('User entity conversion', async () => {
 });
 
 test('step data collection', async () => {
-  const myContext = createMockStepExecutionContext({
-    instanceConfig: {
-      baseUrl: process.env.BASE_URL || 'https://gitlab.com',
-      personalToken: process.env.PERSONAL_TOKEN || 'string-value',
-    },
-  });
-
-  const provider = createGitlabClient(myContext.instance);
-  const groups = await provider.fetchGroups();
-  const projects = await provider.fetchProjects();
-
   const context = createMockStepExecutionContext({
-    entities: [
-      ...groups.map(createGroupEntity),
-      ...projects.map(createProjectEntity),
-    ],
     instanceConfig: {
       baseUrl: process.env.BASE_URL || 'https://gitlab.com',
       personalToken: process.env.PERSONAL_TOKEN || 'string-value',
     },
   });
 
+  await fetchGroups.executionHandler(context);
+  await fetchProjects.executionHandler(context);
   await step.executionHandler(context);
 
   expect(context.jobState.collectedEntities.length).toBeGreaterThanOrEqual(1);
-  expect(context.jobState.collectedRelationships).toHaveLength(0);
-
-  expect(context.jobState.collectedEntities).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({
-        _key: expect.stringMatching(/gitlab-user:[0-9]+/),
-        _type: 'gitlab_user',
-        _class: ['User'],
-        _rawData: expect.any(Array),
-        id: expect.stringMatching(/[0-9]+/),
-        name: expect.any(String),
-        webLink: expect.any(String),
-        createdOn: expect.any(Number),
-        username: expect.any(String),
-        state: expect.any(String),
-        publicEmail: expect.any(String),
-      }),
-    ]),
+  expect(context.jobState.collectedRelationships.length).toBeGreaterThanOrEqual(
+    1,
   );
+
+  expect(
+    context.jobState.collectedEntities.filter((e) => e._class.includes('User')),
+  ).toMatchGraphObjectSchema({
+    _class: 'User',
+    schema: {
+      additionalProperties: false,
+      properties: {
+        _class: ['User'],
+        _type: { const: 'gitlab_user' },
+        _rawData: { type: 'array', items: { type: 'object' } },
+        id: { pattern: '[0-9]+' },
+        name: { type: 'string' },
+        webLink: { type: 'string' },
+        createdOn: { type: 'number' },
+        username: { type: 'string' },
+        state: { type: 'string' },
+        publicEmail: { type: 'string' },
+        isAdmin: { type: 'boolean' },
+        canCreateGroup: { type: 'boolean' },
+        canCreateProject: { type: 'boolean' },
+        twoFactorEnabled: { type: 'boolean' },
+        external: { type: 'boolean' },
+        privateProfile: { type: 'boolean' },
+        trial: { type: 'boolean' },
+      },
+    },
+  });
 });

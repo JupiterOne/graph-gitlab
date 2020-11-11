@@ -1,4 +1,5 @@
 import fetch, { Response } from 'node-fetch';
+import { URLSearchParams } from 'url';
 
 import {
   IntegrationProviderAPIError,
@@ -14,6 +15,13 @@ import {
   GitLabUser,
   GitLabUserRef,
 } from './types';
+
+/**
+ * default: 20, max: 100
+ */
+const ITEMS_PER_PAGE = 100;
+
+export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
 
 export enum HttpMethod {
   GET = 'get',
@@ -47,10 +55,17 @@ export class GitlabClient {
     return this.makePaginatedRequest(HttpMethod.GET, '/groups');
   }
 
-  async fetchProjects(): Promise<GitLabProject[]> {
-    return this.makePaginatedRequest(HttpMethod.GET, '/projects', undefined, {
-      owned: true,
-    });
+  async iterateOwnedProjects(
+    iteratee: ResourceIteratee<GitLabProject>,
+  ): Promise<void> {
+    return this.iterateResources(`/projects`, iteratee, { owned: 'true' });
+  }
+
+  async iterateGroupProjects(
+    groupId: number,
+    iteratee: ResourceIteratee<GitLabProject>,
+  ): Promise<void> {
+    return this.iterateResources(`/groups/${groupId}/projects`, iteratee);
   }
 
   async fetchUsers(): Promise<GitLabUser[]> {
@@ -99,13 +114,6 @@ export class GitlabClient {
     return this.makePaginatedRequest(
       HttpMethod.GET,
       `/groups/${groupId}/members/all`,
-    );
-  }
-
-  async fetchGroupProjects(groupId: number): Promise<GitLabProject[]> {
-    return this.makePaginatedRequest(
-      HttpMethod.GET,
-      `/groups/${groupId}/projects`,
     );
   }
 
@@ -161,6 +169,35 @@ export class GitlabClient {
     return response.json();
   }
 
+  private async iterateResources<T>(
+    v4path: string,
+    iteratee: ResourceIteratee<T>,
+    params: NodeJS.Dict<string | string[]> = {},
+  ): Promise<void> {
+    let page = 1;
+
+    do {
+      const searchParams = new URLSearchParams({
+        ...params,
+        page: String(page),
+        per_page: String(ITEMS_PER_PAGE),
+      });
+
+      const endpoint = `${v4path}?${searchParams.toString()}`;
+      const response = await this.makeRequest(HttpMethod.GET, endpoint);
+
+      page = Number(response.headers.get('x-next-page'));
+
+      const result = await response.json();
+      if (Array.isArray(result)) {
+        for (const resource of result) {
+          await iteratee(resource);
+        }
+      }
+    } while (page);
+  }
+
+  // TODO: Get rid of this, improve/use iterateResources
   private async makePaginatedRequest<T>(
     method: HttpMethod,
     url: string,
@@ -178,7 +215,7 @@ export class GitlabClient {
         .join('&');
       const response = await this.makeRequest(
         method,
-        `${url}?page=${++page}&per_page=100${
+        `${url}?page=${++page}&per_page=${ITEMS_PER_PAGE}${
           queryParams ? '&' + queryParams : ''
         }`,
       );

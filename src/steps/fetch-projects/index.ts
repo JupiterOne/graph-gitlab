@@ -1,32 +1,69 @@
 import {
-  Entity,
-  IntegrationStep,
+  createDirectRelationship,
   createIntegrationEntity,
+  Entity,
+  getRawData,
+  IntegrationStep,
+  RelationshipClass,
 } from '@jupiterone/integration-sdk-core';
 
+import { Entities, Relationships, Steps } from '../../constants';
 import { createGitlabClient } from '../../provider';
-import { GitLabProject } from '../../provider/types';
+import { GitLabGroup, GitLabProject } from '../../provider/types';
 import { GitlabIntegrationConfig } from '../../types';
-import { Entities, Steps } from '../../constants';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: Steps.PROJECTS,
   name: 'Fetch projects',
   entities: [Entities.PROJECT],
-  relationships: [],
+  relationships: [Relationships.GROUP_HAS_PROJECT],
+  dependsOn: [Steps.GROUPS],
   async executionHandler({ instance, jobState }) {
     const client = createGitlabClient(instance);
-    const projects = await client.fetchProjects();
-    await jobState.addEntities(projects.map(createProjectEntity));
+
+    const projectKeys = new Set<string>();
+    const addProjectEntity = async (project: GitLabProject) => {
+      const projectEntity = createProjectEntity(project);
+      if (!projectKeys.has(projectEntity._key)) {
+        await jobState.addEntity(projectEntity);
+        projectKeys.add(projectEntity._key);
+      }
+      return projectEntity;
+    };
+
+    // Projects in groups accessible to the user
+    await jobState.iterateEntities(
+      { _type: Entities.GROUP._type },
+      async (groupEntity) => {
+        const group = getRawData(groupEntity) as GitLabGroup;
+
+        await client.iterateGroupProjects(group.id, async (project) => {
+          const projectEntity = await addProjectEntity(project);
+          await jobState.addRelationship(
+            createDirectRelationship({
+              _class: RelationshipClass.HAS,
+              from: groupEntity,
+              to: projectEntity,
+            }),
+          );
+        });
+      },
+    );
+
+    // Projects owned by the user
+    await client.iterateOwnedProjects(async (project) => {
+      await addProjectEntity(project);
+    });
   },
 };
 
 export function createProjectEntity(project: GitLabProject): Entity {
+  const { _links, ...source } = project; // drop the _links
   const key = createProjectEntityIdentifier(project.id);
 
   return createIntegrationEntity({
     entityData: {
-      source: project,
+      source,
       assign: {
         _key: key,
         _type: Entities.PROJECT._type,
