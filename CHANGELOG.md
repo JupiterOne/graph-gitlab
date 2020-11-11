@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.2.2 2020-11-11
+
 ### Added
 
 - Ingest projects of accessible groups in addition to projects owned by the
