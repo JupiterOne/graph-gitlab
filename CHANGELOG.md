@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.3.0 2020-11-12
+
 ### Added
 
 - `allowMergeOnSkippedPipeline` to project entities.
