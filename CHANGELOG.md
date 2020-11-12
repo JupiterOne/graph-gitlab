@@ -8,6 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- `allowMergeOnSkippedPipeline` to project entities.
+
+### Fixed
+
+- A `403` response to requests for project merge requests would kill all merge
+  request ingestion.
+
 ## 2.2.2 2020-11-11
 
 ### Added

@@ -4,7 +4,16 @@
     "_key": "gitlab-project:18463260",
     "_type": "gitlab_project",
     "_class": ["Project"],
-    "name": "Project 1",
+    "_rawData": [
+      {
+        "name": "default",
+        "rawData": {
+          "id": 18463260,
+          "name": "project-1"
+        }
+      }
+    ],
+    "name": "project-1",
     "displayName": "project-1",
     "createdOn": 1586982455921
   },
@@ -13,6 +22,14 @@
     "_key": "gitlab-merge-request:18463260",
     "_type": "gitlab_merge_request",
     "_class": ["PR"],
+    "_rawData": [
+      {
+        "name": "default",
+        "rawData": {
+          "id": 18463260
+        }
+      }
+    ],
     "name": "Merge Request 1",
     "projectId": "gitlab-project:18463260",
     "createdOn": 1586982455921

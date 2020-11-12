@@ -1,14 +1,18 @@
+import { v4 as uuid } from 'uuid';
+
 import {
+  createIntegrationEntity,
   Entity,
+  getRawData,
+  IntegrationProviderAuthorizationError,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationEntity,
 } from '@jupiterone/integration-sdk-core';
 
+import { Entities, Steps } from '../../constants';
 import { createGitlabClient } from '../../provider';
-import { GitLabMergeRequest } from '../../provider/types';
+import { GitLabMergeRequest, GitLabProject } from '../../provider/types';
 import { GitlabIntegrationConfig } from '../../types';
-import { Steps, Entities } from '../../constants';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: Steps.MERGE_REQUESTS,
@@ -17,28 +21,70 @@ const step: IntegrationStep<GitlabIntegrationConfig> = {
   relationships: [],
   dependsOn: [Steps.PROJECTS],
   async executionHandler({
+    logger,
     instance,
     jobState,
   }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
     const client = createGitlabClient(instance);
 
+    let totalProjectsProcessed = 0;
+    let totalErrors = 0;
+
+    const errorCorrelationId = uuid();
+
+    const unauthorizedProjectIds = new Set<number>();
     await jobState.iterateEntities(
       { _type: Entities.PROJECT._type },
-      async (project) => {
-        const mergeRequests = await client.fetchProjectMergeRequests(
-          parseInt(project.id as string, 10),
+      async (projectEntity) => {
+        const project = getRawData(projectEntity) as GitLabProject;
+
+        await client.iterateProjectMergeRequests(
+          project.id,
+          async (mergeRequest) => {
+            await jobState.addEntity(
+              createMergeRequestEntity(mergeRequest, project.name),
+            );
+          },
+          ({ err, endpoint }) => {
+            const logDetail = {
+              err,
+              endpoint,
+              projectId: project.id,
+              errorCorrelationId,
+            };
+            if (err instanceof IntegrationProviderAuthorizationError) {
+              logger.warn(
+                logDetail,
+                'Unauthorized to fetch merge requests for project',
+              );
+              unauthorizedProjectIds.add(project.id);
+            } else {
+              logger.error(
+                logDetail,
+                'Failed to fetch merge requests for project',
+              );
+            }
+
+            totalErrors++;
+          },
         );
 
-        await jobState.addEntities(
-          mergeRequests.map((mergeRequest) =>
-            createMergeRequestEntity(
-              mergeRequest,
-              project.displayName as string,
-            ),
-          ),
-        );
+        totalProjectsProcessed++;
       },
     );
+
+    logger.publishEvent({
+      name: 'stats',
+      description: `Processed merge requests for ${totalProjectsProcessed} projects${
+        totalErrors > 0
+          ? `, errors for ${totalErrors} projects${
+              unauthorizedProjectIds.size > 0
+                ? `(${unauthorizedProjectIds.size} unauthorized)`
+                : ''
+            } projects (errorId="${errorCorrelationId}")`
+          : ''
+      }`,
+    });
   },
 };
 
