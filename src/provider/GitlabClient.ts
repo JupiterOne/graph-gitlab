@@ -2,6 +2,7 @@ import fetch, { Response } from 'node-fetch';
 import { URLSearchParams } from 'url';
 
 import {
+  IntegrationError,
   IntegrationProviderAPIError,
   IntegrationProviderAuthenticationError,
   IntegrationProviderAuthorizationError,
@@ -22,6 +23,10 @@ import {
 const ITEMS_PER_PAGE = 100;
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
+export type PageErrorHandler = ({
+  err: Error,
+  endpoint: string,
+}) => Promise<void> | void;
 
 export enum HttpMethod {
   GET = 'get',
@@ -58,7 +63,9 @@ export class GitlabClient {
   async iterateOwnedProjects(
     iteratee: ResourceIteratee<GitLabProject>,
   ): Promise<void> {
-    return this.iterateResources(`/projects`, iteratee, { owned: 'true' });
+    return this.iterateResources(`/projects`, iteratee, {
+      params: { owned: 'true' },
+    });
   }
 
   async iterateGroupProjects(
@@ -70,6 +77,21 @@ export class GitlabClient {
 
   async fetchUsers(): Promise<GitLabUser[]> {
     return this.makePaginatedRequest(HttpMethod.GET, '/users');
+  }
+
+  async iterateProjectMergeRequests(
+    projectId: number,
+    iteratee: ResourceIteratee<GitLabMergeRequest>,
+    onPageError: PageErrorHandler,
+  ): Promise<void> {
+    return this.iterateResources(
+      `/projects/${projectId}/merge_requests`,
+      iteratee,
+      {
+        onPageError,
+        params: { updated_after: this.lastRun.toISOString() },
+      },
+    );
   }
 
   async fetchProjectMergeRequests(
@@ -172,27 +194,48 @@ export class GitlabClient {
   private async iterateResources<T>(
     v4path: string,
     iteratee: ResourceIteratee<T>,
-    params: NodeJS.Dict<string | string[]> = {},
+    options?: {
+      onPageError?: PageErrorHandler;
+      params?: NodeJS.Dict<string | string[]>;
+    },
   ): Promise<void> {
     let page = 1;
 
     do {
       const searchParams = new URLSearchParams({
-        ...params,
+        ...options?.params,
         page: String(page),
         per_page: String(ITEMS_PER_PAGE),
       });
 
       const endpoint = `${v4path}?${searchParams.toString()}`;
-      const response = await this.makeRequest(HttpMethod.GET, endpoint);
 
-      page = Number(response.headers.get('x-next-page'));
-
-      const result = await response.json();
-      if (Array.isArray(result)) {
-        for (const resource of result) {
-          await iteratee(resource);
+      let response: Response | undefined;
+      try {
+        response = await this.makeRequest(HttpMethod.GET, endpoint);
+      } catch (err) {
+        if (options?.onPageError) {
+          await options.onPageError({ err, endpoint });
+        } else {
+          throw err;
         }
+      }
+
+      if (response) {
+        page = Number(response.headers.get('x-next-page'));
+        const result = await response.json();
+        if (Array.isArray(result)) {
+          for (const resource of result) {
+            await iteratee(resource);
+          }
+        } else {
+          throw new IntegrationError({
+            code: 'UNEXPECTED_RESPONSE_DATA',
+            message: `Expected a collection of resources but type was ${typeof result}`,
+          });
+        }
+      } else {
+        page = 0; // stop pagination, no page info without response
       }
     } while (page);
   }
