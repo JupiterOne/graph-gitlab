@@ -91,6 +91,7 @@ export function createProjectEntity(project: GitLabProject): Entity {
         archived: project.archived,
         sharedRunnersEnabled: project.shared_runners_enabled,
         publicJobs: project.public_jobs,
+        allowMergeOnSkippedPipeline: !!project.allow_merge_on_skipped_pipeline,
         onlyAllowMergeIfPipelineSucceeds:
           project.only_allow_merge_if_pipeline_succeeds,
         onlyAllowMergeIfAllDiscussionsAreResolved:

@@ -1,3 +1,5 @@
+import { Opaque } from 'type-fest';
+
 export interface GitLabUser {
   id: number;
   name: string;
@@ -49,40 +51,7 @@ export interface GitLabGroup {
   file_template_project_id: number;
 }
 
-export interface GitLabProject {
-  _links: unknown;
-  id: number;
-  name: string;
-  namespace: {
-    id: number;
-    parent_id: number;
-    kind: string;
-  };
-  owner?: {
-    id: number;
-    name: string;
-  };
-  created_at: string;
-  description: string;
-  web_url: string;
-  visibility: string;
-  issues_enabled: boolean;
-  merge_requests_enabled: boolean;
-  jobs_enabled: boolean;
-  wiki_enabled: boolean;
-  snippets_enabled: boolean;
-  can_create_merge_request_in: boolean;
-  resolve_outdated_diff_discussions: boolean;
-  container_registry_enabled: boolean;
-  archived: boolean;
-  shared_runners_enabled: boolean;
-  public_jobs: boolean;
-  only_allow_merge_if_pipeline_succeeds: boolean;
-  only_allow_merge_if_all_discussions_are_resolved: boolean;
-  remove_source_branch_after_merge: boolean;
-  request_access_enabled: boolean;
-  autoclose_referenced_issues: boolean;
-}
+export type GitLabProject = Opaque<any, 'GitLabProject'>;
 
 export interface GitLabMergeRequest {
   id: number;

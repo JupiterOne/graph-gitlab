@@ -1,3 +1,8 @@
+import fs from 'fs';
+import path from 'path';
+
+import { GraphObjectSchema } from '@jupiterone/integration-sdk-testing';
+
 import step, { createProjectEntity } from '../';
 import {
   createMockStepExecutionContext,
@@ -7,6 +12,40 @@ import {
 import { createGitlabClient } from '../../../provider';
 import { GitLabProject } from '../../../provider/types';
 import fetchGroups from '../../fetch-groups';
+import { Entity } from '@jupiterone/integration-sdk-core';
+
+const projectClass = ['Project', 'CodeRepo'];
+const projectSchema: GraphObjectSchema = {
+  additionalProperties: false,
+  properties: {
+    _class: { const: projectClass },
+    _type: { const: 'gitlab_project' },
+    _rawData: { type: 'array', items: { type: 'object' } },
+    name: { type: 'string' },
+    createdOn: { type: 'number' },
+    description: { type: 'string' },
+    webLink: { type: 'string' },
+    visibility: { type: 'string' },
+    public: { type: 'boolean' },
+    issuesEnabled: { type: 'boolean' },
+    mergeRequestsEnabled: { type: 'boolean' },
+    jobsEnabled: { type: 'boolean' },
+    wikiEnabled: { type: 'boolean' },
+    snippetsEnabled: { type: 'boolean' },
+    canCreateMergeRequestIn: { type: 'boolean' },
+    resolveOutdatedDiffDiscussions: { type: ['boolean', 'null'] },
+    containerRegistryEnabled: { type: 'boolean' },
+    archived: { type: 'boolean' },
+    sharedRunnersEnabled: { type: 'boolean' },
+    publicJobs: { type: 'boolean' },
+    allowMergeOnSkippedPipeline: { type: 'boolean' },
+    onlyAllowMergeIfPipelineSucceeds: { type: 'boolean' },
+    onlyAllowMergeIfAllDiscussionsAreResolved: { type: 'boolean' },
+    removeSourceBranchAfterMerge: { type: 'boolean' },
+    requestAccessEnabled: { type: 'boolean' },
+    autocloseReferencedIssues: { type: 'boolean' },
+  },
+};
 
 let recording: Recording;
 
@@ -50,129 +89,63 @@ test('Project fetching', async () => {
   );
 });
 
-test('Project entity conversion', () => {
-  const projectNoOwner = {
-    id: 1,
-    name: 'project',
-    created_at: '2020-01-01T00:00:00.000Z',
-    description: 'desc',
-    web_url: 'https://url',
-    visibility: 'private',
-    issues_enabled: true,
-    merge_requests_enabled: true,
-    jobs_enabled: true,
-    wiki_enabled: true,
-    snippets_enabled: true,
-    can_create_merge_request_in: true,
-    resolve_outdated_diff_discussions: true,
-    container_registry_enabled: true,
-    archived: false,
-    shared_runners_enabled: true,
-    public_jobs: true,
-    only_allow_merge_if_pipeline_succeeds: false,
-    only_allow_merge_if_all_discussions_are_resolved: true,
-    remove_source_branch_after_merge: true,
-    request_access_enabled: true,
-    autoclose_referenced_issues: true,
-  } as GitLabProject;
+describe('createProjectEntity', () => {
+  const sampleProjects = JSON.parse(
+    fs
+      .readFileSync(path.join(__dirname, '..', '__fixtures__', 'projects.json'))
+      .toString(),
+  ) as GitLabProject[];
 
-  const entityNoOwner = createProjectEntity(projectNoOwner);
+  function convertProject(project: GitLabProject): Entity {
+    const entity = createProjectEntity(project);
+    expect(entity).toMatchGraphObjectSchema({
+      _class: projectClass,
+      schema: projectSchema,
+    });
+    return entity;
+  }
 
-  expect(entityNoOwner).toEqual(
-    expect.objectContaining({
-      _key: 'gitlab-project:1',
-      _type: 'gitlab_project',
-      _class: ['Project', 'CodeRepo'],
-      _rawData: expect.any(Array),
-      id: '1',
-      name: 'project',
-      owner: undefined,
-      createdOn: expect.any(Number),
-      description: 'desc',
-      webLink: 'https://url',
-      visibility: 'private',
-      public: false,
-      issuesEnabled: true,
-      mergeRequestsEnabled: true,
-      jobsEnabled: true,
-      wikiEnabled: true,
-      snippetsEnabled: true,
-      canCreateMergeRequestIn: true,
-      resolveOutdatedDiffDiscussions: true,
-      containerRegistryEnabled: true,
-      archived: false,
-      sharedRunnersEnabled: true,
-      publicJobs: true,
-      onlyAllowMergeIfPipelineSucceeds: false,
-      onlyAllowMergeIfAllDiscussionsAreResolved: true,
-      removeSourceBranchAfterMerge: true,
-      requestAccessEnabled: true,
-      autocloseReferencedIssues: true,
-    }),
-  );
+  test('no owner', () => {
+    expect(
+      convertProject({
+        ...sampleProjects[0],
+        owner: undefined,
+      }),
+    ).toEqual(
+      expect.objectContaining({
+        owner: undefined,
+      }),
+    );
+  });
 
-  const projectWithOwner = {
-    id: 2,
-    name: 'project',
-    owner: {
-      name: 'owner',
-    },
-    created_at: '2020-01-01T00:00:00.000Z',
-    description: 'desc',
-    web_url: 'https://url',
-    visibility: 'private',
-    issues_enabled: true,
-    merge_requests_enabled: true,
-    jobs_enabled: true,
-    wiki_enabled: true,
-    snippets_enabled: true,
-    can_create_merge_request_in: true,
-    resolve_outdated_diff_discussions: true,
-    container_registry_enabled: true,
-    archived: false,
-    shared_runners_enabled: true,
-    public_jobs: true,
-    only_allow_merge_if_pipeline_succeeds: false,
-    only_allow_merge_if_all_discussions_are_resolved: true,
-    remove_source_branch_after_merge: true,
-    request_access_enabled: true,
-    autoclose_referenced_issues: true,
-  } as GitLabProject;
+  test('owner', () => {
+    expect(
+      convertProject({
+        ...sampleProjects[0],
+        owner: {
+          id: 1234,
+          name: 'owner',
+        },
+      }),
+    ).toEqual(
+      expect.objectContaining({
+        owner: 'owner',
+      }),
+    );
+  });
 
-  const entityWithOwner = createProjectEntity(projectWithOwner);
-
-  expect(entityWithOwner).toEqual(
-    expect.objectContaining({
-      _key: 'gitlab-project:2',
-      _type: 'gitlab_project',
-      _class: ['Project', 'CodeRepo'],
-      _rawData: expect.any(Array),
-      id: '2',
-      name: 'project',
-      owner: 'owner',
-      createdOn: expect.any(Number),
-      description: 'desc',
-      webLink: 'https://url',
-      visibility: 'private',
-      public: false,
-      issuesEnabled: true,
-      mergeRequestsEnabled: true,
-      jobsEnabled: true,
-      wikiEnabled: true,
-      snippetsEnabled: true,
-      canCreateMergeRequestIn: true,
-      resolveOutdatedDiffDiscussions: true,
-      containerRegistryEnabled: true,
-      archived: false,
-      sharedRunnersEnabled: true,
-      publicJobs: true,
-      onlyAllowMergeIfPipelineSucceeds: false,
-      onlyAllowMergeIfAllDiscussionsAreResolved: true,
-      removeSourceBranchAfterMerge: true,
-      requestAccessEnabled: true,
-      autocloseReferencedIssues: true,
-    }),
-  );
+  test('null allow_merge_on_skipped_pipeline', () => {
+    expect(
+      convertProject({
+        ...sampleProjects[0],
+        allow_merge_on_skipped_pipeline: null,
+      }),
+    ).toEqual(
+      expect.objectContaining({
+        allowMergeOnSkippedPipeline: false,
+      }),
+    );
+  });
 });
 
 test('step data collection', async () => {
@@ -194,36 +167,7 @@ test('step data collection', async () => {
       e._class.includes('CodeRepo'),
     ),
   ).toMatchGraphObjectSchema({
-    _class: ['Project', 'CodeRepo'],
-    schema: {
-      additionalProperties: false,
-      properties: {
-        _class: { const: ['Project', 'CodeRepo'] },
-        _type: { const: 'gitlab_project' },
-        _rawData: { type: 'array', items: { type: 'object' } },
-        name: { type: 'string' },
-        createdOn: { type: 'number' },
-        description: { type: 'string' },
-        webLink: { type: 'string' },
-        visibility: { type: 'string' },
-        public: { type: 'boolean' },
-        issuesEnabled: { type: 'boolean' },
-        mergeRequestsEnabled: { type: 'boolean' },
-        jobsEnabled: { type: 'boolean' },
-        wikiEnabled: { type: 'boolean' },
-        snippetsEnabled: { type: 'boolean' },
-        canCreateMergeRequestIn: { type: 'boolean' },
-        resolveOutdatedDiffDiscussions: { type: ['boolean', 'null'] },
-        containerRegistryEnabled: { type: 'boolean' },
-        archived: { type: 'boolean' },
-        sharedRunnersEnabled: { type: 'boolean' },
-        publicJobs: { type: 'boolean' },
-        onlyAllowMergeIfPipelineSucceeds: { type: 'boolean' },
-        onlyAllowMergeIfAllDiscussionsAreResolved: { type: 'boolean' },
-        removeSourceBranchAfterMerge: { type: 'boolean' },
-        requestAccessEnabled: { type: 'boolean' },
-        autocloseReferencedIssues: { type: 'boolean' },
-      },
-    },
+    _class: projectClass,
+    schema: projectSchema,
   });
 });
