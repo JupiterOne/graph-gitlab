@@ -53,43 +53,10 @@ export interface GitLabGroup {
 
 export type GitLabProject = Opaque<any, 'GitLabProject'>;
 
-export interface GitLabMergeRequest {
-  id: number;
-  iid: number;
-  project_id: number;
-  title: string;
-  state: string;
-  source_branch: string;
-  target_branch: string;
-  description: string;
-  created_at: string;
-  author: {
-    id: number;
-  };
-  web_url: string;
-  merge_when_pipeline_succeeds: boolean;
-  should_remove_source_branch: boolean;
-  force_remove_source_branch: boolean;
-  allow_collaboration: boolean;
-  allow_maintainer_to_push: boolean;
-  squash: boolean;
-}
+export type GitLabMergeRequest = Opaque<any, 'GitLabMergeRequest'>;
 
-export interface GitLabMergeRequestApprovedUser {
-  user: {
-    id: number;
-    name: string;
-  };
-}
-
-export interface GitLabMergeRequestApproval {
-  id: number;
-  iid: number;
-  project_id: number;
-  title: string;
-  state: string;
-  description: string;
-  created_at: string;
-  approved: boolean;
-  approved_by: GitLabMergeRequestApprovedUser[];
-}
+// https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-configuration-1
+export type GitLabMergeRequestApproval = Opaque<
+  any,
+  'GitLabMergeRequestApproval'
+>;

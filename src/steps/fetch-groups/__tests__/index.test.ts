@@ -1,12 +1,9 @@
-import {
-  Recording,
-  setupRecording,
-  createMockStepExecutionContext,
-} from '../../../../test';
+import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 
-import { GitLabGroup } from '../../../provider/types';
+import step, { createGroupEntity } from '../';
+import { Recording, setupRecording } from '../../../../test';
 import { createGitlabClient } from '../../../provider';
-import step, { createGroupEntity } from '..';
+import { GitLabGroup } from '../../../provider/types';
 
 let recording: Recording;
 
@@ -28,7 +25,7 @@ test('Group fetching', async () => {
       personalToken: process.env.PERSONAL_TOKEN || 'string-value',
     },
   });
-  const provider = createGitlabClient(context.instance);
+  const provider = createGitlabClient(context.instance.config);
 
   const results = await provider.fetchGroups();
 

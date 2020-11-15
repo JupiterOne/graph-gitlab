@@ -19,7 +19,7 @@ const step: IntegrationStep<GitlabIntegrationConfig> = {
     instance,
     jobState,
   }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
-    const client = createGitlabClient(instance);
+    const client = createGitlabClient(instance.config);
     const groups = await client.fetchGroups();
     await jobState.addEntities(groups.map(createGroupEntity));
   },

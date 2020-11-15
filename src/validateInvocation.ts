@@ -21,6 +21,12 @@ export default async function validateInvocation({
     config.baseUrl = config.baseUrl.slice(0, -1);
   }
 
-  const client = createGitlabClient(instance);
+  if (!config.mergeRequestsUpdatedAfter) {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    config.mergeRequestsUpdatedAfter = sevenDaysAgo;
+  }
+
+  const client = createGitlabClient(instance.config);
   await client.fetchAccount();
 }
