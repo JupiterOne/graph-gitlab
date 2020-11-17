@@ -1,4 +1,4 @@
-import { createMockStepExecutionContext } from '../../../../test';
+import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 
 import step from '..';
 import entities from './__fixtures__/entities.json';

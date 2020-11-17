@@ -1,12 +1,9 @@
-import {
-  Recording,
-  setupRecording,
-  createMockStepExecutionContext,
-} from '../../../../test';
+import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 
-import { GitLabUser } from '../../../provider/types';
+import step, { createAccountEntity } from '../';
+import { Recording, setupRecording } from '../../../../test';
 import { createGitlabClient } from '../../../provider';
-import step, { createAccountEntity } from '..';
+import { GitLabUser } from '../../../provider/types';
 
 let recording: Recording;
 
@@ -28,7 +25,7 @@ test('Account fetching', async () => {
       personalToken: process.env.PERSONAL_TOKEN || 'string-value',
     },
   });
-  const provider = createGitlabClient(context.instance);
+  const provider = createGitlabClient(context.instance.config);
 
   const results = await provider.fetchAccount();
 

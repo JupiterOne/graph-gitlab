@@ -1,24 +1,15 @@
 import { IntegrationInstance } from '@jupiterone/integration-sdk-core';
-import { GitlabClient } from './GitlabClient';
+
 import { GitlabIntegrationConfig } from '../types';
+import { GitlabClient } from './GitlabClient';
 
-export function createGitlabClient(
-  instance: IntegrationInstance<GitlabIntegrationConfig>,
-): GitlabClient {
-  const baseUrl = instance.config?.baseUrl;
-  const personalToken = instance.config?.personalToken;
-  const lastRun = instance.config?.lastRun;
+type GitlabClientConfig = {
+  baseUrl: string;
+  personalToken: string;
+};
 
-  if (!personalToken || !baseUrl) {
-    throw new Error(
-      'Configuration options [personalToken, baseUrl] are required for the integration instance config',
-    );
-  }
-
-  const d = new Date();
-  d.setDate(d.getDate() - 7);
-
-  return new GitlabClient(baseUrl, personalToken, lastRun || d);
+export function createGitlabClient(config: GitlabClientConfig): GitlabClient {
+  return new GitlabClient(config.baseUrl, config.personalToken);
 }
 
 export type ClientCreator = (

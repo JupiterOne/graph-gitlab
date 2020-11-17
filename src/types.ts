@@ -1,5 +1,9 @@
 export interface GitlabIntegrationConfig {
   baseUrl: string;
   personalToken: string;
-  lastRun?: Date;
+
+  /**
+   * Used to limit number of ingested merge requests.
+   */
+  mergeRequestsUpdatedAfter?: Date;
 }

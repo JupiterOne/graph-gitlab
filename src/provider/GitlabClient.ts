@@ -36,12 +36,10 @@ export enum HttpMethod {
 export class GitlabClient {
   private readonly baseUrl: string;
   private readonly personalToken: string;
-  private readonly lastRun: Date;
 
-  constructor(baseUrl: string, personalToken: string, lastRun: Date) {
+  constructor(baseUrl: string, personalToken: string) {
     this.baseUrl = baseUrl;
     this.personalToken = personalToken;
-    this.lastRun = lastRun;
   }
 
   async fetchAccount(): Promise<GitLabUser> {
@@ -75,54 +73,37 @@ export class GitlabClient {
     return this.iterateResources(`/groups/${groupId}/projects`, iteratee);
   }
 
-  async fetchUsers(): Promise<GitLabUser[]> {
-    return this.makePaginatedRequest(HttpMethod.GET, '/users');
-  }
-
   async iterateProjectMergeRequests(
     projectId: number,
     iteratee: ResourceIteratee<GitLabMergeRequest>,
-    onPageError: PageErrorHandler,
+    options: {
+      updatedAfter: Date;
+      onPageError: PageErrorHandler;
+    },
   ): Promise<void> {
     return this.iterateResources(
       `/projects/${projectId}/merge_requests`,
       iteratee,
       {
-        onPageError,
-        params: { updated_after: this.lastRun.toISOString() },
+        onPageError: options.onPageError,
+        params: { updated_after: options.updatedAfter.toISOString() },
       },
     );
   }
 
-  async fetchProjectMergeRequests(
-    projectId: number,
-  ): Promise<GitLabMergeRequest[]> {
-    return this.makePaginatedRequest(
-      HttpMethod.GET,
-      `/projects/${projectId}/merge_requests`,
-      1,
-      {
-        updated_after: this.lastRun.toISOString(),
-      },
-    );
-  }
-
+  /**
+   * https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-configuration-1
+   */
   async fetchMergeRequestApprovals(
     projectId: number,
     mergeRequestId: number,
   ): Promise<GitLabMergeRequestApproval> {
-    try {
-      const result = (await this.makeSingularRequest(
-        HttpMethod.GET,
-        `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
-      )) as GitLabMergeRequestApproval;
+    const result = (await this.makeSingularRequest(
+      HttpMethod.GET,
+      `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
+    )) as GitLabMergeRequestApproval;
 
-      return result;
-    } catch (err) {
-      console.error(err);
-
-      return {} as GitLabMergeRequestApproval;
-    }
+    return result;
   }
 
   async fetchProjectMembers(projectId: number): Promise<GitLabUserRef[]> {

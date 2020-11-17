@@ -41,7 +41,7 @@ export const Entities = {
   PROJECT: {
     resourceName: 'Project',
     _type: 'gitlab_project',
-    _class: ['Project', 'CodeRepo'],
+    _class: ['CodeRepo', 'Project'],
   },
 };
 

@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.4.0 2020-11-17
+
+### Added
+
+- Added properties to merge request entities: `approved`, `approvers` (names of
+  persons who approved), `approverIds`, and `approverLogins`.
+- Raw data of merge requests now include `approval` resource.
+
 ## 2.3.0 2020-11-12
 
 ### Added

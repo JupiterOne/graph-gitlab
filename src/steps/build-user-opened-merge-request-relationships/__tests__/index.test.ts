@@ -1,10 +1,7 @@
-import {
-  Recording,
-  setupRecording,
-  createMockStepExecutionContext,
-} from '../../../../test';
-import step from '..';
+import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 
+import step from '../';
+import { Recording, setupRecording } from '../../../../test';
 import entities from './__fixtures__/entities.json';
 
 let recording: Recording;
