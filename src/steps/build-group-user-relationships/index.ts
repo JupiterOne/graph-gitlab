@@ -75,7 +75,7 @@ async function createUserIdMap(
   return userIdMap;
 }
 
-export default createStep((instance) => createGitlabClient(instance));
+export default createStep((instance) => createGitlabClient(instance.config));
 
 export function createGroupUserRelationship(
   group: Entity,

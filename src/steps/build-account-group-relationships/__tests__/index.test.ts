@@ -1,6 +1,6 @@
-import { createMockStepExecutionContext } from '../../../../test';
+import { createMockStepExecutionContext } from '@jupiterone/integration-sdk-testing';
 
-import step from '..';
+import step from '../';
 import entities from './__fixtures__/entities.json';
 
 test('step data collection', async () => {
