@@ -20,7 +20,7 @@
 
 ## Requirements
 
-- JupiterOne requires the a personal access token configured with read access and the API base URL.
+- JupiterOne requires a personal access token configured with read access and the API base URL.
 - You must have permission in JupiterOne to install new integrations.
 
 ## Setup
