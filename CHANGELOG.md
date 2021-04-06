@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.5.0 2021-04-05
+
+### Changed
+
+- Upgrade dependencies
+
 ## 2.4.0 2020-11-17
 
 ### Added
