@@ -8,6 +8,17 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 2.6.0 - 2021-01-19
+
+### Added
+
+- New properties added to resources:
+
+  | Entity                 | Properties                                                                      |
+  | ---------------------- | ------------------------------------------------------------------------------- |
+  | `gitlab_merge_request` | `mergedAt`, `closedAt`, `sha`, `mergeCommitSha`, `squashCommitSha`, `updatedOn` |
+  | `gitlab_user`          | `active`                                                                        |
+
 ## 2.5.0 2021-04-05
 
 ### Changed
