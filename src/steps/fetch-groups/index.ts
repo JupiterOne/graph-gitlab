@@ -64,8 +64,9 @@ export function createGroupEntity(group: GitLabGroup): Entity {
 }
 
 const GROUP_ID_PREFIX = 'gitlab-group';
-export function createGroupEntityIdentifier(id?: number): string | undefined {
-  return id ? `${GROUP_ID_PREFIX}:${id}` : undefined;
+
+export function createGroupEntityIdentifier(id?: number): string {
+  return `${GROUP_ID_PREFIX}:${id}`;
 }
 
 export default step;

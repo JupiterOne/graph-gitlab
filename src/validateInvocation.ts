@@ -21,7 +21,11 @@ export default async function validateInvocation({
     config.baseUrl = config.baseUrl.slice(0, -1);
   }
 
-  if (!config.mergeRequestsUpdatedAfter) {
+  if (config.mergeRequestsUpdatedAfter) {
+    config.mergeRequestsUpdatedAfter = new Date(
+      config.mergeRequestsUpdatedAfter,
+    );
+  } else {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     config.mergeRequestsUpdatedAfter = sevenDaysAgo;
