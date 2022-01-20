@@ -8,6 +8,20 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 3.0.0 - 2021-01-19
+
+### Added
+
+- New properties added to resources:
+
+  | Entity                 | Properties                                                                      |
+  | ---------------------- | ------------------------------------------------------------------------------- |
+  | `gitlab_merge_request` | `mergedAt`, `closedAt`, `sha`, `mergeCommitSha`, `squashCommitSha`, `updatedOn` |
+  | `gitlab_user`          | `active`                                                                        |
+
+- Upgrade SDK packages
+- Bump version of Node.js in GitHub workflow to 14.x
+
 ## 2.5.0 2021-04-05
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "name": "@jupiterone/graph-gitlab",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "A JupiterOne Integration",
   "license": "MPL-2.0",
   "main": "dist/index.js",
@@ -29,14 +29,14 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^5.11.2",
-    "@jupiterone/integration-sdk-dev-tools": "^5.11.2",
-    "@jupiterone/integration-sdk-testing": "^5.11.2",
+    "@jupiterone/integration-sdk-core": "^8.2.0",
+    "@jupiterone/integration-sdk-dev-tools": "^8.2.0",
+    "@jupiterone/integration-sdk-testing": "^8.2.0",
     "@types/node-fetch": "^2.5.9",
     "@types/uuid": "^8.3.0",
     "type-fest": "^0.18.1"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^5.11.2"
+    "@jupiterone/integration-sdk-core": "^8.2.0"
   }
 }

@@ -1,6 +1,7 @@
 import {
   createIntegrationEntity,
   Entity,
+  parseTimePropertyValue,
 } from '@jupiterone/integration-sdk-core';
 
 import { Entities } from '../constants';
@@ -27,7 +28,7 @@ export function createProjectEntity(project: GitLabProject): Entity {
         name: project.name,
         owner: project.owner?.name,
         createdOn: new Date(project.created_at).getTime(),
-        description: project.description,
+        description: project.description || undefined,
         webLink: project.web_url,
         visibility: project.visibility,
         public: project.visibility !== 'private',
@@ -87,12 +88,14 @@ export function createUserEntity(user: GitLabUser): Entity {
         external: user.external,
         privateProfile: user.private_profile,
         trial: user.trial,
+        active: user.state === 'active',
       },
     },
   });
 }
 
 const USER_ID_PREFIX = 'gitlab-user';
+
 export function createUserEntityIdentifier(id: number): string {
   return `${USER_ID_PREFIX}:${id}`;
 }
@@ -127,7 +130,8 @@ export function createMergeRequestEntity(
         source: mergeRequest.source_branch,
         target: mergeRequest.target_branch,
         repository: projectName,
-        createdOn: new Date(mergeRequest.created_at).getTime(),
+        createdOn: parseTimePropertyValue(mergeRequest.created_at),
+        updatedOn: parseTimePropertyValue(mergeRequest.updated_at),
         authorId: mergeRequest.author.id,
         webLink: mergeRequest.web_url,
         mergeWhenPipelineSucceeds: mergeRequest.merge_when_pipeline_succeeds,
@@ -144,6 +148,11 @@ export function createMergeRequestEntity(
         approverLogins: approval?.approved_by?.map(
           (approver) => approver.user.username,
         ),
+        mergedAt: parseTimePropertyValue(mergeRequest.merged_at),
+        closedAt: parseTimePropertyValue(mergeRequest.closed_at),
+        sha: mergeRequest.sha,
+        mergeCommitSha: mergeRequest.merge_commit_sha || undefined,
+        squashCommitSha: mergeRequest.squash_commit_sha || undefined,
       },
     },
   });
