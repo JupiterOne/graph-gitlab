@@ -93,8 +93,8 @@ export const prSchema: GraphObjectSchema = {
 
     createdOn: { type: 'number' },
     webLink: { type: 'string' },
-    mergedAt: { type: 'number' },
-    closedAt: { type: 'number' },
+    mergedOn: { type: 'number' },
+    closedOn: { type: 'number' },
     sha: { type: 'string' },
     mergeCommitSha: { type: 'string' },
     squashCommitSha: { type: 'string' },

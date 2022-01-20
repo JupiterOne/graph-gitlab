@@ -8,6 +8,14 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.0.0 - 2021-01-20
+
+### Changed
+
+- Rename `gitlab_merge_request` properties
+  - `mergedAt` -> `mergedOn`
+  - `closedAt` -> `closedOn`
+
 ## 3.0.0 - 2021-01-19
 
 ### Added

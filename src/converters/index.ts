@@ -148,8 +148,8 @@ export function createMergeRequestEntity(
         approverLogins: approval?.approved_by?.map(
           (approver) => approver.user.username,
         ),
-        mergedAt: parseTimePropertyValue(mergeRequest.merged_at),
-        closedAt: parseTimePropertyValue(mergeRequest.closed_at),
+        mergedOn: parseTimePropertyValue(mergeRequest.merged_at),
+        closedOn: parseTimePropertyValue(mergeRequest.closed_at),
         sha: mergeRequest.sha,
         mergeCommitSha: mergeRequest.merge_commit_sha || undefined,
         squashCommitSha: mergeRequest.squash_commit_sha || undefined,
