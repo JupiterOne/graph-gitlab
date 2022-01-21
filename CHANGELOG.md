@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.2.0 - 2022-01-21
+
+### Fixed
+
+- Relationship between merge request and project is now being created.
+
 ## 4.1.0 - 2021-01-20
 
 - New properties added to resources:
