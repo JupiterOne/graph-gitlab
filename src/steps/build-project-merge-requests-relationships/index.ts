@@ -22,7 +22,7 @@ const step: IntegrationStep = {
     await jobState.iterateEntities(
       { _type: Entities.MERGE_REQUEST._type },
       async (mergeRequest) => {
-        const project = projectIdMap.get(mergeRequest.projectId as string);
+        const project = projectIdMap.get(mergeRequest.projectId.toString());
 
         if (project) {
           await jobState.addRelationships([
