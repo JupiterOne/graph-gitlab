@@ -11,6 +11,7 @@ import {
   GitLabProject,
   GitLabUser,
 } from '../provider/types';
+import { getCommitWebLinkFromMergeRequest } from '../util/mergeRequest';
 
 export function createProjectEntity(project: GitLabProject): Entity {
   const { _links, ...source } = project; // drop the _links
@@ -153,6 +154,7 @@ export function createMergeRequestEntity(
         sha: mergeRequest.sha,
         mergeCommitSha: mergeRequest.merge_commit_sha || undefined,
         squashCommitSha: mergeRequest.squash_commit_sha || undefined,
+        commitWebLink: getCommitWebLinkFromMergeRequest(mergeRequest),
       },
     },
   });

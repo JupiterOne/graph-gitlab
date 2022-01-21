@@ -98,5 +98,6 @@ export const prSchema: GraphObjectSchema = {
     sha: { type: 'string' },
     mergeCommitSha: { type: 'string' },
     squashCommitSha: { type: 'string' },
+    commitWebLink: { type: 'string' },
   },
 };

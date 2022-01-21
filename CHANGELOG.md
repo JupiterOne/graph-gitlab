@@ -8,7 +8,13 @@ and this project adheres to
 
 ## [Unreleased]
 
-## 4.0.0 - 2021-01-20
+## 4.1.0 - 2021-01-20
+
+- New properties added to resources:
+
+  | Entity                 | Properties      |
+  | ---------------------- | --------------- |
+  | `gitlab_merge_request` | `commitWebLink` |
 
 ### Changed
 
