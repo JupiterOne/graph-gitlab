@@ -1,6 +1,5 @@
 import {
   Entity,
-  JobState,
   Relationship,
   IntegrationStep,
   IntegrationStepExecutionContext,
