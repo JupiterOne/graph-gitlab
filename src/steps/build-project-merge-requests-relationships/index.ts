@@ -9,6 +9,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { Entities, Steps, Relationships } from '../../constants';
+import { createProjectEntityIdentifier } from '../../converters';
 
 const step: IntegrationStep = {
   id: Steps.BUILD_PROJECT_HAS_PR,
@@ -17,39 +18,24 @@ const step: IntegrationStep = {
   relationships: [Relationships.PROJECT_HAS_PR],
   dependsOn: [Steps.PROJECTS, Steps.MERGE_REQUESTS],
   async executionHandler({ jobState }: IntegrationStepExecutionContext) {
-    const projectIdMap = await createProjectIdMap(jobState);
-
     await jobState.iterateEntities(
       { _type: Entities.MERGE_REQUEST._type },
       async (mergeRequest) => {
         if (mergeRequest.projectId) {
-          const project = projectIdMap.get(mergeRequest.projectId.toString());
+          const project = await jobState.findEntity(
+            createProjectEntityIdentifier(mergeRequest.projectId as number),
+          );
 
           if (project) {
-            await jobState.addRelationships([
+            await jobState.addRelationship(
               createProjectMergeRequestRelationship(project, mergeRequest),
-            ]);
+            );
           }
         }
       },
     );
   },
 };
-
-async function createProjectIdMap(
-  jobState: JobState,
-): Promise<Map<string, Entity>> {
-  const projectIdMap = new Map<string, Entity>();
-
-  await jobState.iterateEntities(
-    { _type: Entities.PROJECT._type },
-    (project) => {
-      projectIdMap.set(project.id as string, project);
-    },
-  );
-
-  return projectIdMap;
-}
 
 export default step;
 
