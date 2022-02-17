@@ -16,6 +16,7 @@ import groupStep from './fetch-groups';
 import { mergeRequestSteps } from './merge-requests';
 import { projectSteps } from './projects';
 import { userSteps } from './users';
+import { commitSteps } from './commits';
 
 const integrationSteps: Step<
   IntegrationStepExecutionContext<GitlabIntegrationConfig>
@@ -32,6 +33,7 @@ const integrationSteps: Step<
   ...mergeRequestSteps,
   projectMergeRequestStep,
   userOpenedMergeRequestStep,
+  ...commitSteps,
 ];
 
 export { integrationSteps };

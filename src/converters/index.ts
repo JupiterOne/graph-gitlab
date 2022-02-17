@@ -7,6 +7,7 @@ import {
 import { Entities } from '../constants';
 import {
   GitLabMergeRequest,
+  GitLabMergeCommitRequest,
   GitLabMergeRequestApproval,
   GitLabProject,
   GitLabUser,
@@ -160,7 +161,47 @@ export function createMergeRequestEntity(
   });
 }
 
+export function createMergeRequestCommitEntity(
+  mergeRequest: GitLabMergeRequest,
+  mergeRequestCommit: GitLabMergeCommitRequest,
+): Entity {
+  const key = createCommitIdentifier(mergeRequestCommit.id);
+
+  return createIntegrationEntity({
+    entityData: {
+      source: mergeRequestCommit,
+      assign: {
+        _key: key,
+        _type: Entities.COMMIT._type,
+        _class: Entities.COMMIT._class,
+        id: String(mergeRequestCommit.id),
+        shortId: String(mergeRequestCommit.short_id),
+        title: mergeRequestCommit.title,
+        name: mergeRequestCommit.title,
+        branch: mergeRequest.source_branch,
+        merge: false,
+        versionBump: false,
+        createdOn: parseTimePropertyValue(mergeRequestCommit.created_at),
+        webLink: mergeRequestCommit.web_url,
+        message: mergeRequestCommit.message,
+        authoredOn: parseTimePropertyValue(mergeRequestCommit.authored_date),
+        committedOn: parseTimePropertyValue(mergeRequestCommit.committed_date),
+        commitWebLink: mergeRequestCommit.web_url,
+        committerName: mergeRequestCommit.committer_name,
+        committerEmail: mergeRequestCommit.committer_email,
+        authorName: mergeRequestCommit.author_name,
+        authorEmail: mergeRequestCommit.author_email,
+      },
+    },
+  });
+}
+
 const MERGE_REQUEST_ID_PREFIX = 'gitlab-merge-request';
 export function createMergeRequestEntityIdentifier(id: number): string {
   return `${MERGE_REQUEST_ID_PREFIX}:${id}`;
+}
+
+const COMMIT_ID_PREFIX = 'gitlab-commit';
+export function createCommitIdentifier(id: number): string {
+  return `${COMMIT_ID_PREFIX}:${id}`;
 }

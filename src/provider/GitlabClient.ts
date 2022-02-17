@@ -43,15 +43,17 @@ export class GitlabClient {
   }
 
   async fetchAccount(): Promise<GitLabUser> {
-    return this.makeSingularRequest(HttpMethod.GET, '/user') as Promise<
-      GitLabUser
-    >;
+    return this.makeSingularRequest(
+      HttpMethod.GET,
+      '/user',
+    ) as Promise<GitLabUser>;
   }
 
   async fetchUser(id: number): Promise<GitLabUser> {
-    return this.makeSingularRequest(HttpMethod.GET, `/users/${id}`) as Promise<
-      GitLabUser
-    >;
+    return this.makeSingularRequest(
+      HttpMethod.GET,
+      `/users/${id}`,
+    ) as Promise<GitLabUser>;
   }
 
   async fetchGroups(): Promise<GitLabGroup[]> {
@@ -87,6 +89,23 @@ export class GitlabClient {
       {
         onPageError: options.onPageError,
         params: { updated_after: options.updatedAfter.toISOString() },
+      },
+    );
+  }
+
+  async iterateMergeRequestCommits(
+    projectId: number,
+    mergeRequestNumber: number,
+    iteratee: ResourceIteratee<GitLabMergeRequest>,
+    options: {
+      onPageError: PageErrorHandler;
+    },
+  ): Promise<void> {
+    return this.iterateResources(
+      `/projects/${projectId}/merge_requests/${mergeRequestNumber}/commits`,
+      iteratee,
+      {
+        onPageError: options.onPageError,
       },
     );
   }
