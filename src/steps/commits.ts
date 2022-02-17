@@ -74,7 +74,7 @@ export const commitSteps: IntegrationStep<GitlabIntegrationConfig>[] = [
     name: 'Fetch MR commits',
     entities: [Entities.COMMIT],
     relationships: [Relationships.MR_HAS_COMMIT],
-    dependsOn: [Steps.MERGE_REQUESTS, Steps.USERS],
+    dependsOn: [Steps.MERGE_REQUESTS],
     executionHandler: fetchCommits,
   },
 ];
