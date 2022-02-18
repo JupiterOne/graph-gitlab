@@ -8,10 +8,15 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.3.0 - 2022-02-18
 ### Added
 - Commits for MRs are now added. They are only related to MRs at this time, as
 the required data doesn't exist to have a durable relationship creation process
 between users and commits.
+
+| Source Entity `_type`  | Relationship `_class` | Target Entity `_type`  |
+| `gitlab_merge_request` | **HAS**               | `gitlab_commit`        |
+
 ## 4.2.0 - 2022-01-21
 
 ### Fixed
