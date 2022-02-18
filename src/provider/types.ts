@@ -55,6 +55,8 @@ export type GitLabProject = Opaque<any, 'GitLabProject'>;
 
 export type GitLabMergeRequest = Opaque<any, 'GitLabMergeRequest'>;
 
+export type GitLabMergeCommitRequest = Opaque<any, 'GitLabMergeCommitRequest'>;
+
 // https://docs.gitlab.com/ee/api/merge_request_approvals.html#get-configuration-1
 export type GitLabMergeRequestApproval = Opaque<
   any,

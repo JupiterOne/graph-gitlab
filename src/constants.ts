@@ -6,6 +6,7 @@ export const Steps = {
   GROUPS: 'fetch-groups',
   PROJECTS: 'fetch-projects',
   MERGE_REQUESTS: 'fetch-merge-requests',
+  COMMITS: 'fetch-mr-commits',
   BUILD_ACCOUNT_HAS_PROJECT: 'build-account-project-relationships',
   BUILD_ACCOUNT_HAS_GROUP: 'build-account-group-relationships',
   BUILD_PROJECT_HAS_USER: 'build-project-user-relationships',
@@ -37,6 +38,11 @@ export const Entities = {
     resourceName: 'Merge Request',
     _type: 'gitlab_merge_request',
     _class: ['CodeReview', 'PR'],
+  },
+  COMMIT: {
+    resourceName: 'Commit',
+    _type: 'gitlab_commit',
+    _class: ['CodeCommit'],
   },
   PROJECT: {
     resourceName: 'Project',
@@ -99,5 +105,11 @@ export const Relationships = {
     sourceType: Entities.USER._type,
     _class: RelationshipClass.APPROVED,
     targetType: Entities.MERGE_REQUEST._type,
+  },
+  MR_HAS_COMMIT: {
+    _type: 'gitlab_merge_request_has_commit',
+    sourceType: Entities.MERGE_REQUEST._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.COMMIT._type,
   },
 };

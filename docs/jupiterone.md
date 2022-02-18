@@ -82,6 +82,7 @@ The following entities are created:
 | Resources     | Entity `_type`         | Entity `_class`       |
 | ------------- | ---------------------- | --------------------- |
 | Account       | `gitlab_account`       | `Account`             |
+| Commit        | `gitlab_commit`        | `CodeCommit`          |
 | Group         | `gitlab_group`         | `Group`               |
 | Merge Request | `gitlab_merge_request` | `CodeReview`, `PR`    |
 | Project       | `gitlab_project`       | `CodeRepo`, `Project` |
@@ -91,17 +92,18 @@ The following entities are created:
 
 The following relationships are created:
 
-| Source Entity `_type` | Relationship `_class` | Target Entity `_type`  |
-| --------------------- | --------------------- | ---------------------- |
-| `gitlab_account`      | **HAS**               | `gitlab_group`         |
-| `gitlab_account`      | **HAS**               | `gitlab_project`       |
-| `gitlab_group`        | **HAS**               | `gitlab_group`         |
-| `gitlab_group`        | **HAS**               | `gitlab_project`       |
-| `gitlab_group`        | **HAS**               | `gitlab_user`          |
-| `gitlab_project`      | **HAS**               | `gitlab_merge_request` |
-| `gitlab_project`      | **HAS**               | `gitlab_user`          |
-| `gitlab_user`         | **APPROVED**          | `gitlab_merge_request` |
-| `gitlab_user`         | **OPENED**            | `gitlab_merge_request` |
+| Source Entity `_type`  | Relationship `_class` | Target Entity `_type`  |
+| ---------------------- | --------------------- | ---------------------- |
+| `gitlab_account`       | **HAS**               | `gitlab_group`         |
+| `gitlab_account`       | **HAS**               | `gitlab_project`       |
+| `gitlab_group`         | **HAS**               | `gitlab_group`         |
+| `gitlab_group`         | **HAS**               | `gitlab_project`       |
+| `gitlab_group`         | **HAS**               | `gitlab_user`          |
+| `gitlab_merge_request` | **HAS**               | `gitlab_commit`        |
+| `gitlab_project`       | **HAS**               | `gitlab_merge_request` |
+| `gitlab_project`       | **HAS**               | `gitlab_user`          |
+| `gitlab_user`          | **APPROVED**          | `gitlab_merge_request` |
+| `gitlab_user`          | **OPENED**            | `gitlab_merge_request` |
 
 <!--
 ********************************************************************************
