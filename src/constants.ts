@@ -42,7 +42,7 @@ export const Entities = {
   COMMIT: {
     resourceName: 'Commit',
     _type: 'gitlab_commit',
-    _class: ['CodeCommit'],
+    _class: ['Entity'],
   },
   PROJECT: {
     resourceName: 'Project',

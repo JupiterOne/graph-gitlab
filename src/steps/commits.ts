@@ -34,7 +34,7 @@ export async function fetchCommits({
           let commitEntity = await jobState.findEntity(createCommitIdentifier(mergeRequestCommit.id))
           if(!commitEntity) {
             commitEntity = await jobState.addEntity(
-              createMergeRequestCommitEntity(mergeRequest, mergeRequestCommit),
+              createMergeRequestCommitEntity(mergeRequestCommit),
             );
           }
           await jobState.addRelationship(
