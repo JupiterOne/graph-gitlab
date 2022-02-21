@@ -9,7 +9,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { Entities, Relationships, Steps } from '../constants';
-import { createMergeRequestCommitEntity } from '../converters';
+import { createMergeRequestCommitEntity, createCommitIdentifier } from '../converters';
 import { createGitlabClient } from '../provider';
 import { GitLabMergeRequest } from '../provider/types';
 import { GitlabIntegrationConfig } from '../types';
@@ -31,9 +31,12 @@ export async function fetchCommits({
         mergeRequest.project_id,
         mergeRequest.iid,
         async (mergeRequestCommit) => {
-          const commitEntity = await jobState.addEntity(
-            createMergeRequestCommitEntity(mergeRequest, mergeRequestCommit),
-          );
+          let commitEntity = await jobState.findEntity(createCommitIdentifier(mergeRequestCommit.id))
+          if(!commitEntity) {
+            commitEntity = await jobState.addEntity(
+              createMergeRequestCommitEntity(mergeRequest, mergeRequestCommit),
+            );
+          }
           await jobState.addRelationship(
             createDirectRelationship({
               _class: Relationships.MR_HAS_COMMIT._class,
