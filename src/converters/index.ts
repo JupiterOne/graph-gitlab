@@ -162,7 +162,6 @@ export function createMergeRequestEntity(
 }
 
 export function createMergeRequestCommitEntity(
-  mergeRequest: GitLabMergeRequest,
   mergeRequestCommit: GitLabMergeCommitRequest,
 ): Entity {
   const key = createCommitIdentifier(mergeRequestCommit.id);
@@ -178,7 +177,7 @@ export function createMergeRequestCommitEntity(
         shortId: String(mergeRequestCommit.short_id),
         title: mergeRequestCommit.title,
         name: mergeRequestCommit.title,
-        branch: mergeRequest.source_branch,
+        displayName: mergeRequestCommit.title,
         merge: false,
         versionBump: false,
         createdOn: parseTimePropertyValue(mergeRequestCommit.created_at),
