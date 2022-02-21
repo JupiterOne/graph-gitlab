@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.3.1 - 2022-02-21
+
+### Fixed
+- Commits related to multiple MRs are now no longer causing a duplicate key
+error.
+
 ## 4.3.0 - 2022-02-18
 ### Added
 - Commits for MRs are now added. They are only related to MRs at this time, as
