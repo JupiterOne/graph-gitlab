@@ -1,4 +1,4 @@
-# Gitlab Integration with JupiterOne
+# GitLab Integration with JupiterOne
 
 ## GitLab + JupiterOne Integration Benefits
 
