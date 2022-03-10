@@ -1,4 +1,4 @@
-# Integration with JupiterOne
+# GitLab Integration with JupiterOne
 
 ## GitLab + JupiterOne Integration Benefits
 
@@ -21,12 +21,12 @@
 ## Requirements
 
 - JupiterOne requires a personal access token configured with read access and
-  the API base URL.
+  the API base URL, such as https://gitlab.com.
 - You must have permission in JupiterOne to install new integrations.
 
 ## ## Support
 
-If you need help with this integration, please contact
+If you need help with this integration, contact
 [JupiterOne Support](https://support.jupiterone.io).
 
 ## Integration Walkthrough
@@ -50,7 +50,8 @@ See GitLab's documentation for
 - Select a **Polling Interval** that you feel is sufficient for your monitoring
   needs. You may leave this as `DISABLED` and manually execute the integration.
 - Enter the **Personal Access Token** configured for read access in GitLab.
-- Enter the **API Base URL** of your self-managed GitLab instance.
+- Enter the **API Base URL** (such as https://gitlab.com) of your self-managed
+  GitLab instance.
 
 4. Click **Create Configuration** once all values are provided.
 
