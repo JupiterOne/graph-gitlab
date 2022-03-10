@@ -2,21 +2,26 @@
 
 ## GitLab + JupiterOne Integration Benefits
 
-- Visualize GitLab users, groups, code repositories, and merge requests in the JupiterOne graph.
+- Visualize GitLab users, groups, code repositories, and merge requests 
+  in the JupiterOne graph.
 - Map GitLab users to employees in your JupiterOne account.
 - Map GitLab users to development/security trainings.
-- Monitor GitLab software development activities within repositories including changes and approvals.
-- Monitor changes to GitLab user groups, users, code repositories, and merge requests using JupiterOne alerts.
+- Monitor GitLab software development activities within repositories 
+  including changes and approvals.
+- Monitor changes to GitLab user groups, users, code repositories, and merge 
+  requests using JupiterOne alerts.
 
 ## How it Works
 
-- JupiterOne periodically fetches GitLab users, code repositories, and pull requests in those repositories to update the graph.
+- JupiterOne periodically fetches GitLab users, code repositories, and pull 
+  requests in those repositories to update the graph.
 - Write JupiterOne queries to review and monitor updates to the graph.
 - Configure alerts to take action when the JupiterOne graph changes.
 
 ## Requirements
 
-- JupiterOne requires a personal access token configured with read access and the API base URL, such as https://gitlab.com.
+- JupiterOne requires a personal access token configured with read access 
+  and the API base URL, such as https://gitlab.com.
 - You must have permission in JupiterOne to install new integrations.
 
 ## ## Support
