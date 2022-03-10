@@ -2,31 +2,32 @@
 
 ## GitLab + JupiterOne Integration Benefits
 
-- Visualize GitLab users, groups, code repositories, and merge requests 
-  in the JupiterOne graph.
+- Visualize GitLab users, groups, code repositories, and merge requests in the
+  JupiterOne graph.
 - Map GitLab users to employees in your JupiterOne account.
 - Map GitLab users to development/security trainings.
-- Monitor GitLab software development activities within repositories 
-  including changes and approvals.
-- Monitor changes to GitLab user groups, users, code repositories, and merge 
+- Monitor GitLab software development activities within repositories including
+  changes and approvals.
+- Monitor changes to GitLab user groups, users, code repositories, and merge
   requests using JupiterOne alerts.
 
 ## How it Works
 
-- JupiterOne periodically fetches GitLab users, code repositories, and pull 
+- JupiterOne periodically fetches GitLab users, code repositories, and pull
   requests in those repositories to update the graph.
 - Write JupiterOne queries to review and monitor updates to the graph.
 - Configure alerts to take action when the JupiterOne graph changes.
 
 ## Requirements
 
-- JupiterOne requires a personal access token configured with read access 
-  and the API base URL, such as https://gitlab.com.
+- JupiterOne requires a personal access token configured with read access and
+  the API base URL, such as https://gitlab.com.
 - You must have permission in JupiterOne to install new integrations.
 
 ## ## Support
 
-If you need help with this integration, contact [JupiterOne Support](https://support.jupiterone.io).
+If you need help with this integration, contact
+[JupiterOne Support](https://support.jupiterone.io).
 
 ## Integration Walkthrough
 
@@ -49,7 +50,8 @@ See GitLab's documentation for
 - Select a **Polling Interval** that you feel is sufficient for your monitoring
   needs. You may leave this as `DISABLED` and manually execute the integration.
 - Enter the **Personal Access Token** configured for read access in GitLab.
-- Enter the **API Base URL** (such as https://gitlab.com) of your self-managed GitLab instance.
+- Enter the **API Base URL** (such as https://gitlab.com) of your self-managed
+  GitLab instance.
 
 4. Click **Create Configuration** once all values are provided.
 
