@@ -159,12 +159,12 @@ export class GitlabClient {
   ): Promise<Response> {
     const endpoint = `${this.baseUrl}/api/v4${url}`;
 
-    await this.checkRateLimitStatus();
-
     /**
      *  This function is repeated if an error occurs.
      */
     const requestAttempt = async () => {
+      await this.checkRateLimitStatus();
+
       const response: Response = await fetch(endpoint, {
         method,
         headers: {
