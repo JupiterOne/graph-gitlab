@@ -4,6 +4,7 @@ import { retry, sleep } from '@lifeomic/attempt';
 
 import {
   IntegrationError,
+  IntegrationLogger,
   IntegrationProviderAPIError,
   IntegrationProviderAuthenticationError,
   IntegrationProviderAuthorizationError,
@@ -32,7 +33,7 @@ export type PageErrorHandler = ({
 export type RateLimitStatus = {
   limit: number;
   remaining: number;
-  resetAt: number;
+  resetAtMillis: number;
 };
 
 export enum HttpMethod {
@@ -43,11 +44,17 @@ export enum HttpMethod {
 export class GitlabClient {
   private readonly baseUrl: string;
   private readonly personalToken: string;
+  private readonly logger: IntegrationLogger;
   private rateLimitStatus: RateLimitStatus;
 
-  constructor(baseUrl: string, personalToken: string) {
+  constructor(
+    baseUrl: string,
+    personalToken: string,
+    logger: IntegrationLogger,
+  ) {
     this.baseUrl = baseUrl;
     this.personalToken = personalToken;
+    this.logger = logger;
   }
 
   async fetchAccount(): Promise<GitLabUser> {
@@ -154,51 +161,53 @@ export class GitlabClient {
 
     await this.checkRateLimitStatus();
 
-    return await retry(
-      async () => {
-        const response: Response = await fetch(endpoint, {
-          method,
-          headers: {
-            'Private-Token': this.personalToken,
-          },
-        });
-
-        this.setRateLimitStatus(response);
-
-        if (response.status === 401) {
-          throw new IntegrationProviderAuthenticationError({
-            endpoint,
-            status: response.status,
-            statusText: response.statusText,
-          });
-        } else if (response.status === 403) {
-          throw new IntegrationProviderAuthorizationError({
-            endpoint,
-            status: response.status,
-            statusText: response.statusText,
-          });
-        } else if (!response.ok) {
-          throw new IntegrationProviderAPIError({
-            endpoint,
-            status: response.status,
-            statusText: response.statusText,
-          });
-        }
-
-        return response;
-      },
-      {
-        maxAttempts: 1,
-        delay: 30_000,
-        timeout: 180_000,
-        factor: 2,
-        handleError: (error, attemptContext) => {
-          if ([401, 403].includes(error.status)) {
-            attemptContext.abort();
-          }
+    /**
+     *  This function is repeated if an error occurs.
+     */
+    const requestAttempt = async () => {
+      const response: Response = await fetch(endpoint, {
+        method,
+        headers: {
+          'Private-Token': this.personalToken,
         },
+      });
+
+      this.setRateLimitStatus(response);
+
+      if (response.status === 401) {
+        throw new IntegrationProviderAuthenticationError({
+          endpoint,
+          status: response.status,
+          statusText: response.statusText,
+        });
+      } else if (response.status === 403) {
+        throw new IntegrationProviderAuthorizationError({
+          endpoint,
+          status: response.status,
+          statusText: response.statusText,
+        });
+      } else if (!response.ok) {
+        throw new IntegrationProviderAPIError({
+          endpoint,
+          status: response.status,
+          statusText: response.statusText,
+        });
+      }
+
+      return response;
+    };
+
+    return await retry(requestAttempt, {
+      maxAttempts: 3,
+      delay: 30_000,
+      timeout: 180_000,
+      factor: 2,
+      handleError: (error, attemptContext) => {
+        if ([401, 403].includes(error.status)) {
+          attemptContext.abort();
+        }
       },
-    );
+    });
   }
 
   /**
@@ -216,7 +225,7 @@ export class GitlabClient {
       this.rateLimitStatus = {
         limit: Number(limit),
         remaining: Number(remaining),
-        resetAt: Number(resetAt) * 1000, // Convert from seconds to milliseconds.
+        resetAtMillis: Number(resetAt) * 1000, // Convert from seconds to milliseconds.
       };
     }
   }
@@ -228,9 +237,17 @@ export class GitlabClient {
     if (this.rateLimitStatus) {
       const rateLimitRemainingProportion =
         this.rateLimitStatus.remaining / this.rateLimitStatus.limit;
-      const msUntilRateLimitReset = this.rateLimitStatus.resetAt - Date.now();
+      const msUntilRateLimitReset =
+        this.rateLimitStatus.resetAtMillis - Date.now();
 
       if (rateLimitRemainingProportion <= 0.1 && msUntilRateLimitReset > 0) {
+        this.logger.info(
+          {
+            rateLimitStatus: this.rateLimitStatus,
+            msUntilRateLimitReset,
+          },
+          `Reached rate limits, sleeping now.`,
+        );
         await sleep(msUntilRateLimitReset);
       }
     }

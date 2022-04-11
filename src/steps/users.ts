@@ -12,8 +12,9 @@ import { GitlabIntegrationConfig } from '../types';
 export async function fetchUsers({
   instance,
   jobState,
+  logger,
 }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
-  const client = createGitlabClient(instance.config);
+  const client = createGitlabClient(instance.config, logger);
 
   const usersMap: {
     [number: string]: GitLabUserRef;

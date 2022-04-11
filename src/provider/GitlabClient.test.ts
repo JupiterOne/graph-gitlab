@@ -1,11 +1,15 @@
 import { Recording, setupRecording } from '../../test';
 import { createGitlabClient } from './';
 import { GitLabMergeRequest, GitLabProject } from './types';
+import { createMockIntegrationLogger } from '@jupiterone/integration-sdk-testing';
 
-const apiClient = createGitlabClient({
-  baseUrl: process.env.BASE_URL || 'https://gitlab.com',
-  personalToken: process.env.PERSONAL_TOKEN || 'string-value',
-});
+const apiClient = createGitlabClient(
+  {
+    baseUrl: process.env.BASE_URL || 'https://gitlab.com',
+    personalToken: process.env.PERSONAL_TOKEN || 'string-value',
+  },
+  createMockIntegrationLogger(),
+);
 
 let recording: Recording;
 
