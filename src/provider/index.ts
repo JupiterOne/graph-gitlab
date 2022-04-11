@@ -11,11 +11,15 @@ type GitlabClientConfig = {
   personalToken: string;
 };
 
+let client: GitlabClient;
 export function createGitlabClient(
   config: GitlabClientConfig,
   logger: IntegrationLogger,
 ): GitlabClient {
-  return new GitlabClient(config.baseUrl, config.personalToken, logger);
+  if (!client) {
+    client = new GitlabClient(config.baseUrl, config.personalToken, logger);
+  }
+  return client;
 }
 
 export type ClientCreator = (
