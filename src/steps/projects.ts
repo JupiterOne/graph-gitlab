@@ -16,8 +16,9 @@ import { GitlabIntegrationConfig } from '../types';
 export async function fetchProjects({
   instance,
   jobState,
+  logger,
 }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
-  const client = createGitlabClient(instance.config);
+  const client = createGitlabClient(instance.config, logger);
 
   const projectKeys = new Set<string>();
   const addProjectEntity = async (project: GitLabProject): Promise<Entity> => {

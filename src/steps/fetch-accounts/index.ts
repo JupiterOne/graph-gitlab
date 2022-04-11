@@ -18,8 +18,9 @@ const step: IntegrationStep<GitlabIntegrationConfig> = {
   async executionHandler({
     instance,
     jobState,
+    logger,
   }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
-    const client = createGitlabClient(instance.config);
+    const client = createGitlabClient(instance.config, logger);
     const account = await client.fetchAccount();
 
     await jobState.addEntities([createAccountEntity(account)]);

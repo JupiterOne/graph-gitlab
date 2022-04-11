@@ -9,7 +9,10 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import { Entities, Relationships, Steps } from '../constants';
-import { createMergeRequestCommitEntity, createCommitIdentifier } from '../converters';
+import {
+  createMergeRequestCommitEntity,
+  createCommitIdentifier,
+} from '../converters';
 import { createGitlabClient } from '../provider';
 import { GitLabMergeRequest } from '../provider/types';
 import { GitlabIntegrationConfig } from '../types';
@@ -19,7 +22,7 @@ export async function fetchCommits({
   instance,
   jobState,
 }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
-  const client = createGitlabClient(instance.config);
+  const client = createGitlabClient(instance.config, logger);
 
   const errorCorrelationId = uuid();
 
@@ -31,8 +34,10 @@ export async function fetchCommits({
         mergeRequest.project_id,
         mergeRequest.iid,
         async (mergeRequestCommit) => {
-          let commitEntity = await jobState.findEntity(createCommitIdentifier(mergeRequestCommit.id))
-          if(!commitEntity) {
+          let commitEntity = await jobState.findEntity(
+            createCommitIdentifier(mergeRequestCommit.id),
+          );
+          if (!commitEntity) {
             commitEntity = await jobState.addEntity(
               createMergeRequestCommitEntity(mergeRequestCommit),
             );

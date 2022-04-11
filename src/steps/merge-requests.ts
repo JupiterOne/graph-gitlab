@@ -31,7 +31,7 @@ export async function fetchMergeRequests({
     );
   }
 
-  const client = createGitlabClient(instance.config);
+  const client = createGitlabClient(instance.config, logger);
 
   let totalProjectsProcessed = 0;
   let totalErrors = 0;
