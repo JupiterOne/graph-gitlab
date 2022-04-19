@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.3.2 - 2022-04-19
+
 ### Added
 
 - Added retry and rate limit logic to GitlabClient.ts
