@@ -39,14 +39,14 @@ describe('api response', () => {
       res.status(401);
     });
 
-    const executionContext = createMockExecutionContext<
-      GitlabIntegrationConfig
-    >({
-      instanceConfig: {
-        baseUrl: 'https://example.com',
-        personalToken: 'INVALID',
+    const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
+      {
+        instanceConfig: {
+          baseUrl: 'https://example.com',
+          personalToken: 'INVALID',
+        },
       },
-    });
+    );
 
     await expect(validateInvocation(executionContext)).rejects.toThrowError(
       IntegrationProviderAuthenticationError,
@@ -63,14 +63,14 @@ describe('api response', () => {
       res.status(403);
     });
 
-    const executionContext = createMockExecutionContext<
-      GitlabIntegrationConfig
-    >({
-      instanceConfig: {
-        baseUrl: 'https://example.com',
-        personalToken: 'INVALID',
+    const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
+      {
+        instanceConfig: {
+          baseUrl: 'https://example.com',
+          personalToken: 'INVALID',
+        },
       },
-    });
+    );
 
     await expect(validateInvocation(executionContext)).rejects.toThrowError(
       IntegrationProviderAuthorizationError,

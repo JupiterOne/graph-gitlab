@@ -25,9 +25,7 @@ export function createStep(
       jobState,
       instance,
       logger,
-    }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<
-      void
-    > {
+    }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<void> {
       const client = clientCreator(instance);
       const userIdMap = await createUserIdMap(jobState);
 
