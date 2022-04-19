@@ -8,6 +8,7 @@ import { GitlabIntegrationConfig } from './types';
 
 export default async function validateInvocation({
   instance,
+  logger,
 }: IntegrationExecutionContext<GitlabIntegrationConfig>): Promise<void> {
   const config = instance.config;
 
@@ -31,6 +32,6 @@ export default async function validateInvocation({
     config.mergeRequestsUpdatedAfter = sevenDaysAgo;
   }
 
-  const client = createGitlabClient(instance.config);
+  const client = createGitlabClient(instance.config, logger);
   await client.fetchAccount();
 }

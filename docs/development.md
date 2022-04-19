@@ -52,7 +52,7 @@ the GitLab API.
 PERSONAL_TOKEN="paste the personal token value here"
 ```
 
-6. The final step is to also include the hostname in the `.evn` file. If you're
+6. The final step is to also include the hostname in the `.env` file. If you're
    using SaaS, the value you want to put inside is https://gitlab.com. However,
    if you're using a self-hosted approach, put the URL that points to it.
 

@@ -22,7 +22,7 @@ export async function fetchCommits({
   instance,
   jobState,
 }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
-  const client = createGitlabClient(instance.config);
+  const client = createGitlabClient(instance.config, logger);
 
   const errorCorrelationId = uuid();
 

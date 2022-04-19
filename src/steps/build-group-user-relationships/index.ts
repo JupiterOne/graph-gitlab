@@ -26,7 +26,7 @@ export function createStep(
       instance,
       logger,
     }: IntegrationStepExecutionContext<GitlabIntegrationConfig>): Promise<void> {
-      const client = clientCreator(instance);
+      const client = clientCreator(instance, logger);
       const userIdMap = await createUserIdMap(jobState);
 
       await jobState.iterateEntities(
@@ -73,7 +73,9 @@ async function createUserIdMap(
   return userIdMap;
 }
 
-export default createStep((instance) => createGitlabClient(instance.config));
+export default createStep((instance, logger) =>
+  createGitlabClient(instance.config, logger),
+);
 
 export function createGroupUserRelationship(
   group: Entity,

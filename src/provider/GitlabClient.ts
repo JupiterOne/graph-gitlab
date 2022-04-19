@@ -1,8 +1,10 @@
 import fetch, { Response } from 'node-fetch';
 import { URLSearchParams } from 'url';
+import { retry, sleep } from '@lifeomic/attempt';
 
 import {
   IntegrationError,
+  IntegrationLogger,
   IntegrationProviderAPIError,
   IntegrationProviderAuthenticationError,
   IntegrationProviderAuthorizationError,
@@ -28,6 +30,12 @@ export type PageErrorHandler = ({
   endpoint: string,
 }) => Promise<void> | void;
 
+export type RateLimitStatus = {
+  limit: number;
+  remaining: number;
+  resetAtMillis: number;
+};
+
 export enum HttpMethod {
   GET = 'get',
   POST = 'post',
@@ -36,24 +44,25 @@ export enum HttpMethod {
 export class GitlabClient {
   private readonly baseUrl: string;
   private readonly personalToken: string;
+  private readonly logger: IntegrationLogger;
+  private rateLimitStatus: RateLimitStatus;
 
-  constructor(baseUrl: string, personalToken: string) {
+  constructor(
+    baseUrl: string,
+    personalToken: string,
+    logger: IntegrationLogger,
+  ) {
     this.baseUrl = baseUrl;
     this.personalToken = personalToken;
+    this.logger = logger;
   }
 
   async fetchAccount(): Promise<GitLabUser> {
-    return this.makeSingularRequest(
-      HttpMethod.GET,
-      '/user',
-    ) as Promise<GitLabUser>;
+    return this.makeSingularRequest(HttpMethod.GET, '/user');
   }
 
   async fetchUser(id: number): Promise<GitLabUser> {
-    return this.makeSingularRequest(
-      HttpMethod.GET,
-      `/users/${id}`,
-    ) as Promise<GitLabUser>;
+    return this.makeSingularRequest(HttpMethod.GET, `/users/${id}`);
   }
 
   async fetchGroups(): Promise<GitLabGroup[]> {
@@ -117,12 +126,10 @@ export class GitlabClient {
     projectId: number,
     mergeRequestId: number,
   ): Promise<GitLabMergeRequestApproval> {
-    const result = (await this.makeSingularRequest(
+    return this.makeSingularRequest(
       HttpMethod.GET,
       `/projects/${projectId}/merge_requests/${mergeRequestId}/approvals`,
-    )) as GitLabMergeRequestApproval;
-
-    return result;
+    );
   }
 
   async fetchProjectMembers(projectId: number): Promise<GitLabUserRef[]> {
@@ -152,40 +159,104 @@ export class GitlabClient {
   ): Promise<Response> {
     const endpoint = `${this.baseUrl}/api/v4${url}`;
 
-    const response: Response = await fetch(endpoint, {
-      method,
-      headers: {
-        'Private-Token': this.personalToken,
+    /**
+     *  This function is repeated if an error occurs.
+     */
+    const requestAttempt = async () => {
+      await this.checkRateLimitStatus();
+
+      const response: Response = await fetch(endpoint, {
+        method,
+        headers: {
+          'Private-Token': this.personalToken,
+        },
+      });
+
+      this.setRateLimitStatus(response);
+
+      if (response.status === 401) {
+        throw new IntegrationProviderAuthenticationError({
+          endpoint,
+          status: response.status,
+          statusText: response.statusText,
+        });
+      } else if (response.status === 403) {
+        throw new IntegrationProviderAuthorizationError({
+          endpoint,
+          status: response.status,
+          statusText: response.statusText,
+        });
+      } else if (!response.ok) {
+        throw new IntegrationProviderAPIError({
+          endpoint,
+          status: response.status,
+          statusText: response.statusText,
+        });
+      }
+
+      return response;
+    };
+
+    return await retry(requestAttempt, {
+      maxAttempts: 3,
+      delay: 30_000,
+      timeout: 180_000,
+      factor: 2,
+      handleError: (error, attemptContext) => {
+        if ([401, 403].includes(error.status)) {
+          attemptContext.abort();
+        }
       },
     });
+  }
 
-    if (response.status === 401) {
-      throw new IntegrationProviderAuthenticationError({
-        endpoint,
-        status: response.status,
-        statusText: response.statusText,
-      });
-    } else if (response.status === 403) {
-      throw new IntegrationProviderAuthorizationError({
-        endpoint,
-        status: response.status,
-        statusText: response.statusText,
-      });
-    } else if (!response.ok) {
-      throw new IntegrationProviderAPIError({
-        endpoint,
-        status: response.status,
-        statusText: response.statusText,
-      });
+  /**
+   * Pulls rate limit headers from response.
+   * Docs here: https://docs.gitlab.com/ee/user/admin_area/settings/user_and_ip_rate_limits.html#response-headers
+   * @param response
+   * @private
+   */
+  private setRateLimitStatus(response: Response) {
+    const limit = response.headers.get('RateLimit-Limit');
+    const remaining = response.headers.get('RateLimit-Remaining');
+    const resetAt = response.headers.get('RateLimit-Reset');
+
+    if (limit && remaining && resetAt) {
+      this.rateLimitStatus = {
+        limit: Number(limit),
+        remaining: Number(remaining),
+        resetAtMillis: Number(resetAt) * 1000, // Convert from seconds to milliseconds.
+      };
     }
+  }
 
-    return response;
+  /**
+   * Determines if approaching the rate limit, sleeps until rate limit has reset.
+   */
+  private async checkRateLimitStatus() {
+    if (this.rateLimitStatus) {
+      const rateLimitRemainingProportion =
+        this.rateLimitStatus.remaining / this.rateLimitStatus.limit;
+      const msUntilRateLimitReset =
+        this.rateLimitStatus.resetAtMillis - Date.now();
+
+      if (rateLimitRemainingProportion <= 0.1 && msUntilRateLimitReset > 0) {
+        this.logger.info(
+          {
+            rateLimitStatus: this.rateLimitStatus,
+            msUntilRateLimitReset,
+          },
+          `Reached rate limits, sleeping now.`,
+        );
+        await sleep(msUntilRateLimitReset);
+      }
+    }
   }
 
   private async makeSingularRequest<T>(
     method: HttpMethod,
     url: string,
-  ): Promise<T | null> {
+  ): Promise<T> {
     const response = await this.makeRequest(method, `${url}`);
 
     return response.json();
