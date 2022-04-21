@@ -203,8 +203,20 @@ export class GitlabClient {
       timeout: 180_000,
       factor: 2,
       handleError: (error, attemptContext) => {
-        if ([401, 403].includes(error.status)) {
+        if ([401, 403, 404].includes(error.status)) {
           attemptContext.abort();
+        }
+
+        if (attemptContext.aborted) {
+          this.logger.warn(
+            { attemptContext, error, endpoint },
+            'Hit an unrecoverable error from API Provider. Aborting.',
+          );
+        } else {
+          this.logger.warn(
+            { attemptContext, error, endpoint },
+            `Hit a possibly recoverable error from API Provider. Waiting before trying again.`,
+          );
         }
       },
     });
@@ -228,6 +240,8 @@ export class GitlabClient {
         resetAtMillis: Number(resetAt) * 1000, // Convert from seconds to milliseconds.
       };
     }
+
+    this.logger.info(this.rateLimitStatus, 'Rate limit status.');
   }
 
   /**
@@ -245,6 +259,7 @@ export class GitlabClient {
           {
             rateLimitStatus: this.rateLimitStatus,
             msUntilRateLimitReset,
+            rateLimitRemainingProportion,
           },
           `Reached rate limits, sleeping now.`,
         );
