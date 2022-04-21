@@ -8,6 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.3.3 - 2022-04-21
+
+## Added
+
+- Added additional logging for insight into rate limiting issues.
+
 ## 4.3.2 - 2022-04-19
 
 ### Added
