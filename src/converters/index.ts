@@ -54,6 +54,7 @@ export function createProjectEntity(project: GitLabProject): Entity {
         removeSourceBranchAfterMerge: project.remove_source_branch_after_merge,
         requestAccessEnabled: project.request_access_enabled,
         autocloseReferencedIssues: project.autoclose_referenced_issues,
+        topics: project.topics,
       },
     },
   });
