@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+- Added `topics` property to `gitlab_project` entities.
+
 ## 4.3.3 - 2022-04-21
 
 ## Added

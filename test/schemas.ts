@@ -11,6 +11,7 @@ export const projectSchema: GraphObjectSchema = {
     name: { type: 'string' },
     createdOn: { type: 'number' },
     description: { type: 'string' },
+    topics: { type: 'array', items: { type: 'string' } },
     webLink: { type: 'string' },
     visibility: { type: 'string' },
     public: { type: 'boolean' },
