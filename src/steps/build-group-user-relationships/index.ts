@@ -11,6 +11,7 @@ import {
 import { Entities, Relationships, Steps } from '../../constants';
 import { ClientCreator, createGitlabClient } from '../../provider';
 import { GitlabIntegrationConfig } from '../../types';
+import { getAccessLevel } from '../../util/getAccessLevel';
 
 export function createStep(
   clientCreator: ClientCreator,
@@ -42,6 +43,7 @@ export function createStep(
             const groupMemberRelationship = createGroupUserRelationship(
               group,
               userIdMap.get(member.id.toString()) as Entity,
+              getAccessLevel(member.access_level),
             );
 
             if (groupMemberRelationshipKeys.has(groupMemberRelationship._key)) {
@@ -80,10 +82,14 @@ export default createStep((instance, logger) =>
 export function createGroupUserRelationship(
   group: Entity,
   user: Entity,
+  userAccessLevel: string,
 ): Relationship {
   return createDirectRelationship({
     _class: RelationshipClass.HAS,
     from: group,
     to: user,
+    properties: {
+      userAccessLevel,
+    },
   });
 }

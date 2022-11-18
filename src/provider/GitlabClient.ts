@@ -25,10 +25,7 @@ import {
 const ITEMS_PER_PAGE = 100;
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
-export type PageErrorHandler = ({
-  err: Error,
-  endpoint: string,
-}) => Promise<void> | void;
+export type PageErrorHandler = ({ err, endpoint }) => Promise<void> | void;
 
 export type RateLimitStatus = {
   limit: number;
@@ -133,17 +130,29 @@ export class GitlabClient {
   }
 
   async fetchProjectMembers(projectId: number): Promise<GitLabUserRef[]> {
-    return this.makePaginatedRequest(
-      HttpMethod.GET,
-      `/projects/${projectId}/members/all`,
-    );
+    let projectMembers;
+    try {
+      projectMembers = await this.makePaginatedRequest(
+        HttpMethod.GET,
+        `/projects/${projectId}/members/all`,
+      );
+    } catch (err) {
+      projectMembers = [];
+    }
+    return projectMembers;
   }
 
   async fetchGroupMembers(groupId: number): Promise<GitLabUserRef[]> {
-    return this.makePaginatedRequest(
-      HttpMethod.GET,
-      `/groups/${groupId}/members/all`,
-    );
+    let groupMembers;
+    try {
+      groupMembers = await this.makePaginatedRequest(
+        HttpMethod.GET,
+        `/groups/${groupId}/members/all`,
+      );
+    } catch (err) {
+      if (err.status === 403) groupMembers = [];
+    }
+    return groupMembers;
   }
 
   async fetchGroupSubgroups(groupId: number): Promise<GitLabGroup[]> {

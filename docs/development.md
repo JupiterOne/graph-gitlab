@@ -36,7 +36,7 @@ To set up a GitLab account for development, please take the following steps:
 Once you've created your account, you'll need to generate an API Key to access
 the GitLab API.
 
-1. First, click on your avatar (top-right) and select "Settings".
+1. First, click on your avatar (top-right) and select "Preferences".
 2. From the left side menu, select "Access Tokens".
 3. Add a new personal access token by giving it a name, expiration (optional) as
    well as selecting the usage permissions based on your use case. Then click
