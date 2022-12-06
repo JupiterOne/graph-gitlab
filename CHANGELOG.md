@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.4.1 - 2022-12-06
+
 ## Changed
 
 - Changed the users fetching to be sequential as a solution for the rate
