@@ -46,8 +46,6 @@ export async function fetchProjects({
         const sharedWithGroups: GitLabGroupRef[] = project.shared_with_groups;
         const projectEntity = await addProjectEntity(project);
 
-        console.log('sharedWithGroups', sharedWithGroups);
-
         const groupProjects = processedPairs.get(group.id);
         if (groupProjects?.includes(project.id)) {
           // Already processed
