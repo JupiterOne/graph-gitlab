@@ -42,9 +42,12 @@ export async function fetchUsers({
     },
   );
 
-  const users: GitLabUser[] = await Promise.all(
-    Object.values(usersMap).map((userRef) => client.fetchUser(userRef.id)),
-  );
+  const users: GitLabUser[] = [];
+
+  for (const userRef of Object.values(usersMap)) {
+    const userDetails = await client.fetchUser(userRef.id);
+    users.push(userDetails);
+  }
 
   await jobState.addEntities(users.map(createUserEntity));
 }
