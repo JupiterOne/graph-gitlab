@@ -137,7 +137,10 @@ export class GitlabClient {
         `/projects/${projectId}/members/all`,
       );
     } catch (err) {
-      projectMembers = [];
+      if (err.status === 403) {
+        projectMembers = [];
+        this.logger.warn({ projectId }, 'Could not fetch members for project');
+      }
     }
     return projectMembers;
   }
@@ -149,8 +152,12 @@ export class GitlabClient {
         HttpMethod.GET,
         `/groups/${groupId}/members/all`,
       );
+      throw Error();
     } catch (err) {
-      if (err.status === 403) groupMembers = [];
+      if (err.status === 403) {
+        groupMembers = [];
+        this.logger.warn({ groupId }, 'Could not fetch members for group');
+      }
     }
     return groupMembers;
   }
