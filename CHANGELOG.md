@@ -8,6 +8,16 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Added
+
+- Added the following properties: `groupId`, `groupAccessLevel`, `groupName`,
+  `groupFullPath` and `expiresOn` on the `gitlab_group` -HAS-> `gitlab_project`
+  relationships.
+- Added the following property: `userAccessLevel` on the `gitlab_project` -HAS->
+  `gitlab_user` relationships.
+- Added the following property: `userAccessLevel` on the `gitlab_group` -HAS->
+  `gitlab_user` relationships.
+
 ## 4.4.1 - 2022-12-06
 
 ## Changed

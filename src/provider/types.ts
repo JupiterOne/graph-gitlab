@@ -1,5 +1,15 @@
 import { Opaque } from 'type-fest';
 
+export enum AccessLevel {
+  NO_ACCESS = 'no access',
+  MINIMAL_ACCESS = 'minimal access',
+  GUEST = 'guest',
+  REPORTER = 'reporter',
+  DEVELOPER = 'developer',
+  MAINTAINER = 'maintainer',
+  OWNER = 'owner',
+}
+
 export interface GitLabUser {
   id: number;
   name: string;
@@ -23,7 +33,20 @@ export interface GitLabUserRef {
   name: string;
   username: string;
   state: string;
+  avatar_url: string;
+  web_url: string;
   access_level: number;
+  created_at: string;
+  expires_at: string | null;
+  membership_state: string;
+}
+
+export interface GitLabGroupRef {
+  group_id: number;
+  group_name: string;
+  group_full_path: string;
+  group_access_level: number;
+  expires_at: string | null;
 }
 
 export interface GitLabGroup {
