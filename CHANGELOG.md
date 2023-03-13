@@ -10,6 +10,8 @@ and this project adheres to
 
 ## Changed
 
+- Due to how the `/users/*` API handles rate limiting, add logic to wait 10
+  minutes if we encounter a 429 in the `fetch-users` step
 - Updated `@jupiterone/integration-sdk-*` packages to `v8.30.5`
 - Introduced new SDK testing patterns for `fetch-users` step
 

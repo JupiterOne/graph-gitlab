@@ -1,11 +1,15 @@
 import {
+  IntegrationProviderAPIError,
   IntegrationStep,
   IntegrationStepExecutionContext,
+  IntegrationWarnEventName,
 } from '@jupiterone/integration-sdk-core';
+import { sleep } from '@lifeomic/attempt';
 
 import { Entities, Steps } from '../constants';
 import { createUserEntity } from '../converters';
 import { createGitlabClient } from '../provider';
+import { GitLabUser } from '../provider/types';
 import { GitlabIntegrationConfig } from '../types';
 
 export async function fetchUsers({
@@ -44,7 +48,30 @@ export async function fetchUsers({
   );
 
   for (const userId of userIds) {
-    const userDetails = await client.fetchUser(userId);
+    let userDetails: GitLabUser;
+    try {
+      userDetails = await client.fetchUser(userId);
+    } catch (err) {
+      if ((err as IntegrationProviderAPIError).status === 429) {
+        /**
+         * Wait 10 minutes, then attempt the request again.
+         *
+         * Also alert the user that we've apparently encountered a 10-minute
+         * rate limit on the `/users/<user-id>` endpoint, and guide them to
+         * documentation about increasing their per-user rate limit (if possible)
+         *
+         * See https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_users_api.html
+         */
+        logger.publishWarnEvent({
+          name: 'warn_rate_limit_encountered' as IntegrationWarnEventName,
+          description: `Encountered rate limit on '/users/${userId}' endpoint, which has a 10-minute rate limit reset. Sleeping for 10 minutes before re-attempting '/users/${userId}' endpoint`,
+        });
+        await sleep(10 * 60_000);
+        userDetails = await client.fetchUser(userId);
+      } else {
+        throw err;
+      }
+    }
     await jobState.addEntity(createUserEntity(userDetails));
   }
 }
