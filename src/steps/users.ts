@@ -6,7 +6,6 @@ import {
 import { Entities, Steps } from '../constants';
 import { createUserEntity } from '../converters';
 import { createGitlabClient } from '../provider';
-import { GitLabUser, GitLabUserRef } from '../provider/types';
 import { GitlabIntegrationConfig } from '../types';
 
 export async function fetchUsers({
@@ -16,9 +15,7 @@ export async function fetchUsers({
 }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
   const client = createGitlabClient(instance.config, logger);
 
-  const usersMap: {
-    [number: string]: GitLabUserRef;
-  } = {};
+  const userIds = new Set<number>();
 
   await jobState.iterateEntities(
     { _type: Entities.GROUP._type },
@@ -27,7 +24,9 @@ export async function fetchUsers({
         parseInt(group.id as string, 10),
       );
 
-      members.forEach((member) => (usersMap[member.id] = member));
+      for (const member of members) {
+        userIds.add(member.id);
+      }
     },
   );
 
@@ -38,18 +37,16 @@ export async function fetchUsers({
         parseInt(project.id as string, 10),
       );
 
-      members.forEach((member) => (usersMap[member.id] = member));
+      for (const member of members) {
+        userIds.add(member.id);
+      }
     },
   );
 
-  const users: GitLabUser[] = [];
-
-  for (const userRef of Object.values(usersMap)) {
-    const userDetails = await client.fetchUser(userRef.id);
-    users.push(userDetails);
+  for (const userId of userIds) {
+    const userDetails = await client.fetchUser(userId);
+    await jobState.addEntity(createUserEntity(userDetails));
   }
-
-  await jobState.addEntities(users.map(createUserEntity));
 }
 
 export const userSteps: IntegrationStep<GitlabIntegrationConfig>[] = [

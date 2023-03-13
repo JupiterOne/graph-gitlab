@@ -1,6 +1,6 @@
+import { GraphObjectSchema } from '@jupiterone/integration-sdk-core';
 import {
   createMockStepExecutionContext,
-  GraphObjectSchema,
   MockJobState,
 } from '@jupiterone/integration-sdk-testing';
 

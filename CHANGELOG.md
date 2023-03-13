@@ -8,6 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+## Changed
+
+- Updated `@jupiterone/integration-sdk-*` packages to `v8.30.5`
+- Introduced new SDK testing patterns for `fetch-users` step
+
 ## 4.4.1 - 2022-12-06
 
 ## Changed
