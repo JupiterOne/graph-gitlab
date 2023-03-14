@@ -27,7 +27,7 @@ export const Entities = {
   USER: {
     resourceName: 'User',
     _type: 'gitlab_user',
-    _class: 'User',
+    _class: ['User'],
   },
   GROUP: {
     resourceName: 'Group',

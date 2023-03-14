@@ -1,4 +1,4 @@
-import { GraphObjectSchema } from '@jupiterone/integration-sdk-testing';
+import { GraphObjectSchema } from '@jupiterone/integration-sdk-core';
 
 export const projectClass = ['CodeRepo', 'Project'];
 export const projectSchema: GraphObjectSchema = {
