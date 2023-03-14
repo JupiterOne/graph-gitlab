@@ -7,6 +7,7 @@ import { getStepTestConfigForStep, instanceConfig } from '../../test/config';
 import { setupRecording, Recording } from '../../test/recording';
 import { Steps } from '../constants';
 import { GitlabClient } from '../provider/GitlabClient';
+import { ONE_MINUTE_IN_MS } from './users';
 
 let recording: Recording | undefined;
 
@@ -117,8 +118,12 @@ describe('fetch-users 429 should wait 10 minutes', () => {
       const stepResult = await executeStepWithDependencies(stepTestConfig);
       expect(stepResult).toMatchStepMetadata(stepTestConfig);
     },
-    15 * 60_000,
-  ); // Allow this test to run for 15 minutes - 10 minutes of waiting time, plus buffer on either end.
+    /**
+     * Allow this test to run for 15 minutes - 10 minutes of waiting time, plus
+     * buffer on either end.
+     */
+    15 * ONE_MINUTE_IN_MS,
+  );
 
   test('replay', async () => {
     const flushPromises = () => new Promise((res) => setImmediate(res));

@@ -12,6 +12,8 @@ import { createGitlabClient } from '../provider';
 import { GitLabUser } from '../provider/types';
 import { GitlabIntegrationConfig } from '../types';
 
+export const ONE_MINUTE_IN_MS = 60_000;
+
 export async function fetchUsers({
   instance,
   jobState,
@@ -64,9 +66,9 @@ export async function fetchUsers({
          */
         logger.publishWarnEvent({
           name: 'warn_rate_limit_encountered' as IntegrationWarnEventName,
-          description: `Encountered rate limit on '/users/${userId}' endpoint, which has a 10-minute rate limit reset. Sleeping for 10 minutes before re-attempting '/users/${userId}' endpoint`,
+          description: `Encountered rate limit on '/users/${userId}' endpoint, which has a 10-minute rate limit reset (see https://docs.gitlab.com/ee/user/admin_area/settings/rate_limit_on_users_api.html). Sleeping for 10 minutes before re-attempting '/users/${userId}' endpoint`,
         });
-        await sleep(10 * 60_000);
+        await sleep(10 * ONE_MINUTE_IN_MS);
         userDetails = await client.fetchUser(userId);
       } else {
         throw err;
