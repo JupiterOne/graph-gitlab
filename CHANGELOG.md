@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.4.2 - 2023-03-14
+
 ## Changed
 
 - Due to how the `/users/*` API handles rate limiting, add logic to wait 10
