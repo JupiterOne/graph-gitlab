@@ -36,13 +36,16 @@ export async function fetchProjects({
   // Maps groupId to projectIds
   const processedPairs: Map<number, number[]> = new Map();
 
-  // Projects in groups accessible to the user
+  // To get to all the projects we need to take the groups we have ingested
+  // and iterate through projects belonging to them
   await jobState.iterateEntities(
     { _type: Entities.GROUP._type },
     async (groupEntity) => {
       const group = getRawData(groupEntity) as GitLabGroup;
 
       await client.iterateGroupProjects(group.id, async (project) => {
+        // Project can be shared with many groups
+        // (potentially including the one we used above to find the project)
         const sharedWithGroups: GitLabGroupRef[] = project.shared_with_groups;
         const projectEntity = await addProjectEntity(project);
 
@@ -51,9 +54,13 @@ export async function fetchProjects({
           // Already processed
           return;
         }
+
         processedPairs.set(group.id, [...(groupProjects || []), project.id]);
 
-        // Check if the group used for finding this project exists in the sharedWithGroups section
+        // We want to link this project with all of its groups (group -HAS-> project)
+        // However depending on criteria below, we may or may not have additional info found within project.shared_with_groups section.
+
+        // If the group used for finding this project exists in the project.shared_with_groups section, we have additional data
         const originGroupIndex = sharedWithGroups.findIndex(
           (sharedGroup) => sharedGroup.group_id === group.id,
         );
@@ -80,7 +87,7 @@ export async function fetchProjects({
           // Remove it from array as it's already processed
           sharedWithGroups.splice(originGroupIndex, 1);
         } else {
-          // If not found in shared groups properties, we still want to add it since we found this project based off of this group but this time without properties
+          // If the group wasn't found within project.shared_with_groups we still want to add it since we found this project based off of this group but this time without properties
           await jobState.addRelationship(
             createDirectRelationship({
               _class: RelationshipClass.HAS,
@@ -91,6 +98,10 @@ export async function fetchProjects({
         }
 
         // Now we can safely iterate through remainder of the shared groups and make connections
+        // Safely means here that we are not expecting to stumble upon the 'origin group' here
+        // The group we've used to find all of the projects belong to it
+        // Which means we'll have access to all the properties contained within project.shared_with_groups
+        // and can just loop through and process all of the groups with the same code.
         for (const sharedGroup of sharedWithGroups) {
           const sharedGroupProjects = processedPairs.get(sharedGroup.group_id);
           if (sharedGroupProjects?.includes(project.id)) {
