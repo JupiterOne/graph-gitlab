@@ -32,15 +32,15 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.33.1",
-    "@jupiterone/integration-sdk-dev-tools": "^8.33.1",
-    "@jupiterone/integration-sdk-testing": "^8.33.1",
+    "@jupiterone/integration-sdk-core": "^8.30.5",
+    "@jupiterone/integration-sdk-dev-tools": "^8.30.5",
+    "@jupiterone/integration-sdk-testing": "^8.30.5",
     "@types/node-fetch": "^2.5.9",
     "@types/uuid": "^8.3.0",
     "dotenv": "^16.0.3",
     "type-fest": "^0.18.1"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.33.1"
+    "@jupiterone/integration-sdk-core": "^8.30.5"
   }
 }
