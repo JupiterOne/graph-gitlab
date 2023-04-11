@@ -75,15 +75,13 @@ export function createUserEntity(user: GitLabUser): Entity {
         _key: key,
         _type: Entities.USER._type,
         _class: Entities.USER._class,
-
         id: user.id.toString(),
         name: user.name,
         createdOn: new Date(user.created_at).getTime(),
         webLink: user.web_url,
         username: user.username,
         state: user.state,
-        email:
-          user.email !== '' || !user.email ? user.email : user.public_email,
+        email: user.email || user.public_email || undefined,
         publicEmail: user.public_email,
         isAdmin: user.is_admin,
         canCreateGroup: user.can_create_group,
