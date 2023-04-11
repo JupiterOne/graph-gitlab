@@ -82,7 +82,8 @@ export function createUserEntity(user: GitLabUser): Entity {
         webLink: user.web_url,
         username: user.username,
         state: user.state,
-        email: user.email || user.public_email,
+        email:
+          user.email !== '' || !user.email ? user.email : user.public_email,
         publicEmail: user.public_email,
         isAdmin: user.is_admin,
         canCreateGroup: user.can_create_group,
