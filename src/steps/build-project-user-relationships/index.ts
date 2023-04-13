@@ -39,7 +39,9 @@ export function createStep(
           const projectMemberRelationshipKeys = new Set<string>();
 
           for (const member of projectMembers) {
-            const userEntity = userIdMap.get(member.id.toString());
+            const userEntity: Entity | undefined = userIdMap.get(
+              member.id.toString(),
+            );
             if (userEntity === undefined) {
               logger.warn(
                 { _id: member.id.toString() },
