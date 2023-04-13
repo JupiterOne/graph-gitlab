@@ -37,7 +37,7 @@ export default async function validateInvocation({
     await client.isValidUrl();
   } catch (error) {
     throw new IntegrationValidationError(
-      'An Error occurred while validating the base URL configuration.',
+      'An Error occurred while validating the API Base URL. Example: https://gitlab.com or your self-managed instance URL.',
     );
   }
   try {
