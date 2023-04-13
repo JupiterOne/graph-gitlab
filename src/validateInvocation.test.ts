@@ -1,8 +1,4 @@
-import {
-  IntegrationProviderAuthenticationError,
-  IntegrationProviderAuthorizationError,
-  IntegrationValidationError,
-} from '@jupiterone/integration-sdk-core';
+import { IntegrationValidationError } from '@jupiterone/integration-sdk-core';
 import {
   createMockExecutionContext,
   Recording,
@@ -49,7 +45,7 @@ describe('api response', () => {
     );
 
     await expect(validateInvocation(executionContext)).rejects.toThrowError(
-      IntegrationProviderAuthenticationError,
+      IntegrationValidationError,
     );
   });
 
@@ -73,7 +69,29 @@ describe('api response', () => {
     );
 
     await expect(validateInvocation(executionContext)).rejects.toThrowError(
-      IntegrationProviderAuthorizationError,
+      IntegrationValidationError,
+    );
+  });
+
+  test('authorization error', async () => {
+    recording = setupRecording({
+      directory: '__recordings__',
+      name: 'validateInvocationBaseUrlIsInvalid',
+    });
+
+    recording.server.any().intercept((req, res) => {
+      res.status(404);
+    });
+    const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
+      {
+        instanceConfig: {
+          baseUrl: 'https://example123.com',
+          personalToken: 'INVALID',
+        },
+      },
+    );
+    await expect(validateInvocation(executionContext)).rejects.toThrowError(
+      IntegrationValidationError,
     );
   });
 });

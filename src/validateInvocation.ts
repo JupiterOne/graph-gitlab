@@ -33,5 +33,18 @@ export default async function validateInvocation({
   }
 
   const client = createGitlabClient(instance.config, logger);
-  await client.fetchAccount();
+  try {
+    await client.isValidUrl();
+  } catch (error) {
+    throw new IntegrationValidationError(
+      'An Error occurred while validating the base URL configuration.',
+    );
+  }
+  try {
+    await client.fetchAccount();
+  } catch (error) {
+    throw new IntegrationValidationError(
+      'An Error occurred while validating the personal token configuration.',
+    );
+  }
 }
