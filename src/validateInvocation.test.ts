@@ -73,15 +73,13 @@ describe('api response', () => {
     );
   });
 
-  test('authorization error', async () => {
+  test('base url error', async () => {
     recording = setupRecording({
-      directory: '__recordings__',
+      directory: 'src/__recordings__',
       name: 'validateInvocationBaseUrlIsInvalid',
+      options: { recordFailedRequests: true },
     });
 
-    recording.server.any().intercept((req, res) => {
-      res.status(404);
-    });
     const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
       {
         instanceConfig: {
