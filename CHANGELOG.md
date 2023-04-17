@@ -8,6 +8,18 @@ and this project adheres to
 
 ## [Unreleased]
 
+## 4.4.3 - 2023-03-14
+
+## Changed
+
+- Changed what we do on validate invocation to distinguish two diferent things:
+
+  1. When base URL is wrong
+  2. When personalToken is wrong.
+
+- Added some new tests and checks for undefined cases on some steps
+  (group-user-relationships & project-user-relationships).
+
 ## 4.4.2 - 2023-03-14
 
 ## Changed
