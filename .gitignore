@@ -4,3 +4,4 @@ dist/
 !.env.example
 .j1-integration
 .eslintcache
+.npmrc
