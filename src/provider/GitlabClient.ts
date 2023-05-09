@@ -56,6 +56,18 @@ export class GitlabClient {
     this.personalToken = personalToken;
     this.logger = logger;
   }
+  // https://docs.gitlab.com/ee/api/projects.html#list-all-projects
+  // Acording to this, we can call this endpoint without a private-token to access only the public projects
+  // This would allow us to have a better way to test if the Base URL provided by the user is invalid.
+  async isValidUrl() {
+    const endpoint = `${this.baseUrl}/api/v4/projects`;
+    await fetch(endpoint, {
+      method: HttpMethod.GET,
+      headers: {
+        'Private-Token': '',
+      },
+    });
+  }
 
   async fetchAccount(): Promise<GitLabUser> {
     return this.makeSingularRequest(HttpMethod.GET, '/user');
