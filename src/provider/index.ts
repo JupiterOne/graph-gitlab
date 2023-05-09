@@ -11,7 +11,7 @@ type GitlabClientConfig = {
   personalToken: string;
 };
 
-let client: GitlabClient;
+let client: GitlabClient | undefined;
 export function createGitlabClient(
   config: GitlabClientConfig,
   logger: IntegrationLogger,
@@ -20,6 +20,12 @@ export function createGitlabClient(
     client = new GitlabClient(config.baseUrl, config.personalToken, logger);
   }
   return client;
+}
+//I added this to test validateInvocation sincee creteGitlabClient
+// closely resembles a singleton, and we want to test multiple client
+// configs
+export function resetClient() {
+  client = undefined;
 }
 
 export type ClientCreator = (

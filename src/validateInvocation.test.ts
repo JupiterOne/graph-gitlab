@@ -1,4 +1,7 @@
-import { IntegrationValidationError } from '@jupiterone/integration-sdk-core';
+import {
+  IntegrationProviderAuthenticationError,
+  IntegrationValidationError,
+} from '@jupiterone/integration-sdk-core';
 import {
   createMockExecutionContext,
   Recording,
@@ -7,6 +10,7 @@ import {
 
 import { GitlabIntegrationConfig } from './types';
 import validateInvocation from './validateInvocation';
+import { resetClient } from './provider';
 
 test('requires valid config', async () => {
   const executionContext = createMockExecutionContext<GitlabIntegrationConfig>({
@@ -23,16 +27,14 @@ describe('api response', () => {
 
   afterEach(async () => {
     await recording.stop();
+    resetClient();
   });
 
   test('authentication error', async () => {
     recording = setupRecording({
-      directory: '__recordings__',
+      directory: 'src/__recordings__',
       name: 'validateInvocationAuthenticationError',
-    });
-
-    recording.server.any().intercept((req, res) => {
-      res.status(401);
+      options: { recordFailedRequests: true },
     });
 
     const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
@@ -45,31 +47,7 @@ describe('api response', () => {
     );
 
     await expect(validateInvocation(executionContext)).rejects.toThrowError(
-      IntegrationValidationError,
-    );
-  });
-
-  test('authorization error', async () => {
-    recording = setupRecording({
-      directory: '__recordings__',
-      name: 'validateInvocationAuthorizationError',
-    });
-
-    recording.server.any().intercept((req, res) => {
-      res.status(403);
-    });
-
-    const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
-      {
-        instanceConfig: {
-          baseUrl: 'https://example.com',
-          personalToken: 'INVALID',
-        },
-      },
-    );
-
-    await expect(validateInvocation(executionContext)).rejects.toThrowError(
-      IntegrationValidationError,
+      IntegrationProviderAuthenticationError,
     );
   });
 
@@ -80,15 +58,13 @@ describe('api response', () => {
       options: { recordFailedRequests: true },
     });
 
-    const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
-      {
-        instanceConfig: {
-          baseUrl: 'https://example123.com',
-          personalToken: 'INVALID',
-        },
+    const context = createMockExecutionContext<GitlabIntegrationConfig>({
+      instanceConfig: {
+        baseUrl: 'https://gitlab.jupiterone.io',
+        personalToken: 'INVALID',
       },
-    );
-    await expect(validateInvocation(executionContext)).rejects.toThrowError(
+    });
+    await expect(validateInvocation(context)).rejects.toThrowError(
       IntegrationValidationError,
     );
   });

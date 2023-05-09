@@ -1,5 +1,6 @@
 import {
   IntegrationExecutionContext,
+  IntegrationProviderAuthenticationError,
   IntegrationValidationError,
 } from '@jupiterone/integration-sdk-core';
 
@@ -43,8 +44,11 @@ export default async function validateInvocation({
   try {
     await client.fetchAccount();
   } catch (error) {
-    throw new IntegrationValidationError(
-      'An Error occurred while validating the personal token configuration.',
-    );
+    throw new IntegrationProviderAuthenticationError({
+      status: error.status,
+      statusText:
+        'An Error occurred while validating the personal token configuration.',
+      endpoint: '/user',
+    });
   }
 }
