@@ -1,6 +1,5 @@
 import {
   IntegrationProviderAuthenticationError,
-  IntegrationProviderAuthorizationError,
   IntegrationValidationError,
 } from '@jupiterone/integration-sdk-core';
 import {
@@ -11,6 +10,7 @@ import {
 
 import { GitlabIntegrationConfig } from './types';
 import validateInvocation from './validateInvocation';
+import { resetClient } from './provider';
 
 test('requires valid config', async () => {
   const executionContext = createMockExecutionContext<GitlabIntegrationConfig>({
@@ -27,16 +27,14 @@ describe('api response', () => {
 
   afterEach(async () => {
     await recording.stop();
+    resetClient();
   });
 
   test('authentication error', async () => {
     recording = setupRecording({
-      directory: '__recordings__',
+      directory: 'src/__recordings__',
       name: 'validateInvocationAuthenticationError',
-    });
-
-    recording.server.any().intercept((req, res) => {
-      res.status(401);
+      options: { recordFailedRequests: true },
     });
 
     const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
@@ -53,27 +51,21 @@ describe('api response', () => {
     );
   });
 
-  test('authorization error', async () => {
+  test('base url error', async () => {
     recording = setupRecording({
-      directory: '__recordings__',
-      name: 'validateInvocationAuthorizationError',
+      directory: 'src/__recordings__',
+      name: 'validateInvocationBaseUrlIsInvalid',
+      options: { recordFailedRequests: true },
     });
 
-    recording.server.any().intercept((req, res) => {
-      res.status(403);
-    });
-
-    const executionContext = createMockExecutionContext<GitlabIntegrationConfig>(
-      {
-        instanceConfig: {
-          baseUrl: 'https://example.com',
-          personalToken: 'INVALID',
-        },
+    const context = createMockExecutionContext<GitlabIntegrationConfig>({
+      instanceConfig: {
+        baseUrl: 'https://gitlab.jupiterone.io',
+        personalToken: 'INVALID',
       },
-    );
-
-    await expect(validateInvocation(executionContext)).rejects.toThrowError(
-      IntegrationProviderAuthorizationError,
+    });
+    await expect(validateInvocation(context)).rejects.toThrowError(
+      IntegrationValidationError,
     );
   });
 });

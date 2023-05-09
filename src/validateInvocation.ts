@@ -1,5 +1,6 @@
 import {
   IntegrationExecutionContext,
+  IntegrationProviderAuthenticationError,
   IntegrationValidationError,
 } from '@jupiterone/integration-sdk-core';
 
@@ -33,5 +34,21 @@ export default async function validateInvocation({
   }
 
   const client = createGitlabClient(instance.config, logger);
-  await client.fetchAccount();
+  try {
+    await client.isValidUrl();
+  } catch (error) {
+    throw new IntegrationValidationError(
+      'An Error occurred while validating the API Base URL. Example: https://gitlab.com or your self-managed instance URL.',
+    );
+  }
+  try {
+    await client.fetchAccount();
+  } catch (error) {
+    throw new IntegrationProviderAuthenticationError({
+      status: error.status,
+      statusText:
+        'An Error occurred while validating the personal token configuration.',
+      endpoint: '/user',
+    });
+  }
 }
