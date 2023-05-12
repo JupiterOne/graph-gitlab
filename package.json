@@ -37,10 +37,27 @@
     "@jupiterone/integration-sdk-testing": "^8.33.1",
     "@types/node-fetch": "^2.5.9",
     "@types/uuid": "^8.3.0",
+    "auto": "^10.37.4",
     "dotenv": "^16.0.3",
     "type-fest": "^0.18.1"
   },
   "peerDependencies": {
     "@jupiterone/integration-sdk-core": "^8.33.1"
+  },
+  "auto": {
+    "plugins": [
+      [
+        "npm",
+        {
+          "setRcToken": false,
+          "publishFolder": "."
+        }
+      ],
+      "released"
+    ],
+    "onlyPublishWithReleaseLabel": true,
+    "shipit": {
+      "prerelease": false
+    }
   }
 }
