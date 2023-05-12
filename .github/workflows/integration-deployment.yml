@@ -33,3 +33,4 @@ jobs:
           version: ${{ steps.get-version-number.outputs.versionNumber }}
           githubToken: ${{ secrets.AUTO_GITHUB_PAT_TOKEN }}
           npmAuthToken: ${{ secrets.NPM_AUTH_TOKEN }}
+          releaseNotes: ${{ github.event.release.body }}
