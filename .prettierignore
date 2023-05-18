@@ -2,3 +2,4 @@ dist
 coverage/
 .j1-integration
 .j1-integration-cache
+CHANGELOG.md
