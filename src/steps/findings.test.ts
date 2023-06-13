@@ -2,11 +2,10 @@ import {
   executeStepWithDependencies,
   Recording,
   setupRecording,
-  StepTestConfig,
 } from '@jupiterone/integration-sdk-testing';
 
 import { Steps } from '../constants';
-import { invocationConfig } from '..';
+import { getStepTestConfigForStep } from '../../test';
 
 describe(Steps.FINDINGS, () => {
   let recording: Recording;
@@ -22,14 +21,7 @@ describe(Steps.FINDINGS, () => {
       directory: __dirname,
     });
 
-    const stepTestConfig: StepTestConfig = {
-      stepId: Steps.FINDINGS,
-      instanceConfig: {
-        baseUrl: process.env.BASE_URL || 'https://gitlab.com',
-        personalToken: process.env.PERSONAL_TOKEN || 'string-value',
-      },
-      invocationConfig: invocationConfig as any,
-    };
+    const stepTestConfig = getStepTestConfigForStep(Steps.FINDINGS);
 
     const result = await executeStepWithDependencies(stepTestConfig);
     expect(result).toMatchStepMetadata(stepTestConfig);
