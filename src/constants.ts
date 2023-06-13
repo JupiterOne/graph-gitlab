@@ -7,6 +7,7 @@ export const Steps = {
   PROJECTS: 'fetch-projects',
   MERGE_REQUESTS: 'fetch-merge-requests',
   COMMITS: 'fetch-mr-commits',
+  FINDINGS: 'fetch-vulnerability-findings',
   BUILD_ACCOUNT_HAS_PROJECT: 'build-account-project-relationships',
   BUILD_ACCOUNT_HAS_GROUP: 'build-account-group-relationships',
   BUILD_PROJECT_HAS_USER: 'build-project-user-relationships',
@@ -33,6 +34,11 @@ export const Entities = {
     resourceName: 'Group',
     _type: 'gitlab_group',
     _class: 'Group',
+  },
+  FINDING: {
+    resourceName: 'Finding',
+    _type: 'gitlab_finding',
+    _class: ['Finding'],
   },
   MERGE_REQUEST: {
     resourceName: 'Merge Request',

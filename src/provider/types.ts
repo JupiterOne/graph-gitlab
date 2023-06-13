@@ -51,6 +51,70 @@ export interface GitLabGroup {
   file_template_project_id: number;
 }
 
+export interface GitLabFinding {
+  id: number;
+  report_type?: string;
+  name?: string;
+  severity?: string;
+  confidence?: string;
+  scanner?: {
+    external_id?: string;
+    name?: string;
+    vendor?: string;
+  };
+  identifiers?: [
+    {
+      external_type: string;
+      external_id: string;
+      name: string;
+      url: string;
+    },
+  ];
+  project_fingerprint?: string;
+  uuid?: string;
+  create_jira_issue_url?: string;
+  false_positive?: boolean;
+  create_vulnerability_feedback_issue_path?: string;
+  create_vulnerability_feedback_merge_request_path?: string;
+  create_vulnerability_feedback_dismissal_path?: string;
+  project?: {
+    id?: number;
+    name?: string;
+    full_path?: string;
+    full_name?: string;
+  };
+  dismissal_feedback?: string;
+  issue_feedback?: string;
+  merge_request_feedback?: string;
+  description?: null;
+  links?: [{ url: string }];
+  location?: {
+    file?: string;
+    start_line?: number;
+    class?: string;
+    method?: string;
+    hostname?: string;
+  };
+  solution?: string;
+  evidence?: string;
+  details?: {
+    urls: { name?: string; type?: string };
+    discovered_at?: {
+      name?: string;
+      type?: string;
+      value?: string;
+    };
+  };
+  state?: string;
+  scan?: {
+    type?: string;
+    status?: string;
+    start_time?: string;
+    end_time?: string;
+  };
+  blob_path?: string;
+}
+
 export type GitLabProject = Opaque<any, 'GitLabProject'>;
 
 export type GitLabMergeRequest = Opaque<any, 'GitLabMergeRequest'>;

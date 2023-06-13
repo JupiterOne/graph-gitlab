@@ -11,6 +11,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 
 import {
+  GitLabFinding,
   GitLabGroup,
   GitLabMergeRequest,
   GitLabMergeRequestApproval,
@@ -79,6 +80,19 @@ export class GitlabClient {
 
   async fetchGroups(): Promise<GitLabGroup[]> {
     return this.makePaginatedRequest(HttpMethod.GET, '/groups');
+  }
+
+  async iterateProjectVulnerabilities(
+    projectId: string,
+    iteratee: ResourceIteratee<GitLabFinding>,
+  ): Promise<void> {
+    return this.iterateResources(
+      `/projects/${projectId}/vulnerability_findings`,
+      iteratee,
+      {
+        params: { severity: ['medium', 'high', 'critical'] },
+      },
+    );
   }
 
   async iterateOwnedProjects(

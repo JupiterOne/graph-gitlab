@@ -84,6 +84,7 @@ The following entities are created:
 | ------------- | ---------------------- | --------------------- |
 | Account       | `gitlab_account`       | `Account`             |
 | Commit        | `gitlab_commit`        | `CodeCommit`          |
+| Finding       | `gitlab_finding`       | `Finding`             |
 | Group         | `gitlab_group`         | `Group`               |
 | Merge Request | `gitlab_merge_request` | `CodeReview`, `PR`    |
 | Project       | `gitlab_project`       | `CodeRepo`, `Project` |

@@ -11,6 +11,7 @@ import {
   GitLabMergeRequestApproval,
   GitLabProject,
   GitLabUser,
+  GitLabFinding,
 } from '../provider/types';
 import { getCommitWebLinkFromMergeRequest } from '../util/mergeRequest';
 
@@ -203,4 +204,93 @@ export function createMergeRequestEntityIdentifier(id: number): string {
 const COMMIT_ID_PREFIX = 'gitlab-commit';
 export function createCommitIdentifier(id: number): string {
   return `${COMMIT_ID_PREFIX}:${id}`;
+}
+
+export function createVulnerabilityFindingEntity(
+  finding: GitLabFinding,
+): Entity {
+  const key = createFindingIdentifier(finding.id);
+
+  // For more Finding data model class required fields please visit: https://github.com/JupiterOne/data-model/blob/main/src/schemas/Finding.json.
+  return createIntegrationEntity({
+    entityData: {
+      source: finding,
+      assign: {
+        _key: key,
+        _type: Entities.FINDING._type,
+        _class: Entities.FINDING._class,
+        // START: finding data model required fields
+        category: finding?.report_type,
+        severity: finding?.severity,
+        numericSeverity: getNumericSeverity(finding?.severity),
+        open: finding.state?.toLocaleLowerCase() === 'detected',
+        // END: finding data model required fields
+        id: String(finding.id),
+        reportType: finding.report_type,
+        name: finding.name,
+        confidence: finding.confidence,
+        'scanner.externalId': finding.scanner?.external_id,
+        'scanner.name': finding.scanner?.name,
+        'scanner.vendor': finding.scanner?.vendor,
+        identifiers: finding.identifiers?.map(
+          (identifier) => identifier.external_id,
+        ),
+        projectFingerprint: finding.project_fingerprint,
+        uuid: finding.uuid,
+        createJiraIssueUrl: finding.create_jira_issue_url,
+        falsePositive: finding.false_positive,
+        createVulnerabilityFeedbackIssuePath:
+          finding.create_vulnerability_feedback_issue_path,
+        createVulnerabilityFeedbackMergeRequestPath:
+          finding.create_vulnerability_feedback_merge_request_path,
+        createVulnerabilityFeedbackDismissalPath:
+          finding.create_vulnerability_feedback_dismissal_path,
+        'project.id': finding.project?.id,
+        'project.name': finding.project?.name,
+        'project.fullPath': finding.project?.full_path,
+        'project.fullName': finding.project?.full_name,
+        dismissalFeedback: finding.dismissal_feedback,
+        issueFeedback: finding.issue_feedback,
+        mergeRequestFeedback: finding.merge_request_feedback,
+        description: finding.description,
+        links: finding.links?.map((link) => link.url),
+        'location.file': finding.location?.file,
+        'location.startLine': finding.location?.start_line,
+        'location.class': finding.location?.class,
+        'location.method': finding.location?.method,
+        'location.hostname': finding.location?.hostname,
+        solution: finding.solution,
+        evidence: finding.evidence,
+        state: finding.state,
+        blobPath: finding.blob_path,
+        'scan.type': finding.scan?.type,
+        'scan.status': finding.scan?.status,
+        'scan.startTime': parseTimePropertyValue(finding.scan?.start_time),
+        'scan.endTime': parseTimePropertyValue(finding.scan?.end_time),
+      },
+    },
+  });
+}
+
+const FINDING_ID_PREFIX = 'gitlab-finding';
+export function createFindingIdentifier(id: number): string {
+  return `${FINDING_ID_PREFIX}:${id}`;
+}
+
+export function getNumericSeverity(severity: string | undefined) {
+  if (!severity) {
+    return 0;
+  } else if (/critical/i.test(severity)) {
+    return 10;
+  } else if (/high/i.test(severity)) {
+    return 7;
+  } else if (/medium/i.test(severity)) {
+    return 5;
+  } else if (/low/i.test(severity)) {
+    return 2;
+  } else if (/info/i.test(severity)) {
+    return 1;
+  } else if (/unknown/i.test(severity)) {
+    return undefined;
+  }
 }
