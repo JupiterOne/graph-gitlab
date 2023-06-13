@@ -28,14 +28,17 @@ export async function fetchVulnerabilityFindings({
         project.id,
         async (finding) => {
           const findingEntity = createVulnerabilityFindingEntity(finding);
-          await jobState.addEntity(findingEntity);
-          await jobState.addRelationship(
-            createDirectRelationship({
-              _class: RelationshipClass.HAS,
-              from: projectEntity,
-              to: findingEntity,
-            }),
-          );
+
+          await Promise.all([
+            jobState.addEntity(findingEntity),
+            jobState.addRelationship(
+              createDirectRelationship({
+                _class: RelationshipClass.HAS,
+                from: projectEntity,
+                to: findingEntity,
+              }),
+            ),
+          ]);
         },
       );
     },
