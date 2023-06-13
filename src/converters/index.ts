@@ -211,7 +211,7 @@ export function createVulnerabilityFindingEntity(
 ): Entity {
   const key = createFindingIdentifier(finding.id);
 
-  // For more Finding data model class required fields please visit: https://github.com/JupiterOne/data-model/blob/main/src/schemas/Finding.json.
+  // For more Finding data model class required fields info please visit: https://github.com/JupiterOne/data-model/blob/main/src/schemas/Finding.json.
   return createIntegrationEntity({
     entityData: {
       source: finding,
