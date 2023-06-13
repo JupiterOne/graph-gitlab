@@ -1,10 +1,12 @@
 import {
   IntegrationStep,
   IntegrationStepExecutionContext,
+  RelationshipClass,
+  createDirectRelationship,
   getRawData,
 } from '@jupiterone/integration-sdk-core';
 
-import { Entities, Steps } from '../constants';
+import { Entities, Relationships, Steps } from '../constants';
 import { createGitlabClient } from '../provider';
 import { GitlabIntegrationConfig } from '../types';
 import { GitLabProject } from '../provider/types';
@@ -25,7 +27,15 @@ export async function fetchVulnerabilityFindings({
       await client.iterateProjectVulnerabilities(
         project.id,
         async (finding) => {
-          await jobState.addEntity(createVulnerabilityFindingEntity(finding));
+          const findingEntity = createVulnerabilityFindingEntity(finding);
+          await jobState.addEntity(findingEntity);
+          await jobState.addRelationship(
+            createDirectRelationship({
+              _class: RelationshipClass.HAS,
+              from: projectEntity,
+              to: findingEntity,
+            }),
+          );
         },
       );
     },
@@ -37,7 +47,7 @@ export const findingSteps: IntegrationStep<GitlabIntegrationConfig>[] = [
     id: Steps.FINDINGS,
     name: 'Fetch Vulnerability Findings',
     entities: [Entities.FINDING],
-    relationships: [],
+    relationships: [Relationships.PROJECT_HAS_FINDING],
     dependsOn: [Steps.PROJECTS],
     executionHandler: fetchVulnerabilityFindings,
   },

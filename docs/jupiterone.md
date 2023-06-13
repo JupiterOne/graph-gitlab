@@ -102,6 +102,7 @@ The following relationships are created:
 | `gitlab_group`         | **HAS**               | `gitlab_project`       |
 | `gitlab_group`         | **HAS**               | `gitlab_user`          |
 | `gitlab_merge_request` | **HAS**               | `gitlab_commit`        |
+| `gitlab_project`       | **HAS**               | `gitlab_finding`       |
 | `gitlab_project`       | **HAS**               | `gitlab_merge_request` |
 | `gitlab_project`       | **HAS**               | `gitlab_user`          |
 | `gitlab_user`          | **APPROVED**          | `gitlab_merge_request` |

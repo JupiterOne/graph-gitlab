@@ -94,6 +94,12 @@ export const Relationships = {
     _class: RelationshipClass.HAS,
     targetType: Entities.PROJECT._type,
   },
+  PROJECT_HAS_FINDING: {
+    _type: 'gitlab_project_has_finding',
+    sourceType: Entities.PROJECT._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.FINDING._type,
+  },
   PROJECT_HAS_PR: {
     _type: 'gitlab_project_has_merge_request',
     sourceType: Entities.PROJECT._type,
