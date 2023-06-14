@@ -1,11 +1,10 @@
 import {
   executeStepWithDependencies,
   Recording,
-  setupRecording,
 } from '@jupiterone/integration-sdk-testing';
 
 import { Steps } from '../constants';
-import { getStepTestConfigForStep } from '../../test';
+import { getStepTestConfigForStep, setupRecording } from '../../test';
 
 describe(Steps.FINDINGS, () => {
   let recording: Recording;
