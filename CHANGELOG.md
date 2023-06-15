@@ -1,3 +1,20 @@
+# v4.6.0 (Thu Jun 15 2023)
+
+#### 🚀 Enhancement
+
+- INT-6664: ingest GitLab vulnerability findings [#105](https://github.com/JupiterOne/graph-gitlab/pull/105) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### 🐛 Bug Fix
+
+- Update integration-deployment.yml [#103](https://github.com/JupiterOne/graph-gitlab/pull/103) ([@Nick-NCSU](https://github.com/Nick-NCSU))
+
+#### Authors: 2
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+- Nick Thompson ([@Nick-NCSU](https://github.com/Nick-NCSU))
+
+---
+
 ## 4.4.4 - 2023-05-15
 
 ## Added
