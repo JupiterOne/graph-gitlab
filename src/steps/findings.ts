@@ -1,4 +1,5 @@
 import {
+  IntegrationProviderAPIError,
   IntegrationStep,
   IntegrationStepExecutionContext,
   RelationshipClass,
@@ -45,10 +46,15 @@ export async function fetchVulnerabilityFindings({
       } catch (e) {
         if (e.status === 403) {
           logger.warn(
+            { _id: project.id.toString() },
             `User does not have permission to fetch findings for project ${project.id}. Please ensure access type is either Developer, 	Maintainer or Owner for this project.`,
           );
         } else {
-          throw e;
+          throw new IntegrationProviderAPIError({
+            endpoint: e.endpoint,
+            status: e.status,
+            statusText: e.statusText,
+          });
         }
       }
     },

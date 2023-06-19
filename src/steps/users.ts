@@ -37,10 +37,15 @@ export async function fetchUsers({
       } catch (e) {
         if (e.status === 403) {
           logger.warn(
+            { _id: group.id?.toString() },
             `User does not have permission to fetch members of group ${group.id}. Please ensure this user has the right access type.`,
           );
         } else {
-          throw e;
+          throw new IntegrationProviderAPIError({
+            endpoint: e.endpoint,
+            status: e.status,
+            statusText: e.statusText,
+          });
         }
       }
     },
@@ -63,7 +68,11 @@ export async function fetchUsers({
             `User does not have permission to fetch members of project ${project.id}. Please ensure this user has the right access type.`,
           );
         } else {
-          throw e;
+          throw new IntegrationProviderAPIError({
+            endpoint: e.endpoint,
+            status: e.status,
+            statusText: e.statusText,
+          });
         }
       }
     },
