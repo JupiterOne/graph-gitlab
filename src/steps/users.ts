@@ -26,12 +26,27 @@ export async function fetchUsers({
   await jobState.iterateEntities(
     { _type: Entities.GROUP._type },
     async (group) => {
-      const members = await client.fetchGroupMembers(
-        parseInt(group.id as string, 10),
-      );
+      try {
+        const members = await client.fetchGroupMembers(
+          parseInt(group.id as string, 10),
+        );
 
-      for (const member of members) {
-        userIds.add(member.id);
+        for (const member of members) {
+          userIds.add(member.id);
+        }
+      } catch (e) {
+        if (e.status === 403) {
+          logger.warn(
+            { _id: group.id?.toString() },
+            `User does not have permission to fetch members of group ${group.id}. Please ensure this user has the right access type.`,
+          );
+        } else {
+          throw new IntegrationProviderAPIError({
+            endpoint: e.endpoint,
+            status: e.status,
+            statusText: e.statusText,
+          });
+        }
       }
     },
   );
@@ -39,12 +54,26 @@ export async function fetchUsers({
   await jobState.iterateEntities(
     { _type: Entities.PROJECT._type },
     async (project) => {
-      const members = await client.fetchProjectMembers(
-        parseInt(project.id as string, 10),
-      );
+      try {
+        const members = await client.fetchProjectMembers(
+          parseInt(project.id as string, 10),
+        );
 
-      for (const member of members) {
-        userIds.add(member.id);
+        for (const member of members) {
+          userIds.add(member.id);
+        }
+      } catch (e) {
+        if (e.status === 403) {
+          logger.warn(
+            `User does not have permission to fetch members of project ${project.id}. Please ensure this user has the right access type.`,
+          );
+        } else {
+          throw new IntegrationProviderAPIError({
+            endpoint: e.endpoint,
+            status: e.status,
+            statusText: e.statusText,
+          });
+        }
       }
     },
   );

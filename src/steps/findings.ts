@@ -1,4 +1,5 @@
 import {
+  IntegrationProviderAPIError,
   IntegrationStep,
   IntegrationStepExecutionContext,
   RelationshipClass,
@@ -24,23 +25,38 @@ export async function fetchVulnerabilityFindings({
     async (projectEntity) => {
       const project = getRawData(projectEntity) as GitLabProject;
 
-      await client.iterateProjectVulnerabilities(
-        project.id,
-        async (finding) => {
-          const findingEntity = createVulnerabilityFindingEntity(finding);
+      try {
+        await client.iterateProjectVulnerabilities(
+          project.id,
+          async (finding) => {
+            const findingEntity = createVulnerabilityFindingEntity(finding);
 
-          await Promise.all([
-            jobState.addEntity(findingEntity),
-            jobState.addRelationship(
-              createDirectRelationship({
-                _class: RelationshipClass.HAS,
-                from: projectEntity,
-                to: findingEntity,
-              }),
-            ),
-          ]);
-        },
-      );
+            await Promise.all([
+              jobState.addEntity(findingEntity),
+              jobState.addRelationship(
+                createDirectRelationship({
+                  _class: RelationshipClass.HAS,
+                  from: projectEntity,
+                  to: findingEntity,
+                }),
+              ),
+            ]);
+          },
+        );
+      } catch (e) {
+        if (e.status === 403) {
+          logger.warn(
+            { _id: project.id.toString() },
+            `User does not have permission to fetch findings for project ${project.id}. Please ensure access type is either Developer, 	Maintainer or Owner for this project.`,
+          );
+        } else {
+          throw new IntegrationProviderAPIError({
+            endpoint: e.endpoint,
+            status: e.status,
+            statusText: e.statusText,
+          });
+        }
+      }
     },
   );
 }

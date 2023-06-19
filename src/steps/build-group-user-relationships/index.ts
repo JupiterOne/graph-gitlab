@@ -1,6 +1,7 @@
 import {
   createDirectRelationship,
   Entity,
+  IntegrationProviderAPIError,
   IntegrationStep,
   IntegrationStepExecutionContext,
   JobState,
@@ -32,38 +33,55 @@ export function createStep(
       await jobState.iterateEntities(
         { _type: Entities.GROUP._type },
         async (group) => {
-          const groupMembers = await client.fetchGroupMembers(
-            parseInt(group.id as string, 10),
-          );
-
-          const groupMemberRelationshipKeys = new Set<string>();
-
-          for (const member of groupMembers) {
-            const userEntity: Entity | undefined = userIdMap.get(
-              member.id.toString(),
+          try {
+            const groupMembers = await client.fetchGroupMembers(
+              parseInt(group.id as string, 10),
             );
-            if (userEntity === undefined) {
+
+            const groupMemberRelationshipKeys = new Set<string>();
+
+            for (const member of groupMembers) {
+              const userEntity: Entity | undefined = userIdMap.get(
+                member.id.toString(),
+              );
+              if (userEntity === undefined) {
+                logger.warn(
+                  { _id: member.id.toString() },
+                  'No user entity found for member ID',
+                );
+                continue;
+              }
+              const groupMemberRelationship = createGroupUserRelationship(
+                group,
+                userEntity,
+              );
+
+              if (
+                groupMemberRelationshipKeys.has(groupMemberRelationship._key)
+              ) {
+                logger.info(
+                  { _key: groupMemberRelationship._key },
+                  '[SKIP] Duplicate group member relationship',
+                );
+                continue;
+              }
+
+              groupMemberRelationshipKeys.add(groupMemberRelationship._key);
+              await jobState.addRelationship(groupMemberRelationship);
+            }
+          } catch (e) {
+            if (e.status === 403) {
               logger.warn(
-                { _id: member.id.toString() },
-                'No user entity found for member ID',
+                { _id: group.id?.toString() },
+                `User does not have permission to fetch members of group ${group.id}. Please ensure this user has the right access type.`,
               );
-              continue;
+            } else {
+              throw new IntegrationProviderAPIError({
+                endpoint: e.endpoint,
+                status: e.status,
+                statusText: e.statusText,
+              });
             }
-            const groupMemberRelationship = createGroupUserRelationship(
-              group,
-              userEntity,
-            );
-
-            if (groupMemberRelationshipKeys.has(groupMemberRelationship._key)) {
-              logger.info(
-                { _key: groupMemberRelationship._key },
-                '[SKIP] Duplicate group member relationship',
-              );
-              continue;
-            }
-
-            groupMemberRelationshipKeys.add(groupMemberRelationship._key);
-            await jobState.addRelationship(groupMemberRelationship);
           }
         },
       );
