@@ -1,3 +1,15 @@
+# v4.6.1 (Mon Jun 19 2023)
+
+#### 🐛 Bug Fix
+
+- INT-6664: update errors [#106](https://github.com/JupiterOne/graph-gitlab/pull/106) ([@gastonyelmini](https://github.com/gastonyelmini))
+
+#### Authors: 1
+
+- Gaston Yelmini ([@gastonyelmini](https://github.com/gastonyelmini))
+
+---
+
 # v4.6.0 (Thu Jun 15 2023)
 
 #### 🚀 Enhancement
