@@ -16,6 +16,7 @@ export const projectSchema: GraphObjectSchema = {
     visibility: { type: 'string' },
     public: { type: 'boolean' },
     issuesEnabled: { type: 'boolean' },
+    fullName: { type: 'string' },
     mergeRequestsEnabled: { type: 'boolean' },
     jobsEnabled: { type: 'boolean' },
     wikiEnabled: { type: 'boolean' },
