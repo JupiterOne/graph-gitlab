@@ -57,6 +57,7 @@ export function createProjectEntity(project: GitLabProject): Entity {
         autocloseReferencedIssues: project.autoclose_referenced_issues,
         topics: project.topics,
         fullName: project.path_with_namespace,
+        importType: project.import_type, // gitlab_project
       },
     },
   });
