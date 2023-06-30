@@ -1,3 +1,17 @@
+# v4.6.2 (Fri Jun 30 2023)
+
+#### 🐛 Bug Fix
+
+- Create Packages from Integration [#104](https://github.com/JupiterOne/graph-gitlab/pull/104) ([@jmountifield](https://github.com/jmountifield))
+- INT-7286: add full name to schema [#107](https://github.com/JupiterOne/graph-gitlab/pull/107) ([@mishelashala](https://github.com/mishelashala))
+
+#### Authors: 2
+
+- James Mountifield ([@jmountifield](https://github.com/jmountifield))
+- Michell Ayala ([@mishelashala](https://github.com/mishelashala))
+
+---
+
 # v4.6.1 (Mon Jun 19 2023)
 
 #### 🐛 Bug Fix
