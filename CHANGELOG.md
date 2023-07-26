@@ -1,3 +1,15 @@
+# v4.6.3 (Wed Jul 26 2023)
+
+#### 🐛 Bug Fix
+
+- package bump [#109](https://github.com/JupiterOne/graph-gitlab/pull/109) ([@zemberdotnet](https://github.com/zemberdotnet))
+
+#### Authors: 1
+
+- Matthew Zember ([@zemberdotnet](https://github.com/zemberdotnet))
+
+---
+
 # v4.6.2 (Fri Jun 30 2023)
 
 #### 🐛 Bug Fix
