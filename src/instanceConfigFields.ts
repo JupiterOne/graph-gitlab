@@ -11,6 +11,7 @@ const instanceConfigFields: IntegrationInstanceConfigFieldMap<GitlabIntegrationC
   },
   mergeRequestsUpdatedAfter: {
     type: 'string',
+    optional: true,
   },
 };
 
