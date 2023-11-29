@@ -6,7 +6,7 @@ import {
 } from '@jupiterone/integration-sdk-core';
 import { sleep } from '@lifeomic/attempt';
 
-import { Entities, Steps } from '../constants';
+import { Entities, PROJECT_MEMBERS_MAP, Steps } from '../constants';
 import { createUserEntity } from '../converters';
 import { createGitlabClient } from '../provider';
 import { GitLabUser } from '../provider/types';
@@ -51,12 +51,21 @@ export async function fetchUsers({
     },
   );
 
+  const projectMembersMap = new Map<
+    string,
+    { id: number; accessLevel: number }[]
+  >();
   await jobState.iterateEntities(
     { _type: Entities.PROJECT._type },
-    async (project) => {
+    async (projectEntity) => {
       try {
         const members = await client.fetchProjectMembers(
-          parseInt(project.id as string, 10),
+          parseInt(projectEntity.id as string, 10),
+        );
+
+        projectMembersMap.set(
+          projectEntity._key,
+          members.map((m) => ({ id: m.id, accessLevel: m.access_level })),
         );
 
         for (const member of members) {
@@ -65,7 +74,7 @@ export async function fetchUsers({
       } catch (e) {
         if (e.status === 403) {
           logger.warn(
-            `User does not have permission to fetch members of project ${project.id}. Please ensure this user has the right access type.`,
+            `User does not have permission to fetch members of project ${projectEntity.id}. Please ensure this user has the right access type.`,
           );
         } else {
           throw new IntegrationProviderAPIError({
@@ -105,6 +114,8 @@ export async function fetchUsers({
     }
     await jobState.addEntity(createUserEntity(userDetails));
   }
+
+  await jobState.setData(PROJECT_MEMBERS_MAP, projectMembersMap);
 }
 
 export const userSteps: IntegrationStep<GitlabIntegrationConfig>[] = [
