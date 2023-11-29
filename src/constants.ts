@@ -1,5 +1,7 @@
 import { RelationshipClass } from '@jupiterone/integration-sdk-core';
 
+export const PROJECT_MEMBERS_MAP = 'project-members-map';
+
 export const Steps = {
   ACCOUNTS: 'fetch-accounts',
   USERS: 'fetch-users',
