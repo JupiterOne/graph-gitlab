@@ -1,3 +1,27 @@
+# v4.7.0 (Wed Nov 29 2023)
+
+#### 🚀 Enhancement
+
+- INT-9953 - add accessLevel property to project -HAS-> user relationship [#111](https://github.com/JupiterOne/graph-gitlab/pull/111) ([@RonaldEAM](https://github.com/RonaldEAM))
+
+#### 🐛 Bug Fix
+
+- Make field optional so SDK does not error [#110](https://github.com/JupiterOne/graph-gitlab/pull/110) ([@maxheckel](https://github.com/maxheckel))
+- package bump [#109](https://github.com/JupiterOne/graph-gitlab/pull/109) ([@zemberdotnet](https://github.com/zemberdotnet))
+
+#### ⚠️ Pushed to `main`
+
+- Populate CODEOWENRS, baseline package.json and baseline cortex.yaml ([@jablonnc](https://github.com/jablonnc))
+
+#### Authors: 4
+
+- [@maxheckel](https://github.com/maxheckel)
+- Matthew Zember ([@zemberdotnet](https://github.com/zemberdotnet))
+- Noah Jablonski ([@jablonnc](https://github.com/jablonnc))
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v4.6.3 (Wed Jul 26 2023)
 
 #### 🐛 Bug Fix
