@@ -1,3 +1,20 @@
+# v4.8.0 (Wed Dec 06 2023)
+
+#### 🚀 Enhancement
+
+- INT-10098 - ingest project labels [#112](https://github.com/JupiterOne/graph-gitlab/pull/112) ([@RonaldEAM](https://github.com/RonaldEAM))
+
+#### ⚠️ Pushed to `main`
+
+- Fix x-cortex-service-groups where tier-4 was set incorrectly ([@jablonnc](https://github.com/jablonnc))
+
+#### Authors: 2
+
+- Noah Jablonski ([@jablonnc](https://github.com/jablonnc))
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v4.7.0 (Wed Nov 29 2023)
 
 #### 🚀 Enhancement
