@@ -18,6 +18,7 @@ import {
   GitLabProject,
   GitLabUser,
   GitLabUserRef,
+  GitlabLabel,
 } from './types';
 
 /**
@@ -143,6 +144,17 @@ export class GitlabClient {
         onPageError: options.onPageError,
       },
     );
+  }
+
+  async iterateProjectLabels(
+    projectId: number,
+    iteratee: ResourceIteratee<GitlabLabel>,
+  ) {
+    return this.iterateResources(`/projects/${projectId}/labels`, iteratee, {
+      params: {
+        with_counts: 'true',
+      },
+    });
   }
 
   /**

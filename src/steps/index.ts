@@ -18,6 +18,7 @@ import { projectSteps } from './projects';
 import { userSteps } from './users';
 import { commitSteps } from './commits';
 import { findingSteps } from './findings';
+import { projectLabelSteps } from './fetch-project-labels';
 
 const integrationSteps: Step<
   IntegrationStepExecutionContext<GitlabIntegrationConfig>
@@ -36,6 +37,7 @@ const integrationSteps: Step<
   projectMergeRequestStep,
   userOpenedMergeRequestStep,
   ...commitSteps,
+  ...projectLabelSteps,
 ];
 
 export { integrationSteps };

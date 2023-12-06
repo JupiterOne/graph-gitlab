@@ -126,3 +126,18 @@ export type GitLabMergeRequestApproval = Opaque<
   any,
   'GitLabMergeRequestApproval'
 >;
+
+export interface GitlabLabel {
+  id: number;
+  color: string;
+  text_color: string;
+  name: string;
+  description?: string | null;
+  description_html?: string | null;
+  open_issues_count: number;
+  closed_issues_count: number;
+  open_merge_requests_count: number;
+  subscribed: boolean;
+  priority?: number;
+  is_project_label?: boolean | null;
+}

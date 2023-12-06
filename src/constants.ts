@@ -19,6 +19,7 @@ export const Steps = {
   BUILD_PROJECT_HAS_PR: 'build-project-merge-request-relationships',
   BUILD_USER_OPENED_PR: 'build-user-opened-merge-request-relationships',
   BUILD_USER_APPROVED_PR: 'build-user-approved-merge-request-relationships',
+  PROJECT_LABELS: 'fetch-project-labels',
 };
 
 export const Entities = {
@@ -56,6 +57,11 @@ export const Entities = {
     resourceName: 'Project',
     _type: 'gitlab_project',
     _class: ['CodeRepo', 'Project'],
+  },
+  LABEL: {
+    resourceName: 'Label',
+    _type: 'gitlab_label',
+    _class: ['Record'],
   },
 };
 
@@ -125,5 +131,11 @@ export const Relationships = {
     sourceType: Entities.MERGE_REQUEST._type,
     _class: RelationshipClass.HAS,
     targetType: Entities.COMMIT._type,
+  },
+  PROJECT_HAS_LABEL: {
+    _type: 'gitlab_project_has_label',
+    sourceType: Entities.PROJECT._type,
+    _class: RelationshipClass.HAS,
+    targetType: Entities.LABEL._type,
   },
 };
