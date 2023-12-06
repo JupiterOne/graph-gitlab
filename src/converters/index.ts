@@ -12,6 +12,7 @@ import {
   GitLabProject,
   GitLabUser,
   GitLabFinding,
+  GitlabLabel,
 } from '../provider/types';
 import { getCommitWebLinkFromMergeRequest } from '../util/mergeRequest';
 
@@ -294,4 +295,36 @@ export function getNumericSeverity(severity: string | undefined) {
   } else if (/unknown/i.test(severity)) {
     return undefined;
   }
+}
+
+export function createLabelEntity(label: GitlabLabel): Entity {
+  const key = createLabelEntityIdentifier(label.id);
+
+  return createIntegrationEntity({
+    entityData: {
+      source: label,
+      assign: {
+        _key: key,
+        _type: Entities.LABEL._type,
+        _class: Entities.LABEL._class,
+        id: label.id.toString(),
+        displayName: label.name,
+        name: label.name,
+        description: label.description ?? undefined,
+        color: label.color,
+        textColor: label.text_color,
+        openIssuesCount: label.open_issues_count,
+        closedIssuesCount: label.closed_issues_count,
+        openMergeRequestsCount: label.open_merge_requests_count,
+        subscribed: label.subscribed,
+        priority: label.priority,
+      },
+    },
+  });
+}
+
+const LABEL_ID_PREFIX = 'gitlab-label';
+
+export function createLabelEntityIdentifier(id: number): string {
+  return `${LABEL_ID_PREFIX}:${id}`;
 }

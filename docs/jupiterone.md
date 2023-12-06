@@ -86,6 +86,7 @@ The following entities are created:
 | Commit        | `gitlab_commit`        | `CodeCommit`          |
 | Finding       | `gitlab_finding`       | `Finding`             |
 | Group         | `gitlab_group`         | `Group`               |
+| Label         | `gitlab_label`         | `Record`              |
 | Merge Request | `gitlab_merge_request` | `CodeReview`, `PR`    |
 | Project       | `gitlab_project`       | `CodeRepo`, `Project` |
 | User          | `gitlab_user`          | `User`                |
@@ -103,6 +104,7 @@ The following relationships are created:
 | `gitlab_group`         | **HAS**               | `gitlab_user`          |
 | `gitlab_merge_request` | **HAS**               | `gitlab_commit`        |
 | `gitlab_project`       | **HAS**               | `gitlab_finding`       |
+| `gitlab_project`       | **HAS**               | `gitlab_label`         |
 | `gitlab_project`       | **HAS**               | `gitlab_merge_request` |
 | `gitlab_project`       | **HAS**               | `gitlab_user`          |
 | `gitlab_user`          | **APPROVED**          | `gitlab_merge_request` |
