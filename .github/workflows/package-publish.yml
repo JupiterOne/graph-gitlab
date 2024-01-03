@@ -1,8 +1,8 @@
-name: Build and Package
+name: Build and Package Collector Image
 
 on:
   push:
-    tags: '*'
+    tags: ['*']
 
 env:
   REGISTRY: ghcr.io
