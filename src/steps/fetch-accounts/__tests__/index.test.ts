@@ -3,10 +3,11 @@ import {
   createMockStepExecutionContext,
 } from '@jupiterone/integration-sdk-testing';
 
-import step, { createAccountEntity } from '../';
+import step from '../';
 import { Recording, setupRecording } from '../../../../test';
 import { createGitlabClient } from '../../../provider';
 import { GitLabUser } from '../../../provider/types';
+import { createAccountEntity } from '../../../converters';
 
 let recording: Recording;
 
@@ -33,7 +34,7 @@ test('Account fetching', async () => {
     createMockIntegrationLogger(),
   );
 
-  const results = await provider.fetchAccount();
+  const results = await provider.fetchTokenOwner();
 
   expect(results).toEqual(
     expect.objectContaining({
@@ -44,28 +45,36 @@ test('Account fetching', async () => {
 });
 
 test('Account entity conversion', () => {
-  const account = {
+  const tokenOwner = {
     id: 1,
     username: 'account',
     name: 'account',
     created_at: '2020-01-01T00:00:00.000Z',
   } as GitLabUser;
 
-  const entity = createAccountEntity(account);
+  const systemVersion = {
+    version: 'testv1',
+    revision: '234',
+    enterprise: false,
+  };
+
+  const entity = createAccountEntity(tokenOwner, systemVersion);
 
   expect(entity).toEqual(
     expect.objectContaining({
-      _key: 'gitlab-account:1',
+      _key: 'gitlab-account-version:testv1',
       _type: 'gitlab_account',
       _class: ['Account'],
       id: '1',
       name: 'account',
-      createdOn: expect.any(Number),
       displayName: 'account',
+      enterprise: false,
+      revision: '234',
+      version: 'testv1',
       _rawData: [
         {
           name: 'default',
-          rawData: account,
+          rawData: { tokenOwner, systemVersion },
         },
       ],
     }),
@@ -83,15 +92,5 @@ test('step data collection', async () => {
 
   expect(context.jobState.collectedEntities).toHaveLength(1);
   expect(context.jobState.collectedRelationships).toHaveLength(0);
-  expect(context.jobState.collectedEntities).toEqual([
-    expect.objectContaining({
-      _key: expect.stringMatching(/gitlab-account:[0-9]+/),
-      _class: ['Account'],
-      _type: 'gitlab_account',
-      createdOn: expect.any(Number),
-      displayName: expect.any(String),
-      id: expect.stringMatching(/[0-9]+/),
-      name: expect.any(String),
-    }),
-  ]);
+  expect(context.jobState.collectedEntities).toMatchSnapshot();
 });

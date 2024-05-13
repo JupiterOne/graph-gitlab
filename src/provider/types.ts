@@ -115,6 +115,12 @@ export interface GitLabFinding {
   blob_path?: string;
 }
 
+export type GitLabVersion = {
+  version: string;
+  revision: string;
+  enterprise: boolean;
+};
+
 export type GitLabProject = Opaque<any, 'GitLabProject'>;
 
 export type GitLabMergeRequest = Opaque<any, 'GitLabMergeRequest'>;

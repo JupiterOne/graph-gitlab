@@ -72,7 +72,7 @@ describe('fetch-users 429 should wait 10 minutes', () => {
       instanceConfig.personalToken,
       createMockIntegrationLogger(),
     );
-    const user = await client.fetchAccount();
+    const user = await client.fetchTokenOwner();
 
     let e: Error | undefined;
     try {
