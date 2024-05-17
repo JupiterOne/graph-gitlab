@@ -1,6 +1,6 @@
 {
   "name": "@jupiterone/graph-gitlab",
-  "version": "4.8.1",
+  "version": "4.9.0",
   "description": "A JupiterOne Integration",
   "repository": {
     "type": "git",
