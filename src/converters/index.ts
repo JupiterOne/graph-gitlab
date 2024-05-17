@@ -13,8 +13,35 @@ import {
   GitLabUser,
   GitLabFinding,
   GitlabLabel,
+  GitLabVersion,
 } from '../provider/types';
 import { getCommitWebLinkFromMergeRequest } from '../util/mergeRequest';
+
+export function createAccountEntity(
+  tokenOwner: GitLabUser,
+  systemVersion: GitLabVersion,
+): Entity {
+  return createIntegrationEntity({
+    entityData: {
+      source: { systemVersion, tokenOwner },
+      assign: {
+        _key: createAccountEntityKey(systemVersion.version),
+        _type: Entities.ACCOUNT._type,
+        _class: Entities.ACCOUNT._class,
+        id: tokenOwner.id.toString(),
+        name: tokenOwner.name,
+        version: systemVersion.version,
+        revision: systemVersion.revision,
+        enterprise: systemVersion.enterprise,
+      },
+    },
+  });
+}
+
+const ACCOUNT_VERSION_PREFIX = 'gitlab-account-version';
+export function createAccountEntityKey(version: string): string {
+  return `${ACCOUNT_VERSION_PREFIX}:${version}`;
+}
 
 export function createProjectEntity(project: GitLabProject): Entity {
   const { _links, ...source } = project; // drop the _links

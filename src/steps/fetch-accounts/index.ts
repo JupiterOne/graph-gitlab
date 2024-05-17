@@ -1,14 +1,12 @@
 import {
-  Entity,
   IntegrationStep,
   IntegrationStepExecutionContext,
-  createIntegrationEntity,
 } from '@jupiterone/integration-sdk-core';
 
 import { createGitlabClient } from '../../provider';
-import { GitLabUser } from '../../provider/types';
 import { GitlabIntegrationConfig } from '../../types';
 import { Entities, Steps } from '../../constants';
+import { createAccountEntity } from '../../converters';
 
 const step: IntegrationStep<GitlabIntegrationConfig> = {
   id: Steps.ACCOUNTS,
@@ -21,34 +19,11 @@ const step: IntegrationStep<GitlabIntegrationConfig> = {
     logger,
   }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
     const client = createGitlabClient(instance.config, logger);
-    const account = await client.fetchAccount();
+    const systemVersion = await client.fetchSystemVersion();
+    const tokenOwner = await client.fetchTokenOwner();
 
-    await jobState.addEntities([createAccountEntity(account)]);
+    await jobState.addEntity(createAccountEntity(tokenOwner, systemVersion));
   },
 };
-
-export function createAccountEntity(user: GitLabUser): Entity {
-  const key = createAccountEntityIdentifier(user.id);
-
-  return createIntegrationEntity({
-    entityData: {
-      source: user,
-      assign: {
-        _key: key,
-        _type: Entities.ACCOUNT._type,
-        _class: Entities.ACCOUNT._class,
-
-        id: user.id.toString(),
-        name: user.name,
-        createdOn: new Date(user.created_at).getTime(),
-      },
-    },
-  });
-}
-
-const ACCOUNT_ID_PREFIX = 'gitlab-account';
-export function createAccountEntityIdentifier(id: number): string {
-  return `${ACCOUNT_ID_PREFIX}:${id}`;
-}
 
 export default step;

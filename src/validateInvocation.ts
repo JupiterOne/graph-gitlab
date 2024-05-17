@@ -42,7 +42,7 @@ export default async function validateInvocation({
     );
   }
   try {
-    await client.fetchAccount();
+    await client.fetchTokenOwner();
   } catch (error) {
     throw new IntegrationProviderAuthenticationError({
       status: error.status,

@@ -19,6 +19,7 @@ import {
   GitLabUser,
   GitLabUserRef,
   GitlabLabel,
+  GitLabVersion,
 } from './types';
 
 /**
@@ -71,8 +72,12 @@ export class GitlabClient {
     });
   }
 
-  async fetchAccount(): Promise<GitLabUser> {
+  async fetchTokenOwner(): Promise<GitLabUser> {
     return this.makeSingularRequest(HttpMethod.GET, '/user');
+  }
+
+  async fetchSystemVersion(): Promise<GitLabVersion> {
+    return this.makeSingularRequest(HttpMethod.GET, '/version');
   }
 
   async fetchUser(id: number): Promise<GitLabUser> {
