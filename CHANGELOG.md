@@ -1,3 +1,27 @@
+# v4.9.0 (Fri May 17 2024)
+
+#### 🚀 Enhancement
+
+- Add system version to gitlab_account entity [#115](https://github.com/JupiterOne/graph-gitlab/pull/115) ([@VDubber](https://github.com/VDubber))
+
+#### 🐛 Bug Fix
+
+- Update Dockerfile [#114](https://github.com/JupiterOne/graph-gitlab/pull/114) ([@zemberdotnet](https://github.com/zemberdotnet))
+- INT-10174: Change action to be an array [#113](https://github.com/JupiterOne/graph-gitlab/pull/113) ([@maxheckel](https://github.com/maxheckel))
+
+#### ⚠️ Pushed to `main`
+
+- Apply remove-codeql with multi-gitter [ci skip] ([@electricgull](https://github.com/electricgull))
+
+#### Authors: 4
+
+- [@maxheckel](https://github.com/maxheckel)
+- Cameron Griffin ([@electricgull](https://github.com/electricgull))
+- Matthew Zember ([@zemberdotnet](https://github.com/zemberdotnet))
+- Samuel Poulton ([@VDubber](https://github.com/VDubber))
+
+---
+
 # v4.8.1 (Thu Apr 25 2024)
 
 #### 🐛 Bug Fix
