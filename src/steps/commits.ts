@@ -39,7 +39,10 @@ export async function fetchCommits({
           );
           if (!commitEntity) {
             commitEntity = await jobState.addEntity(
-              createMergeRequestCommitEntity(mergeRequestCommit),
+              createMergeRequestCommitEntity(
+                mergeRequestCommit,
+                mergeRequest.source_branch,
+              ),
             );
           }
           await jobState.addRelationship(
@@ -55,7 +58,7 @@ export async function fetchCommits({
             const logDetail = {
               err,
               endpoint,
-              projectId: mergeRequest.projectId,
+              projectId: mergeRequest.project_id,
               errorCorrelationId,
             };
             if (err instanceof IntegrationProviderAuthorizationError) {

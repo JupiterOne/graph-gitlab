@@ -123,7 +123,95 @@ export type GitLabVersion = {
 
 export type GitLabProject = Opaque<any, 'GitLabProject'>;
 
-export type GitLabMergeRequest = Opaque<any, 'GitLabMergeRequest'>;
+export type GitLabMergeRequest = {
+  id: number;
+  iid: number;
+  project_id: number;
+  title: string;
+  description: string;
+  state: string;
+  created_at: string;
+  updated_at: string;
+  /** @deprecated Deprecated in GitLab 14.7, and scheduled for removal in API version 5. Use merge_user instead. */
+  merged_by?: Author;
+  merge_user: Author;
+  merged_at: string;
+  closed_by: any;
+  closed_at: any;
+  target_branch: string;
+  source_branch: string;
+  user_notes_count: number;
+  upvotes: number;
+  downvotes: number;
+  author: Author;
+  assignees: any[];
+  assignee: any;
+  reviewers: any[];
+  source_project_id: number;
+  target_project_id: number;
+  labels: any[];
+  draft: boolean;
+  imported: boolean;
+  imported_from: string;
+  /** @deprecated Use draft instead. */
+  work_in_progress?: boolean;
+  milestone: any;
+  merge_when_pipeline_succeeds: boolean;
+  /** @deprecated Deprecated in GitLab 15.6. Use detailed_merge_status instead. */
+  merge_status?: string;
+  detailed_merge_status: string;
+  sha: string;
+  merge_commit_sha: string;
+  squash_commit_sha: any;
+  discussion_locked: any;
+  should_remove_source_branch: boolean;
+  force_remove_source_branch: boolean;
+  prepared_at: string;
+  /** @deprecated Deprecated in GitLab 12.7, and scheduled for removal in API version 5. Use references instead. */
+  reference?: string;
+  references: References;
+  web_url: string;
+  time_stats: TimeStats;
+  squash: boolean;
+  squash_on_merge: boolean;
+  task_completion_status: TaskCompletionStatus;
+  has_conflicts: boolean;
+  blocking_discussions_resolved: boolean;
+  /** @deprecated Deprecated in GitLab 16.0. Premium and Ultimate only. */
+  approvals_before_merge?: any;
+
+  // TODO: check if these are actually in the response, keeping them here for now.
+  allow_collaboration: boolean;
+  allow_maintainer_to_push: boolean;
+};
+
+interface Author {
+  id: number;
+  username: string;
+  name: string;
+  state: string;
+  locked: boolean;
+  avatar_url: string;
+  web_url: string;
+}
+
+interface References {
+  short: string;
+  relative: string;
+  full: string;
+}
+
+interface TimeStats {
+  time_estimate: number;
+  total_time_spent: number;
+  human_time_estimate: any;
+  human_total_time_spent: any;
+}
+
+interface TaskCompletionStatus {
+  count: number;
+  completed_count: number;
+}
 
 export type GitLabMergeCommitRequest = Opaque<any, 'GitLabMergeCommitRequest'>;
 

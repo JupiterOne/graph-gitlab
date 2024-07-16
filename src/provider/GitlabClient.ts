@@ -28,9 +28,9 @@ import {
 const ITEMS_PER_PAGE = 100;
 
 export type ResourceIteratee<T> = (each: T) => Promise<void> | void;
-export type PageErrorHandler = ({
-  err: Error,
-  endpoint: string,
+export type PageErrorHandler = (handlerArgs: {
+  err: Error;
+  endpoint: string;
 }) => Promise<void> | void;
 
 export type RateLimitStatus = {

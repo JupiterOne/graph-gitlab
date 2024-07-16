@@ -26,7 +26,7 @@ export const Entities = {
   ACCOUNT: {
     resourceName: 'Account',
     _type: 'gitlab_account',
-    _class: 'Account',
+    _class: ['Account'],
   },
   USER: {
     resourceName: 'User',
@@ -36,7 +36,7 @@ export const Entities = {
   GROUP: {
     resourceName: 'Group',
     _type: 'gitlab_group',
-    _class: 'Group',
+    _class: ['Group'],
   },
   FINDING: {
     resourceName: 'Finding',

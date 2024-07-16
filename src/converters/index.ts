@@ -33,6 +33,7 @@ export function createAccountEntity(
         version: systemVersion.version,
         revision: systemVersion.revision,
         enterprise: systemVersion.enterprise,
+        vendor: 'GitLab',
       },
     },
   });
@@ -193,6 +194,7 @@ export function createMergeRequestEntity(
 
 export function createMergeRequestCommitEntity(
   mergeRequestCommit: GitLabMergeCommitRequest,
+  sourceBranch: string,
 ): Entity {
   const key = createCommitIdentifier(mergeRequestCommit.id);
 
@@ -220,6 +222,7 @@ export function createMergeRequestCommitEntity(
         committerEmail: mergeRequestCommit.committer_email,
         authorName: mergeRequestCommit.author_name,
         authorEmail: mergeRequestCommit.author_email,
+        branch: sourceBranch,
       },
     },
   });

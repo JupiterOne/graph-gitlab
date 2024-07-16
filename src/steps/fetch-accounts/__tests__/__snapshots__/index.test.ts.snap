@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`step data collection 1`] = `
-Array [
-  Object {
-    "_class": Array [
+[
+  {
+    "_class": [
       "Account",
     ],
     "_key": "gitlab-account-version:17.0.0-pre",
-    "_rawData": Array [
-      Object {
+    "_rawData": [
+      {
         "name": "default",
-        "rawData": Object {
-          "systemVersion": Object {
+        "rawData": {
+          "systemVersion": {
             "enterprise": true,
-            "kas": Object {
+            "kas": {
               "enabled": true,
               "externalUrl": "wss://kas.gitlab.com",
               "version": "17.0.0-rc4",
@@ -21,7 +21,7 @@ Array [
             "revision": "41e5f397063",
             "version": "17.0.0-pre",
           },
-          "tokenOwner": Object {
+          "tokenOwner": {
             "avatar_url": "https://secure.gravatar.com/avatar/547145a05e7cecb80611baf055925182?s=80&d=identicon",
             "bio": null,
             "can_create_group": true,
@@ -34,8 +34,8 @@ Array [
             "external": false,
             "extra_shared_runners_minutes_limit": null,
             "id": 5887285,
-            "identities": Array [
-              Object {
+            "identities": [
+              {
                 "extern_uid": "30329077",
                 "provider": "github",
                 "saml_provider_id": null,
@@ -72,6 +72,7 @@ Array [
     "id": "5887285",
     "name": "eXtremeX",
     "revision": "41e5f397063",
+    "vendor": "GitLab",
     "version": "17.0.0-pre",
   },
 ]
