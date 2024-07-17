@@ -37,7 +37,7 @@ describe('#getCommitWebLinkFromMergeRequest', () => {
           'https://gitlab.com/jupiterone-dev/test-proj/-/merge_requests/1',
         merge_commit_sha: 'abc123',
         squash_commit_sha: 'abc456',
-      }),
+      } as any),
     ).toEqual('https://gitlab.com/jupiterone-dev/test-proj/-/commit/abc123');
   });
 
@@ -47,7 +47,7 @@ describe('#getCommitWebLinkFromMergeRequest', () => {
         web_url:
           'https://gitlab.com/jupiterone-dev/test-proj/-/merge_requests/1',
         merge_commit_sha: 'abc123',
-      }),
+      } as any),
     ).toEqual('https://gitlab.com/jupiterone-dev/test-proj/-/commit/abc123');
   });
 
@@ -57,7 +57,7 @@ describe('#getCommitWebLinkFromMergeRequest', () => {
         web_url:
           'https://gitlab.com/jupiterone-dev/test-proj/-/merge_requests/1',
         squash_commit_sha: 'abc456',
-      }),
+      } as any),
     ).toEqual('https://gitlab.com/jupiterone-dev/test-proj/-/commit/abc456');
   });
 
@@ -66,7 +66,7 @@ describe('#getCommitWebLinkFromMergeRequest', () => {
       getCommitWebLinkFromMergeRequest({
         web_url:
           'https://gitlab.com/jupiterone-dev/test-proj/-/merge_requests/1',
-      }),
+      } as any),
     ).toEqual(undefined);
   });
 });

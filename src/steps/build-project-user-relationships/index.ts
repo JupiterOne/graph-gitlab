@@ -18,9 +18,10 @@ async function buildProjectHasUserRelationships({
   jobState,
   logger,
 }: IntegrationStepExecutionContext<GitlabIntegrationConfig>) {
-  const projectMembersMap = await jobState.getData<
-    Map<string, { id: number; accessLevel: number }[]>
-  >(PROJECT_MEMBERS_MAP);
+  const projectMembersMap =
+    await jobState.getData<Map<string, { id: number; accessLevel: number }[]>>(
+      PROJECT_MEMBERS_MAP,
+    );
 
   if (!projectMembersMap) {
     throw new IntegrationMissingKeyError(

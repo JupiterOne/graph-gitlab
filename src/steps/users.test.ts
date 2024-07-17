@@ -128,7 +128,7 @@ describe('fetch-users 429 should wait 10 minutes', () => {
   test('replay', async () => {
     const flushPromises = () => new Promise((res) => setImmediate(res));
 
-    jest.useFakeTimers('legacy');
+    jest.useFakeTimers({ legacyFakeTimers: true });
     recording = setupRecording({
       directory: __dirname,
       name: 'fetch-users-429',

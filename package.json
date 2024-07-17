@@ -10,25 +10,34 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "src",
+    "jupiterone"
   ],
   "publishConfig": {
     "access": "public"
   },
+  "engines": {
+    "node": ">=18.0.0 <19.x"
+  },
   "scripts": {
     "start": "j1-integration collect",
     "graph": "j1-integration visualize",
+    "graph:types": "j1-integration visualize-types",
+    "graph:spec": "j1-integration visualize-types --project-path docs/spec --output-file ./.j1-integration/types-graph/index.spec.html",
+    "graph:dependencies": "j1-integration visualize-dependencies",
+    "validate:questions:dry": "j1-integration validate-question-file --dry-run",
+    "validate:questions": "j1-integration validate-question-file -a $MANAGED_QUESTIONS_JUPITERONE_ACCOUNT_ID -k $MANAGED_QUESTIONS_JUPITERONE_API_KEY",
     "lint": "eslint . --cache --fix --ext .ts,.tsx",
-    "format": "prettier --write '**/*.{ts,js,json,css,md,yml}'",
-    "format:check": "prettier --check '**/*.{ts,js,json,css,md,yml}'",
+    "format": "prettier --write \"**/*.{ts,js,json,css,md,yml}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,css,md,yml}\"",
     "type-check": "tsc",
     "test": "jest",
-    "test:env": "LOAD_ENV=1 jest",
+    "test:env": "LOAD_ENV=1 yarn test",
     "test:ci": "yarn format:check && yarn lint && yarn type-check && yarn test",
-    "prebuild": "yarn test:ci",
-    "prepush": "yarn test:ci",
-    "build": "tsc -p tsconfig.dist.json --declaration",
-    "prepack": "yarn build"
+    "build": "tsc -p tsconfig.dist.json --declaration && cp README.md dist/README.md && cp -r jupiterone/ dist/jupiterone/",
+    "build:docker": "tsc --declaration false --emitDeclarationOnly false -p tsconfig.dist.json",
+    "prepush": "yarn format:check && yarn lint && yarn type-check && jest --changedSince main",
+    "postversion": "cp package.json ./dist/package.json"
   },
   "dependencies": {
     "@lifeomic/attempt": "^3.0.3",
@@ -36,9 +45,10 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.33.1",
-    "@jupiterone/integration-sdk-dev-tools": "^8.33.1",
-    "@jupiterone/integration-sdk-testing": "^8.33.1",
+    "@jupiterone/integration-sdk-core": "^13.2.0",
+    "@jupiterone/integration-sdk-dev-tools": "^13.2.0",
+    "@jupiterone/integration-sdk-testing": "^13.2.0",
+    "@types/node": "^20.14.10",
     "@types/node-fetch": "^2.5.9",
     "@types/uuid": "^8.3.0",
     "auto": "^10.37.4",
@@ -46,7 +56,7 @@
     "type-fest": "^0.18.1"
   },
   "peerDependencies": {
-    "@jupiterone/integration-sdk-core": "^8.33.1"
+    "@jupiterone/integration-sdk-core": "^13.2.0"
   },
   "auto": {
     "plugins": [
@@ -54,7 +64,7 @@
         "npm",
         {
           "setRcToken": false,
-          "publishFolder": "."
+          "publishFolder": "./dist"
         }
       ],
       "released"
