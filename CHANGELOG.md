@@ -1,3 +1,15 @@
+# v4.10.0 (Wed Jul 17 2024)
+
+#### 🚀 Enhancement
+
+- upgrade sdk [#116](https://github.com/JupiterOne/graph-gitlab/pull/116) ([@RonaldEAM](https://github.com/RonaldEAM))
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v4.9.0 (Fri May 17 2024)
 
 #### 🚀 Enhancement
