@@ -1,3 +1,15 @@
+# v4.10.1 (Mon Jul 22 2024)
+
+#### 🐛 Bug Fix
+
+- fix main file path [#117](https://github.com/JupiterOne/graph-gitlab/pull/117) ([@RonaldEAM](https://github.com/RonaldEAM))
+
+#### Authors: 1
+
+- Ronald Arias ([@RonaldEAM](https://github.com/RonaldEAM))
+
+---
+
 # v4.10.0 (Wed Jul 17 2024)
 
 #### 🚀 Enhancement
